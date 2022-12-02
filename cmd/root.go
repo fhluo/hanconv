@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/fhluo/zhconv/conv"
+	"github.com/fhluo/hanzi-conv/conv"
 	"github.com/spf13/cobra"
 	"io"
 	"log"

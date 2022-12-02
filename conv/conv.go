@@ -2,7 +2,7 @@ package conv
 
 import (
 	"bytes"
-	"github.com/fhluo/zhconv/trie"
+	"github.com/fhluo/hanzi-conv/trie"
 )
 
 type Converter struct {

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/fhluo/zhconv/cmd"
-	"github.com/fhluo/zhconv/conv"
-	"github.com/fhluo/zhconv/dict/ts"
+	"github.com/fhluo/hanzi-conv/cmd"
+	"github.com/fhluo/hanzi-conv/conv"
+	"github.com/fhluo/hanzi-conv/dict/ts"
 )
 
 func main() {

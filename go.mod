@@ -1,4 +1,4 @@
-module github.com/fhluo/zhconv
+module github.com/fhluo/hanzi-conv
 
 go 1.18
 
