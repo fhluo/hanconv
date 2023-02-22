@@ -1,11 +1,11 @@
-package hanzi
+package hanconv
 
 import (
-	"github.com/fhluo/hanzi-conv/pkg/trie"
+	"github.com/fhluo/hanconv/pkg/trie"
 	"testing"
 )
 
-var c = NewConverter(trie.FromMap(map[string]string{
+var c = New(trie.FromMap(map[string]string{
 	"乾乾淨淨": "干干净净",
 	"無序":   "无序",
 	"書":    "书",

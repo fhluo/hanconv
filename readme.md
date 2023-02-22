@@ -1,4 +1,4 @@
-# hanzi-conv
+# hanconv
 
 汉字转换工具
 

@@ -3,24 +3,24 @@ package s2t
 import (
 	_ "embed"
 	"github.com/bytedance/sonic"
-	"github.com/fhluo/hanzi-conv/pkg/hanzi"
-	"github.com/fhluo/hanzi-conv/pkg/trie"
+	"github.com/fhluo/hanconv/pkg/hanconv"
+	"github.com/fhluo/hanconv/pkg/trie"
 )
 
-//go:generate go run ../../cmd/hanzi gen ../../dictionary/STCharacters.txt ../../dictionary/STPhrases.txt -o s2t.json
+//go:generate go run ../../cmd/hanconv gen ../../dictionary/STCharacters.txt ../../dictionary/STPhrases.txt -o s2t.json
 
 var (
 	//go:embed s2t.json
 	data []byte
 	Dict = trie.New()
-	conv *hanzi.Converter
+	conv *hanconv.Converter
 )
 
 func init() {
 	if err := sonic.Unmarshal(data, Dict); err != nil {
 		panic(err)
 	}
-	conv = hanzi.NewConverter(Dict)
+	conv = hanconv.New(Dict)
 }
 
 func Convert(data []byte) []byte {

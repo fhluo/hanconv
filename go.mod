@@ -1,4 +1,4 @@
-module github.com/fhluo/hanzi-conv
+module github.com/fhluo/hanconv
 
 go 1.20
 

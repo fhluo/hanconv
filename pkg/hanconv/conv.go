@@ -1,8 +1,8 @@
-package hanzi
+package hanconv
 
 import (
 	"bytes"
-	"github.com/fhluo/hanzi-conv/pkg/trie"
+	"github.com/fhluo/hanconv/pkg/trie"
 	"unsafe"
 )
 
@@ -10,7 +10,7 @@ type Converter struct {
 	Dictionaries []*trie.Trie
 }
 
-func NewConverter(dictionaries ...*trie.Trie) *Converter {
+func New(dictionaries ...*trie.Trie) *Converter {
 	return &Converter{
 		Dictionaries: dictionaries,
 	}

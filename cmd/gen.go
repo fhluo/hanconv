@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/bytedance/sonic"
-	"github.com/fhluo/hanzi-conv/pkg/trie"
+	"github.com/fhluo/hanconv/pkg/trie"
 	"github.com/spf13/cobra"
 	"os"
 	"regexp"
