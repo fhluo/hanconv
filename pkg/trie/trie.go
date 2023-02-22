@@ -18,8 +18,8 @@ func NewNode() *Node {
 
 // Trie 字典树，键由结点的位置决定
 type Trie struct {
-	Root  *Node `json:"r"` // 根结点
-	Depth int   `json:"d"` // 树的深度
+	Root  *Node `json:"root"`  // 根结点
+	Depth int   `json:"depth"` // 树的深度
 }
 
 func New() *Trie {

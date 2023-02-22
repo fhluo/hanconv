@@ -7,7 +7,7 @@ import (
 )
 
 type Converter struct {
-	Dictionaries []*trie.Trie
+	Dictionaries []*trie.Trie `json:"dictionaries"`
 }
 
 func New(dictionaries ...*trie.Trie) *Converter {
@@ -37,8 +37,12 @@ func (c *Converter) Convert(data []byte) []byte {
 			count int
 		)
 
+		if len(runes) < depth {
+			depth = len(runes)
+		}
+
 		for _, dict := range c.Dictionaries {
-			value, count = dict.Match(string(runes[:Min(depth, len(runes))]))
+			value, count = dict.Match(string(runes[:depth]))
 			if count != 0 {
 				break
 			}
