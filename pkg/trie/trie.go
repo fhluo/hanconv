@@ -7,43 +7,47 @@ import (
 
 // Node 表示字典树的一个结点
 type Node struct {
-	children map[rune]*Node // 子结点
-	value    string         // 值
-	exist    bool           // 以该结点结尾的字符串是否存在
+	Children map[rune]*Node `json:"c"` // 子结点
+	Value    string         `json:"v"` // 值
+	Exist    bool           `json:"e"` // 以该结点结尾的字符串是否存在
 }
 
 func NewNode() *Node {
-	return &Node{children: make(map[rune]*Node)}
+	return &Node{Children: make(map[rune]*Node)}
 }
 
 // Trie 字典树，键由结点的位置决定
 type Trie struct {
-	root  *Node // 根结点
-	depth int   // 树的深度
+	Root  *Node `json:"r"` // 根结点
+	Depth int   `json:"d"` // 树的深度
 }
 
 func New() *Trie {
 	return &Trie{
-		root: NewNode(),
+		Root: NewNode(),
 	}
+}
+
+func FromMap(m map[string]string) *Trie {
+	trie := New()
+	for k, v := range m {
+		trie.Set(k, v)
+	}
+	return trie
 }
 
 func (t *Trie) String() string {
 	return fmt.Sprint(t.ToMap())
 }
 
-func (t *Trie) Depth() int {
-	return t.depth
-}
-
 func (t *Trie) StartsWith(s string) bool {
-	node := t.root
+	node := t.Root
 
 	for _, r := range s {
-		if _, ok := node.children[r]; !ok {
+		if _, ok := node.Children[r]; !ok {
 			return false
 		}
-		node = node.children[r]
+		node = node.Children[r]
 	}
 
 	return true
@@ -51,52 +55,52 @@ func (t *Trie) StartsWith(s string) bool {
 
 func (t *Trie) Set(key, value string) {
 	count := utf8.RuneCountInString(key)
-	if count > t.depth {
-		t.depth = count
+	if count > t.Depth {
+		t.Depth = count
 	}
 
-	node := t.root
+	node := t.Root
 
 	// 迭代字符串 key 直到字符串末尾，子结点不存在则建立子结点
 	for _, r := range key {
-		if _, ok := node.children[r]; !ok {
-			node.children[r] = NewNode()
+		if _, ok := node.Children[r]; !ok {
+			node.Children[r] = NewNode()
 		}
-		node = node.children[r]
+		node = node.Children[r]
 	}
 
-	node.value = value
-	node.exist = true
+	node.Value = value
+	node.Exist = true
 }
 
 func (t *Trie) Get(key string) string {
-	node := t.root
+	node := t.Root
 
 	// 迭代字符串 key 直到字符串末尾，子结点不存在则返回空字符串
 	for _, r := range key {
-		if _, ok := node.children[r]; !ok {
+		if _, ok := node.Children[r]; !ok {
 			return ""
 		}
-		node = node.children[r]
+		node = node.Children[r]
 	}
 
-	return node.value
+	return node.Value
 }
 
 // Match 返回最大正向匹配键对应的值和键的长度(rune)，s 的最大长度不应超过树的深度
 func (t *Trie) Match(s string) (value string, count int) {
-	node := t.root
+	node := t.Root
 
 	// 迭代字符串 s 直到字符串末尾
 	for i, r := range []rune(s) {
-		if _, ok := node.children[r]; !ok {
+		if _, ok := node.Children[r]; !ok {
 			break
 		}
 
 		// 若以当前字符结尾的字符串存在，则更新值为当前结点的值并更新键的长度
-		node = node.children[r]
-		if node.exist {
-			value = node.value
+		node = node.Children[r]
+		if node.Exist {
+			value = node.Value
 			count = i + 1
 		}
 	}
@@ -105,11 +109,11 @@ func (t *Trie) Match(s string) (value string, count int) {
 }
 
 func build(node *Node, left string, dict map[string]string) {
-	if node.exist {
-		dict[left] = node.value
+	if node.Exist {
+		dict[left] = node.Value
 	}
 
-	for k, v := range node.children {
+	for k, v := range node.Children {
 		build(v, left+string(k), dict)
 	}
 }
@@ -117,6 +121,6 @@ func build(node *Node, left string, dict map[string]string) {
 // ToMap 将 trie 转换为 map
 func (t *Trie) ToMap() map[string]string {
 	dict := make(map[string]string)
-	build(t.root, "", dict)
+	build(t.Root, "", dict)
 	return dict
 }

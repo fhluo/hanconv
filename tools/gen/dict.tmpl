@@ -1,7 +1,0 @@
-package {{.PackageName}}
-
-var {{.VariableName}} = map[string]string{
-{{range $k, $v := .Dictionary -}}
-{{"\t"}}"{{$k}}": "{{$v}}",
-{{end -}}
-}

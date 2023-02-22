@@ -1,18 +1,15 @@
-package conv
+package hanzi
 
 import (
+	"github.com/fhluo/hanzi-conv/pkg/trie"
 	"testing"
 )
 
-var c = New()
-
-func init() {
-	c.UpdateDict(map[string]string{
-		"乾乾淨淨": "干干净净",
-		"無序":   "无序",
-		"書":    "书",
-	})
-}
+var c = New(trie.FromMap(map[string]string{
+	"乾乾淨淨": "干干净净",
+	"無序":   "无序",
+	"書":    "书",
+}))
 
 func TestConverter_Convert(t *testing.T) {
 	tests := []struct {

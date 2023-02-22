@@ -1,8 +1,9 @@
 module github.com/fhluo/hanzi-conv
 
-go 1.18
+go 1.20
 
 require (
+	github.com/goccy/go-json v0.10.0
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
 )

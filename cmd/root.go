@@ -1,20 +1,23 @@
 package cmd
 
 import (
-	"github.com/fhluo/hanzi-conv/pkg/hanzi/conv"
+	"github.com/fhluo/hanzi-conv/pkg/hanzi"
 	"github.com/spf13/cobra"
 	"io"
 	"log"
 	"os"
+	"unsafe"
 )
 
 var (
-	converter *conv.Converter
+	converter *hanzi.Converter
 
 	inputFilename  string
 	outputFilename string
 
 	rootCmd = &cobra.Command{
+		Use:   "hanzi",
+		Short: "汉字转换工具",
 		Run: func(cmd *cobra.Command, args []string) {
 			var (
 				input  = os.Stdin
@@ -55,6 +58,8 @@ var (
 func init() {
 	log.SetFlags(0)
 
+	rootCmd.AddCommand(genCmd)
+
 	rootCmd.Flags().StringVarP(&inputFilename, "input", "i", "", "输入文件名")
 	rootCmd.Flags().StringVarP(&outputFilename, "output", "o", "", "输出文件名")
 }
@@ -65,7 +70,8 @@ func convert(input *os.File, output *os.File) error {
 	if err != nil {
 		return err
 	}
-	result := converter.Convert(string(data))
+
+	result := converter.Convert(unsafe.String(unsafe.SliceData(data), len(data)))
 
 	if _, err = io.WriteString(output, result); err != nil {
 		return err
@@ -74,10 +80,7 @@ func convert(input *os.File, output *os.File) error {
 	return nil
 }
 
-func Execute(c *conv.Converter, use string, short string) {
-	rootCmd.Use = use
-	rootCmd.Short = short
-	converter = c
+func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalln(err)
 	}

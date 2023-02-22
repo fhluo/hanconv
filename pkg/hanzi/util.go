@@ -1,4 +1,4 @@
-package conv
+package hanzi
 
 import "golang.org/x/exp/constraints"
 

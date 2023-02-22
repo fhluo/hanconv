@@ -1,6 +1,7 @@
 package trie
 
 import (
+	_ "embed"
 	"testing"
 )
 
@@ -8,8 +9,8 @@ var (
 	trie *Trie
 	data = map[string]string{
 		"乾乾淨淨": "干干净净",
-		"無序":     "无序",
-		"書":       "书",
+		"無序":   "无序",
+		"書":    "书",
 	}
 )
 
