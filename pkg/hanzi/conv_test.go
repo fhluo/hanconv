@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var c = New(trie.FromMap(map[string]string{
+var c = NewConverter(trie.FromMap(map[string]string{
 	"乾乾淨淨": "干干净净",
 	"無序":   "无序",
 	"書":    "书",
@@ -25,8 +25,8 @@ func TestConverter_Convert(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if r := c.Convert(test.s); r != test.expected {
-			t.Errorf("c.Convert(%v), got %v, want %v", test.s, r, test.expected)
+		if r := c.ConvertString(test.s); r != test.expected {
+			t.Errorf("c.ConvertString(%v), got %v, want %v", test.s, r, test.expected)
 		}
 	}
 }

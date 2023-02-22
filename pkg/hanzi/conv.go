@@ -3,21 +3,22 @@ package hanzi
 import (
 	"bytes"
 	"github.com/fhluo/hanzi-conv/pkg/trie"
+	"unsafe"
 )
 
 type Converter struct {
 	Dictionaries []*trie.Trie
 }
 
-func New(dictionaries ...*trie.Trie) *Converter {
+func NewConverter(dictionaries ...*trie.Trie) *Converter {
 	return &Converter{
 		Dictionaries: dictionaries,
 	}
 }
 
-func (c *Converter) Convert(s string) string {
+func (c *Converter) Convert(data []byte) []byte {
 	if len(c.Dictionaries) == 0 {
-		return s
+		return nil
 	}
 
 	depth := c.Dictionaries[0].Depth
@@ -28,7 +29,8 @@ func (c *Converter) Convert(s string) string {
 	}
 
 	buffer := new(bytes.Buffer)
-	runes := []rune(s)
+
+	runes := []rune(unsafe.String(unsafe.SliceData(data), len(data)))
 	for len(runes) != 0 {
 		var (
 			value string
@@ -51,5 +53,10 @@ func (c *Converter) Convert(s string) string {
 		runes = runes[count:]
 	}
 
-	return buffer.String()
+	return buffer.Bytes()
+}
+
+func (c *Converter) ConvertString(s string) string {
+	r := c.Convert(unsafe.Slice(unsafe.StringData(s), len(s)))
+	return unsafe.String(unsafe.SliceData(r), len(r))
 }

@@ -28,10 +28,12 @@ func New() *Trie {
 	}
 }
 
-func FromMap(m map[string]string) *Trie {
+func FromMap(dictionaries ...map[string]string) *Trie {
 	trie := New()
-	for k, v := range m {
-		trie.Set(k, v)
+	for _, dict := range dictionaries {
+		for k, v := range dict {
+			trie.Set(k, v)
+		}
 	}
 	return trie
 }

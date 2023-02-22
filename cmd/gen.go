@@ -2,48 +2,38 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/fhluo/hanzi-conv/pkg/trie"
-	"github.com/goccy/go-json"
 	"github.com/spf13/cobra"
-	"log"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
-	"sync"
 )
 
 func init() {
-	genCmd.Flags().StringVarP(&outputFilename, "out", "o", "", "输出文件名")
+	genCmd.Flags().StringVarP(&outputFilename, "output", "o", "", "输出文件名")
 }
 
 var genCmd = &cobra.Command{
 	Use:   "gen",
 	Short: "从文本文件中生成以 JSON 格式的字典文件",
-	Run: func(cmd *cobra.Command, args []string) {
-		var wg sync.WaitGroup
+	RunE: func(cmd *cobra.Command, args []string) error {
+		dictionaries := make([]map[string]string, 0, len(args))
 
-		filenames := make([]string, 0, len(args))
-		for _, arg := range args {
-			r, err := filepath.Glob(arg)
+		for _, filename := range args {
+			dict, err := LoadDict(filename)
 			if err != nil {
-				log.Println(err)
-				continue
+				return fmt.Errorf("could not load dictionary: %w", err)
 			}
-			filenames = append(filenames, r...)
+			dictionaries = append(dictionaries, dict)
 		}
 
-		wg.Add(len(filenames))
-
-		for _, filename := range filenames {
-			filename := filename
-			go func() {
-				defer wg.Done()
-				generate(filename)
-			}()
+		data, err := sonic.Marshal(trie.FromMap(dictionaries...))
+		if err != nil {
+			return fmt.Errorf("failed to marshal trie to json: %w", err)
 		}
 
-		wg.Wait()
+		return os.WriteFile(outputFilename, data, 0666)
 	},
 }
 
@@ -69,31 +59,4 @@ func LoadDict(filename string) (map[string]string, error) {
 	}
 
 	return dict, nil
-}
-
-func generate(filename string) {
-	dict, err := LoadDict(filename)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	
-	data, err := json.Marshal(trie.FromMap(dict))
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	if outputFilename == "" {
-		ext := filepath.Ext(filename)
-		filename = filename[:len(filename)-len(ext)] + ".go"
-	} else {
-		filename = outputFilename
-	}
-
-	err = os.WriteFile(filename, data, 0666)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
 }
