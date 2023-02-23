@@ -3,8 +3,8 @@ package main
 import (
 	"bytes"
 	_ "embed"
+	"encoding/json"
 	"fmt"
-	"github.com/bytedance/sonic"
 	"github.com/fhluo/hanconv/pkg/hanconv"
 	"github.com/fhluo/hanconv/pkg/trie"
 	"github.com/pelletier/go-toml/v2"
@@ -91,7 +91,7 @@ func main() {
 	}
 
 	for _, conv := range converters {
-		data, err := sonic.Marshal(conv)
+		data, err := json.Marshal(conv)
 		if err != nil {
 			slog.Error("将 Converter 序列化为 JSON 失败", err)
 			os.Exit(1)
