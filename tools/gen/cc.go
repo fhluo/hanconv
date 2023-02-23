@@ -188,8 +188,17 @@ type Dictionary struct {
 func (d Dictionary) Files() []string {
 	switch d.Type {
 	case "ocd2":
-		return []string{
-			*d.File,
+		if path.Ext(*d.File) != ".ocd2" {
+			panic(fmt.Sprintf("文件后缀应为 .ocd2：%s", path.Ext(*d.File)))
+		}
+
+		switch file := strings.TrimSuffix(*d.File, ".ocd2"); file {
+		case "TWPhrases":
+			return []string{"TWPhrasesIT", "TWPhrasesName", "TWPhrasesOther"}
+		case "TWPhrasesRev":
+			return []string{"TWPhrasesITRev", "TWPhrasesNameRev", "TWPhrasesOtherRev"}
+		default:
+			return []string{file}
 		}
 	case "group":
 		return lo.FlatMap(d.Dictionaries, func(dict Dictionary, _ int) []string {
@@ -198,15 +207,6 @@ func (d Dictionary) Files() []string {
 	default:
 		panic(fmt.Sprintf("未知字典类型：%s", d.Type))
 	}
-}
-
-func (d Dictionary) FilesStems() []string {
-	return lo.Map(d.Files(), func(file string, _ int) string {
-		if path.Ext(file) == ".ocd2" {
-			return strings.TrimSuffix(file, ".ocd2")
-		}
-		panic(fmt.Sprintf("文件后缀应为 .ocd2：%s", path.Ext(file)))
-	})
 }
 
 type Segmentation struct {

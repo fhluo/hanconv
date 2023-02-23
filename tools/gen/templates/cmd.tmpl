@@ -1,0 +1,18 @@
+package cmd
+
+import (
+	"github.com/fhluo/hanconv/pkg/{{.packageName}}"
+	"github.com/spf13/cobra"
+)
+
+var {{.name}}Cmd = &cobra.Command{
+	Use:   "{{.use}}",
+	Short: "{{.short}}",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return run(cmd, {{.packageName}}.Convert)
+	},
+}
+
+func init() {
+	rootCmd.AddCommand({{.name}}Cmd)
+}

@@ -1,4 +1,4 @@
-package s2t
+package s2twp
 
 import (
 	_ "embed"
@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	//go:embed s2t.json
+	//go:embed s2twp.json
 	data []byte
 	conv hanconv.Converter
 )

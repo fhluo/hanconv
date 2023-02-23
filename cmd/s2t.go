@@ -12,3 +12,7 @@ var s2tCmd = &cobra.Command{
 		return run(cmd, s2t.Convert)
 	},
 }
+
+func init() {
+	rootCmd.AddCommand(s2tCmd)
+}

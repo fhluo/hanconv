@@ -18,8 +18,6 @@ var (
 func init() {
 	log.SetFlags(0)
 
-	rootCmd.AddCommand(s2tCmd)
-
 	rootCmd.PersistentFlags().StringVarP(&inputFilename, "input", "i", "", "输入文件名")
 	rootCmd.PersistentFlags().StringVarP(&outputFilename, "output", "o", "", "输出文件名")
 }

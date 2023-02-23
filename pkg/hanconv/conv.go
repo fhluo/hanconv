@@ -7,11 +7,13 @@ import (
 )
 
 type Converter struct {
+	Name         string       `json:"name"`
 	Dictionaries []*trie.Trie `json:"dictionaries"`
 }
 
-func New(dictionaries ...*trie.Trie) *Converter {
+func New(name string, dictionaries ...*trie.Trie) *Converter {
 	return &Converter{
+		Name:         name,
 		Dictionaries: dictionaries,
 	}
 }
