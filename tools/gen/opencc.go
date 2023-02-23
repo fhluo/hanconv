@@ -124,6 +124,61 @@ func (o *OpenCC) ReadDictionary(filename string) (map[string]string, error) {
 	return dictionary, nil
 }
 
+// ReadDictionaryReverse 读取字典，交换键值
+func (o *OpenCC) ReadDictionaryReverse(filename string) (map[string]string, error) {
+	data, err := o.ReadFile(filename)
+	if err != nil {
+		return nil, err
+	}
+
+	lines := regexp.MustCompile(`\r?\n`).Split(string(data), -1)
+
+	spacesRE := regexp.MustCompile(`\s`)
+
+	dictionary := make(map[string]string)
+
+	for _, line := range lines {
+		items := spacesRE.Split(strings.TrimSpace(line), -1)
+		for _, item := range items[1:] {
+			if item != items[0] {
+				dictionary[item] = items[0]
+			}
+		}
+	}
+
+	return dictionary, nil
+}
+
+func (o *OpenCC) ReadDictionaryByStem(stem string) (map[string]string, error) {
+	dictionaries, err := o.Dictionaries()
+	if err != nil {
+		return nil, err
+	}
+
+	dictionary, ok := lo.Find(dictionaries, func(dictionary string) bool {
+		base := path.Base(dictionary)
+		return strings.TrimSuffix(base, path.Ext(base)) == stem
+	})
+	if ok {
+		return o.ReadDictionary(dictionary)
+	}
+
+	if !strings.HasSuffix(stem, "Rev") {
+		return nil, fmt.Errorf("找不到该字典文件：%s.txt", stem)
+	}
+
+	stem = strings.TrimSuffix(stem, "Rev")
+	dictionary, ok = lo.Find(dictionaries, func(dictionary string) bool {
+		base := path.Base(dictionary)
+		return strings.TrimSuffix(base, path.Ext(base)) == stem
+	})
+	if ok {
+		return o.ReadDictionaryReverse(dictionary)
+	}
+
+	return nil, fmt.Errorf("找不到该字典文件：%sRev.txt", stem)
+}
+
 type Dictionary struct {
 	Type         string       `json:"type"`
 	File         *string      `json:"file,omitempty"`
@@ -143,6 +198,15 @@ func (d Dictionary) Files() []string {
 	default:
 		panic(fmt.Sprintf("未知字典类型：%s", d.Type))
 	}
+}
+
+func (d Dictionary) FilesStems() []string {
+	return lo.Map(d.Files(), func(file string, _ int) string {
+		if path.Ext(file) == ".ocd2" {
+			return strings.TrimSuffix(file, ".ocd2")
+		}
+		panic(fmt.Sprintf("文件后缀应为 .ocd2：%s", path.Ext(file)))
+	})
 }
 
 type Segmentation struct {

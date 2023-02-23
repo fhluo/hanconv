@@ -8,7 +8,8 @@ import (
 	"golang.org/x/exp/slog"
 	"log"
 	"os"
-	"path/filepath"
+	"path"
+	"strings"
 )
 
 func init() {
@@ -21,12 +22,6 @@ func main() {
 		slog.Error("", err)
 		os.Exit(1)
 	}
-
-	//dictionaries, err := cc.Dictionaries()
-	//if err != nil {
-	//	slog.Error("无法获取字典文件名", err)
-	//	os.Exit(1)
-	//}
 
 	configs, err := cc.Configs()
 	if err != nil {
@@ -43,9 +38,8 @@ func main() {
 		data, err := sonic.Marshal(hanconv.New(
 			lo.Map(config.ConversionChain, func(conversion Conversion, _ int) *trie.Trie {
 				return trie.FromMap(
-					lo.Map(conversion.Dictionary.Files(), func(path string, _ int) map[string]string {
-						path = path[:len(path)-len(filepath.Ext(path))] + ".txt"
-						dictionary, err := cc.ReadDictionary(path)
+					lo.Map(conversion.Dictionary.FilesStems(), func(stem string, _ int) map[string]string {
+						dictionary, err := cc.ReadDictionaryByStem(stem)
 						if err != nil {
 							slog.Error("无法读取字典", err)
 							os.Exit(1)
@@ -60,7 +54,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		err = os.WriteFile(filename[:len(filename)-len(filepath.Ext(filename))]+".json", data, 0666)
+		err = os.WriteFile(strings.TrimSuffix(filename, path.Ext(filename))+".json", data, 0666)
 		if err != nil {
 			slog.Error("", err)
 			os.Exit(1)
