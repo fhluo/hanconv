@@ -7,7 +7,7 @@ import (
 
 var tw2sCmd = &cobra.Command{
 	Use:   "tw2s",
-	Short: "tw2s",
+	Short: "繁体中文（台湾） -> 简体中文",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return run(cmd, tw2s.Convert)
 	},

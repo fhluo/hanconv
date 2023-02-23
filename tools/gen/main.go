@@ -7,6 +7,7 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/fhluo/hanconv/pkg/hanconv"
 	"github.com/fhluo/hanconv/pkg/trie"
+	"github.com/pelletier/go-toml/v2"
 	"github.com/samber/lo"
 	"golang.org/x/exp/slog"
 	"log"
@@ -29,6 +30,10 @@ var (
 	//go:embed templates/cmd.tmpl
 	cmdTmplStr string
 	cmdTmpl    = template.Must(template.New("").Parse(cmdTmplStr))
+
+	//go:embed config.toml
+	configData []byte
+	genConfig  GenConfig
 )
 
 func main() {
@@ -118,13 +123,21 @@ func main() {
 		}
 	}
 
+	err = toml.Unmarshal(configData, &genConfig)
+	if err != nil {
+		slog.Error("", err)
+		os.Exit(1)
+	}
+
+	convertersConfig := genConfig.ConvertersMap()
+
 	for _, conv := range converters {
 		buffer := new(bytes.Buffer)
 		err = cmdTmpl.Execute(buffer, map[string]string{
 			"name":        conv.Name,
 			"packageName": conv.Name,
 			"use":         conv.Name,
-			"short":       conv.Name,
+			"short":       convertersConfig[conv.Name].ConversionString(),
 		})
 		if err != nil {
 			slog.Error("", err)

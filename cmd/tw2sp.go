@@ -7,7 +7,7 @@ import (
 
 var tw2spCmd = &cobra.Command{
 	Use:   "tw2sp",
-	Short: "tw2sp",
+	Short: "繁体中文（台湾） -> 简体中文（转换常用词汇）",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return run(cmd, tw2sp.Convert)
 	},

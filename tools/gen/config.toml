@@ -1,0 +1,55 @@
+[[converters]]
+name = "s2t"
+conversion = ["简体中文", "繁体中文"]
+
+[[converters]]
+name = "t2s"
+conversion = ["繁体中文", "简体中文"]
+
+[[converters]]
+name = "s2tw"
+conversion = ["简体中文", "繁体中文（台湾）"]
+
+[[converters]]
+name = "tw2s"
+conversion = ["繁体中文（台湾）", "简体中文"]
+
+[[converters]]
+name = "s2hk"
+conversion = ["简体中文", "繁体中文（香港）"]
+
+[[converters]]
+name = "hk2s"
+conversion = ["繁体中文（香港）", "简体中文"]
+
+[[converters]]
+name = "s2twp"
+conversion = ["简体中文", "繁体中文（台湾）（转换常用词汇）"]
+
+[[converters]]
+name = "tw2sp"
+conversion = ["繁体中文（台湾）", "简体中文（转换常用词汇）"]
+
+[[converters]]
+name = "t2tw"
+conversion = ["繁体中文", "繁体中文(台湾)"]
+
+[[converters]]
+name = "hk2t"
+conversion = ["繁体中文（香港）", "繁体中文"]
+
+[[converters]]
+name = "t2hk"
+conversion = ["繁体中文", "繁体中文(香港)"]
+
+[[converters]]
+name = "t2jp"
+conversion = ["繁体中文", "日文汉字（新字体）"]
+
+[[converters]]
+name = "jp2t"
+conversion = ["日文汉字（新字体）", "繁体中文"]
+
+[[converters]]
+name = "tw2t"
+conversion = ["繁体中文（台湾）", "繁体中文"]

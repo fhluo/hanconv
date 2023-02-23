@@ -6,6 +6,7 @@ require (
 	github.com/bytedance/sonic v1.8.1
 	github.com/go-git/go-billy/v5 v5.4.0
 	github.com/go-git/go-git/v5 v5.5.2
+	github.com/pelletier/go-toml/v2 v2.0.6
 	github.com/samber/lo v1.37.0
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb

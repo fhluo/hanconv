@@ -7,7 +7,7 @@ import (
 
 var hk2tCmd = &cobra.Command{
 	Use:   "hk2t",
-	Short: "hk2t",
+	Short: "繁体中文（香港） -> 繁体中文",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return run(cmd, hk2t.Convert)
 	},
