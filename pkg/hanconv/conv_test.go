@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var c = New(trie.FromMap(map[string]string{
+var c = New("", trie.FromMap(map[string]string{
 	"乾乾淨淨": "干干净净",
 	"無序":   "无序",
 	"書":    "书",
