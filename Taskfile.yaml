@@ -1,0 +1,10 @@
+version: 3
+
+tasks:
+  build:
+    cmds:
+      - go build ./cmd/hanconv
+
+  install:
+    cmds:
+      - go install ./cmd/hanconv
