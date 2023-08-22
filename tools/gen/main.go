@@ -4,13 +4,12 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
-	"fmt"
 	"github.com/fhluo/hanconv/pkg/hanconv"
 	"github.com/fhluo/hanconv/pkg/trie"
 	"github.com/pelletier/go-toml/v2"
 	"github.com/samber/lo"
-	"golang.org/x/exp/slog"
 	"log"
+	"log/slog"
 	"os"
 	"path"
 	"path/filepath"
@@ -39,19 +38,19 @@ var (
 func main() {
 	cc, err := NewOpenCC()
 	if err != nil {
-		slog.Error("", err)
+		slog.Error(err.Error())
 		os.Exit(1)
 	}
 
 	configs, err := cc.Configs()
 	if err != nil {
-		slog.Error("无法获取配置文件名", err)
+		slog.Error("无法获取配置文件名", "err", err)
 		os.Exit(1)
 	}
 
 	wd, err := os.Getwd()
 	if err != nil {
-		slog.Error("无法获取工作目录", err)
+		slog.Error("无法获取工作目录", "err", err)
 		os.Exit(1)
 	}
 
@@ -61,7 +60,7 @@ func main() {
 	}
 
 	if filepath.Dir(dir) == dir {
-		slog.Error("", fmt.Errorf("无法找到 hanconv 文件夹"), "工作目录", wd)
+		slog.Error("无法找到 hanconv 文件夹", "工作目录", wd)
 		os.Exit(1)
 	}
 
@@ -70,7 +69,7 @@ func main() {
 	for _, filename := range configs {
 		config, err := cc.ReadConfig(filename)
 		if err != nil {
-			slog.Error("无法读取配置", err, "config", filename)
+			slog.Error("无法读取配置", "err", err, "config", filename)
 		}
 
 		conv := hanconv.New(
@@ -79,7 +78,7 @@ func main() {
 				dictionaries := lo.Map(conversion.Dictionary.Files(), func(stem string, _ int) map[string]string {
 					dictionary, err := cc.ReadDictionaryByStem(stem)
 					if err != nil {
-						slog.Error("无法读取字典", err)
+						slog.Error("无法读取字典", "err", err)
 						os.Exit(1)
 					}
 					return dictionary
@@ -93,17 +92,17 @@ func main() {
 	for _, conv := range converters {
 		data, err := json.Marshal(conv)
 		if err != nil {
-			slog.Error("将 Converter 序列化为 JSON 失败", err)
+			slog.Error("将 Converter 序列化为 JSON 失败", "err", err)
 			os.Exit(1)
 		}
 
 		if err = os.MkdirAll(filepath.Join(dir, "pkg", conv.Name), 0660); err != nil {
-			slog.Error("", err)
+			slog.Error(err.Error())
 			os.Exit(1)
 		}
 
 		if err = os.WriteFile(filepath.Join(dir, "pkg", conv.Name, conv.Name+".json"), data, 0666); err != nil {
-			slog.Error("", err)
+			slog.Error(err.Error())
 			os.Exit(1)
 		}
 
@@ -113,19 +112,19 @@ func main() {
 			"dictionary":  conv.Name + ".json",
 		})
 		if err != nil {
-			slog.Error("", err)
+			slog.Error(err.Error())
 			os.Exit(1)
 		}
 
 		if err = os.WriteFile(filepath.Join(dir, "pkg", conv.Name, conv.Name+".go"), buffer.Bytes(), 0666); err != nil {
-			slog.Error("", err)
+			slog.Error(err.Error())
 			os.Exit(1)
 		}
 	}
 
 	err = toml.Unmarshal(configData, &genConfig)
 	if err != nil {
-		slog.Error("", err)
+		slog.Error(err.Error())
 		os.Exit(1)
 	}
 
@@ -140,12 +139,12 @@ func main() {
 			"short":       convertersConfig[conv.Name].ConversionString(),
 		})
 		if err != nil {
-			slog.Error("", err)
+			slog.Error(err.Error())
 			os.Exit(1)
 		}
 
 		if err = os.WriteFile(filepath.Join(dir, "cmd", conv.Name+".go"), buffer.Bytes(), 0666); err != nil {
-			slog.Error("", err)
+			slog.Error(err.Error())
 			os.Exit(1)
 		}
 	}
