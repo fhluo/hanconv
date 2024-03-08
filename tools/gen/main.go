@@ -4,6 +4,7 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
+	"github.com/fhluo/gocc/pkg/cc"
 	"github.com/fhluo/gocc/pkg/trie"
 	"github.com/pelletier/go-toml/v2"
 	"github.com/samber/lo"
@@ -35,13 +36,13 @@ var (
 )
 
 func main() {
-	cc, err := NewOpenCC()
+	openCC, err := NewOpenCC()
 	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)
 	}
 
-	configs, err := cc.Configs()
+	configs, err := openCC.Configs()
 	if err != nil {
 		slog.Error("无法获取配置文件名", "err", err)
 		os.Exit(1)
@@ -66,7 +67,7 @@ func main() {
 	var converters []*cc.Converter
 
 	for _, filename := range configs {
-		config, err := cc.ReadConfig(filename)
+		config, err := openCC.ReadConfig(filename)
 		if err != nil {
 			slog.Error("无法读取配置", "err", err, "config", filename)
 		}
@@ -75,7 +76,7 @@ func main() {
 			strings.TrimSuffix(path.Base(filename), path.Ext(filename)),
 			lo.Map(config.ConversionChain, func(conversion Conversion, _ int) *trie.Trie {
 				dictionaries := lo.Map(conversion.Dictionary.Files(), func(stem string, _ int) map[string]string {
-					dictionary, err := cc.ReadDictionaryByStem(stem)
+					dictionary, err := openCC.ReadDictionaryByStem(stem)
 					if err != nil {
 						slog.Error("无法读取字典", "err", err)
 						os.Exit(1)
