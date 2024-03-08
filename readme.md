@@ -1,5 +1,9 @@
+<div align="center">
+
 # gocc
 
-简繁转换工具
+Convert between Simplified Chinese and Traditional Chinese
 
-基于 [OpenCC](https://github.com/BYVoid/OpenCC) 的转换表
+</div>
+
+The conversion table is from [OpenCC](https://github.com/BYVoid/OpenCC).
