@@ -1,14 +1,21 @@
 version: 3
 
 tasks: 
-  build: 
+  build-windows:
+    env:
+      GOOS: windows
+      GOARCH: amd64
     cmds: 
       - go build ./cmd/gocc
+
+  build:
+    deps:
+      - build-windows
 
   install: 
     cmds: 
       - go install ./cmd/gocc
 
-  gen: 
+  gen:
     cmds: 
       - go run ./tools/gen
