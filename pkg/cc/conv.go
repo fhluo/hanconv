@@ -1,8 +1,8 @@
-package hanconv
+package cc
 
 import (
 	"bytes"
-	"github.com/fhluo/hanconv/pkg/trie"
+	"github.com/fhluo/gocc/pkg/trie"
 	"unsafe"
 )
 

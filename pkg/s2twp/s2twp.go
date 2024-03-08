@@ -3,13 +3,13 @@ package s2twp
 import (
 	_ "embed"
 	"github.com/bytedance/sonic"
-	"github.com/fhluo/hanconv/pkg/hanconv"
+	"github.com/fhluo/gocc/pkg/cc"
 )
 
 var (
 	//go:embed s2twp.json
 	data []byte
-	conv hanconv.Converter
+	conv cc.Converter
 )
 
 func init() {

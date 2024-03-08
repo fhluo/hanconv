@@ -1,4 +1,4 @@
-module github.com/fhluo/hanconv
+module github.com/fhluo/gocc
 
 go 1.21
 

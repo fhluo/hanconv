@@ -10,7 +10,7 @@ var (
 	outputFilename string
 
 	rootCmd = &cobra.Command{
-		Use:   "hanconv",
+		Use:   "gocc",
 		Short: "汉字转换工具",
 	}
 )

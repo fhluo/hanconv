@@ -3,11 +3,11 @@ version: 3
 tasks: 
   build: 
     cmds: 
-      - go build ./cmd/hanconv
+      - go build ./cmd/gocc
 
   install: 
     cmds: 
-      - go install ./cmd/hanconv
+      - go install ./cmd/gocc
 
   gen: 
     cmds: 

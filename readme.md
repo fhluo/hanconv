@@ -1,4 +1,4 @@
-# hanconv
+# gocc
 
 简繁转换工具
 

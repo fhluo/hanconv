@@ -1,6 +1,6 @@
 package main
 
-import "github.com/fhluo/hanconv/cmd"
+import "github.com/fhluo/gocc/cmd"
 
 func main() {
 	cmd.Execute()

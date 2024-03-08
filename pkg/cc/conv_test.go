@@ -1,7 +1,7 @@
-package hanconv
+package cc
 
 import (
-	"github.com/fhluo/hanconv/pkg/trie"
+	"github.com/fhluo/gocc/pkg/trie"
 	"testing"
 )
 

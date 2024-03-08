@@ -19,7 +19,7 @@ jobs:
           go-version: 'stable'
 
       - name: Build
-        run: go build -v ./cmd/hanconv
+        run: go build -v ./cmd/gocc
 
       - name: Test
         run: go test -v ./...

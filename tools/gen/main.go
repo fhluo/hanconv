@@ -4,8 +4,7 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
-	"github.com/fhluo/hanconv/pkg/hanconv"
-	"github.com/fhluo/hanconv/pkg/trie"
+	"github.com/fhluo/gocc/pkg/trie"
 	"github.com/pelletier/go-toml/v2"
 	"github.com/samber/lo"
 	"log"
@@ -55,16 +54,16 @@ func main() {
 	}
 
 	dir := wd
-	for filepath.Base(dir) != "hanconv" && filepath.Dir(dir) != dir {
+	for filepath.Base(dir) != "gocc" && filepath.Dir(dir) != dir {
 		dir = filepath.Dir(dir)
 	}
 
 	if filepath.Dir(dir) == dir {
-		slog.Error("无法找到 hanconv 文件夹", "工作目录", wd)
+		slog.Error("无法找到 gocc 文件夹", "工作目录", wd)
 		os.Exit(1)
 	}
 
-	var converters []*hanconv.Converter
+	var converters []*cc.Converter
 
 	for _, filename := range configs {
 		config, err := cc.ReadConfig(filename)
@@ -72,7 +71,7 @@ func main() {
 			slog.Error("无法读取配置", "err", err, "config", filename)
 		}
 
-		conv := hanconv.New(
+		conv := cc.New(
 			strings.TrimSuffix(path.Base(filename), path.Ext(filename)),
 			lo.Map(config.ConversionChain, func(conversion Conversion, _ int) *trie.Trie {
 				dictionaries := lo.Map(conversion.Dictionary.Files(), func(stem string, _ int) map[string]string {
