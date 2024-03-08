@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fhluo/gocc/cmd"
+	"github.com/fhluo/gocc/pkg/cmd/hk2t"
 	"log"
 )
 
@@ -9,12 +9,6 @@ func init() {
 	log.SetFlags(0)
 }
 
-func Execute() {
-	if err := cmd.HK2TCmd.Execute(); err != nil {
-		log.Fatalln(err)
-	}
-}
-
 func main() {
-	Execute()
+	hk2t.Execute()
 }

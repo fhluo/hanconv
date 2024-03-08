@@ -13,7 +13,7 @@ var (
 	Commands       []*cobra.Command
 )
 
-func run(cmd *cobra.Command, convert func(data []byte) []byte) error {
+func Run(cmd *cobra.Command, convert func(data []byte) []byte) error {
 	var (
 		input  = os.Stdin
 		output = os.Stdout
@@ -53,4 +53,20 @@ func run(cmd *cobra.Command, convert func(data []byte) []byte) error {
 	}
 
 	return nil
+}
+
+func New(use string, short string, convert func(data []byte) []byte) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   use,
+		Short: short,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return Run(cmd, convert)
+		},
+	}
+
+	cmd.Flags().StringVarP(&inputFilename, "input", "i", "", "input filename")
+	cmd.Flags().StringVarP(&inputFilename, "output", "o", "", "output filename")
+	Commands = append(Commands, cmd)
+
+	return cmd
 }

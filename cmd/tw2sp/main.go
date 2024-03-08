@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fhluo/gocc/cmd"
+	"github.com/fhluo/gocc/pkg/cmd/tw2sp"
 	"log"
 )
 
@@ -9,12 +9,6 @@ func init() {
 	log.SetFlags(0)
 }
 
-func Execute() {
-	if err := cmd.TW2SPCmd.Execute(); err != nil {
-		log.Fatalln(err)
-	}
-}
-
 func main() {
-	Execute()
+	tw2sp.Execute()
 }

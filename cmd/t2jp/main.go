@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fhluo/gocc/cmd"
+	"github.com/fhluo/gocc/pkg/cmd/t2jp"
 	"log"
 )
 
@@ -9,12 +9,6 @@ func init() {
 	log.SetFlags(0)
 }
 
-func Execute() {
-	if err := cmd.T2JPCmd.Execute(); err != nil {
-		log.Fatalln(err)
-	}
-}
-
 func main() {
-	Execute()
+	t2jp.Execute()
 }

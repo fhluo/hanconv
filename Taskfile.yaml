@@ -6,7 +6,7 @@ tasks:
       GOOS: windows
       GOARCH: amd64
     cmds: 
-      - go build ./cmd/gocc
+      - go build -o ./bin/ ./cmd/...
 
   build:
     deps:

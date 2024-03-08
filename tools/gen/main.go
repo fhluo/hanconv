@@ -138,7 +138,7 @@ func main() {
 		buffer := new(bytes.Buffer)
 
 		data := map[string]string{
-			"name":        strings.ToUpper(conv.Name),
+			"name":        conv.Name,
 			"packageName": conv.Name,
 			"use":         conv.Name,
 			"short":       convertersConfig[conv.Name].ConversionString(),
@@ -149,7 +149,12 @@ func main() {
 			os.Exit(1)
 		}
 
-		if err = os.WriteFile(filepath.Join(dir, "cmd", conv.Name+".go"), buffer.Bytes(), 0666); err != nil {
+		if err = os.MkdirAll(filepath.Join(dir, "pkg", "cmd", conv.Name), 0660); err != nil {
+			slog.Error(err.Error())
+			os.Exit(1)
+		}
+
+		if err = os.WriteFile(filepath.Join(dir, "pkg", "cmd", conv.Name, conv.Name+".go"), buffer.Bytes(), 0666); err != nil {
 			slog.Error(err.Error())
 			os.Exit(1)
 		}

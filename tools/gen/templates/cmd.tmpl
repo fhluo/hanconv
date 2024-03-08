@@ -1,21 +1,21 @@
-package cmd
+package {{.packageName}}
 
 import (
 	"github.com/fhluo/gocc/pkg/cc/{{.packageName}}"
-	"github.com/spf13/cobra"
+	"github.com/fhluo/gocc/pkg/cmd"
+    "log/slog"
+    "os"
 )
 
-var {{.name}}Cmd = &cobra.Command{
-	Use:   "{{.use}}",
-	Short: "{{.short}}",
-	RunE: func(cmd *cobra.Command, args []string) error {
-		return run(cmd, {{.packageName}}.Convert)
-	},
-}
+var {{.name}}Cmd = cmd.New(
+    "{{.use}}",
+    "{{.short}}",
+    {{.packageName}}.Convert,
+)
 
-func init() {
-	{{.name}}Cmd.Flags().StringVarP(&inputFilename, "input", "i", "", "input filename")
-    {{.name}}Cmd.Flags().StringVarP(&inputFilename, "input", "i", "", "output filename")
-
-    Commands = append(Commands, {{.name}}Cmd)
+func Execute() {
+	if err := {{.name}}Cmd.Execute(); err != nil {
+		slog.Error(err.Error())
+		os.Exit(1)
+	}
 }
