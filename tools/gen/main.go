@@ -96,7 +96,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		if err = os.MkdirAll(filepath.Join(dir, "pkg", conv.Name), 0660); err != nil {
+		if err = os.MkdirAll(filepath.Join(dir, "pkg", "cc", conv.Name), 0660); err != nil {
 			slog.Error(err.Error())
 			os.Exit(1)
 		}

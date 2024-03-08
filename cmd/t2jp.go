@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/fhluo/gocc/pkg/t2jp"
+	"github.com/fhluo/gocc/pkg/cc/t2jp"
 	"github.com/spf13/cobra"
 )
 
