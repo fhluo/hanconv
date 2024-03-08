@@ -7,6 +7,12 @@ import (
 	"os"
 )
 
+var (
+	inputFilename  string
+	outputFilename string
+	Commands       []*cobra.Command
+)
+
 func run(cmd *cobra.Command, convert func(data []byte) []byte) error {
 	var (
 		input  = os.Stdin

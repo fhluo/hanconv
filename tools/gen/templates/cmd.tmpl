@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/fhluo/gocc/pkg/{{.packageName}}"
+	"github.com/fhluo/gocc/pkg/cc/{{.packageName}}"
 	"github.com/spf13/cobra"
 )
 
@@ -14,5 +14,8 @@ var {{.name}}Cmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand({{.name}}Cmd)
+	{{.name}}Cmd.Flags().StringVarP(&inputFilename, "input", "i", "", "input filename")
+    {{.name}}Cmd.Flags().StringVarP(&inputFilename, "input", "i", "", "output filename")
+
+    Commands = append(Commands, {{.name}}Cmd)
 }

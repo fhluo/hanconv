@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var tw2tCmd = &cobra.Command{
+var TW2TCmd = &cobra.Command{
 	Use:   "tw2t",
 	Short: "繁体中文（台湾） -> 繁体中文",
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -14,5 +14,8 @@ var tw2tCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(tw2tCmd)
+	TW2TCmd.Flags().StringVarP(&inputFilename, "input", "i", "", "input filename")
+    TW2TCmd.Flags().StringVarP(&inputFilename, "input", "i", "", "output filename")
+
+    Commands = append(Commands, TW2TCmd)
 }

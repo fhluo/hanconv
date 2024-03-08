@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var jp2tCmd = &cobra.Command{
+var JP2TCmd = &cobra.Command{
 	Use:   "jp2t",
 	Short: "日文汉字（新字体） -> 繁体中文",
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -14,5 +14,8 @@ var jp2tCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(jp2tCmd)
+	JP2TCmd.Flags().StringVarP(&inputFilename, "input", "i", "", "input filename")
+    JP2TCmd.Flags().StringVarP(&inputFilename, "input", "i", "", "output filename")
+
+    Commands = append(Commands, JP2TCmd)
 }

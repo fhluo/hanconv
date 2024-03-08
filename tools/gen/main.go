@@ -30,6 +30,10 @@ var (
 	cmdTmplStr string
 	cmdTmpl    = template.Must(template.New("").Parse(cmdTmplStr))
 
+	//go:embed templates/cmd_main.tmpl
+	cmdMainTmplStr string
+	cmdMainTmpl    = template.Must(template.New("").Parse(cmdMainTmplStr))
+
 	//go:embed config.toml
 	configData []byte
 	genConfig  GenConfig
@@ -101,7 +105,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		if err = os.WriteFile(filepath.Join(dir, "pkg", conv.Name, conv.Name+".json"), data, 0666); err != nil {
+		if err = os.WriteFile(filepath.Join(dir, "pkg", "cc", conv.Name, conv.Name+".json"), data, 0666); err != nil {
 			slog.Error(err.Error())
 			os.Exit(1)
 		}
@@ -116,7 +120,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		if err = os.WriteFile(filepath.Join(dir, "pkg", conv.Name, conv.Name+".go"), buffer.Bytes(), 0666); err != nil {
+		if err = os.WriteFile(filepath.Join(dir, "pkg", "cc", conv.Name, conv.Name+".go"), buffer.Bytes(), 0666); err != nil {
 			slog.Error(err.Error())
 			os.Exit(1)
 		}
@@ -132,18 +136,37 @@ func main() {
 
 	for _, conv := range converters {
 		buffer := new(bytes.Buffer)
-		err = cmdTmpl.Execute(buffer, map[string]string{
-			"name":        conv.Name,
+
+		data := map[string]string{
+			"name":        strings.ToUpper(conv.Name),
 			"packageName": conv.Name,
 			"use":         conv.Name,
 			"short":       convertersConfig[conv.Name].ConversionString(),
-		})
+		}
+		err = cmdTmpl.Execute(buffer, data)
 		if err != nil {
 			slog.Error(err.Error())
 			os.Exit(1)
 		}
 
 		if err = os.WriteFile(filepath.Join(dir, "cmd", conv.Name+".go"), buffer.Bytes(), 0666); err != nil {
+			slog.Error(err.Error())
+			os.Exit(1)
+		}
+		buffer.Reset()
+
+		if err = os.MkdirAll(filepath.Join(dir, "cmd", conv.Name), 0660); err != nil {
+			slog.Error(err.Error())
+			os.Exit(1)
+		}
+
+		err = cmdMainTmpl.Execute(buffer, data)
+		if err != nil {
+			slog.Error(err.Error())
+			os.Exit(1)
+		}
+
+		if err = os.WriteFile(filepath.Join(dir, "cmd", conv.Name, "main.go"), buffer.Bytes(), 0666); err != nil {
 			slog.Error(err.Error())
 			os.Exit(1)
 		}

@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var t2hkCmd = &cobra.Command{
+var T2HKCmd = &cobra.Command{
 	Use:   "t2hk",
 	Short: "繁体中文 -> 繁体中文(香港)",
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -14,5 +14,8 @@ var t2hkCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(t2hkCmd)
+	T2HKCmd.Flags().StringVarP(&inputFilename, "input", "i", "", "input filename")
+    T2HKCmd.Flags().StringVarP(&inputFilename, "input", "i", "", "output filename")
+
+    Commands = append(Commands, T2HKCmd)
 }
