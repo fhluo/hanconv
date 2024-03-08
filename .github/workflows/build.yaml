@@ -11,15 +11,18 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: 'stable'
 
+      - name: Set up Task
+        run: go install github.com/go-task/task/v3/cmd/task@latest
+
       - name: Build
-        run: go build -v ./cmd/gocc
+        run: task build
 
       - name: Test
         run: go test -v ./...
