@@ -7,9 +7,9 @@ import (
 
 // Node 表示字典树的一个结点
 type Node struct {
-	Children map[rune]*Node `json:"c"` // 子结点
-	Value    string         `json:"v"` // 值
-	Exist    bool           `json:"e"` // 以该结点结尾的字符串是否存在
+	Children map[rune]*Node `json:"c,omitempty"` // 子结点
+	Value    *string        `json:"v,omitempty"` // 值
+	Exist    bool           `json:"e"`           // 以该结点结尾的字符串是否存在
 }
 
 func NewNode() *Node {
@@ -71,7 +71,7 @@ func (t *Trie) Set(key, value string) {
 		node = node.Children[r]
 	}
 
-	node.Value = value
+	node.Value = &value
 	node.Exist = true
 }
 
@@ -86,7 +86,7 @@ func (t *Trie) Get(key string) string {
 		node = node.Children[r]
 	}
 
-	return node.Value
+	return *node.Value
 }
 
 // Match 返回最大正向匹配键对应的值和键的长度(rune)，s 的最大长度不应超过树的深度
@@ -102,7 +102,7 @@ func (t *Trie) Match(s string) (value string, count int) {
 		// 若以当前字符结尾的字符串存在，则更新值为当前结点的值并更新键的长度
 		node = node.Children[r]
 		if node.Exist {
-			value = node.Value
+			value = *node.Value
 			count = i + 1
 		}
 	}
@@ -112,7 +112,7 @@ func (t *Trie) Match(s string) (value string, count int) {
 
 func build(node *Node, left string, dict map[string]string) {
 	if node.Exist {
-		dict[left] = node.Value
+		dict[left] = *node.Value
 	}
 
 	for k, v := range node.Children {
