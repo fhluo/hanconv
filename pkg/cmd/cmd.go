@@ -65,7 +65,7 @@ func New(use string, short string, convert func(data []byte) []byte) *cobra.Comm
 	}
 
 	cmd.Flags().StringVarP(&inputFilename, "input", "i", "", "input filename")
-	cmd.Flags().StringVarP(&inputFilename, "output", "o", "", "output filename")
+	cmd.Flags().StringVarP(&outputFilename, "output", "o", "", "output filename")
 	Commands = append(Commands, cmd)
 
 	return cmd
