@@ -7,12 +7,13 @@ import (
 	"github.com/fhluo/gocc/pkg/cc"
 	"github.com/fhluo/gocc/pkg/trie"
 	"github.com/pelletier/go-toml/v2"
-	"github.com/samber/lo"
+	"iter"
 	"log"
 	"log/slog"
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
 	"strings"
 	"text/template"
 )
@@ -70,7 +71,7 @@ func main() {
 
 	var converters []*cc.Converter
 
-	for _, filename := range configs {
+	for filename := range configs {
 		config, err := openCC.ReadConfig(filename)
 		if err != nil {
 			slog.Error("无法读取配置", "err", err, "config", filename)
@@ -78,16 +79,25 @@ func main() {
 
 		conv := cc.New(
 			strings.TrimSuffix(path.Base(filename), path.Ext(filename)),
-			lo.Map(config.ConversionChain, func(conversion Conversion, _ int) *trie.Trie {
-				dictionaries := lo.Map(conversion.Dictionary.Files(), func(stem string, _ int) map[string]string {
-					dictionary, err := openCC.ReadDictionaryByStem(stem)
-					if err != nil {
-						slog.Error("无法读取字典", "err", err)
-						os.Exit(1)
+			slices.Collect(func(yield func(*trie.Trie) bool) {
+				for conversion := range slices.Values(config.ConversionChain) {
+					t := trie.FromIter(func(yield func(iter.Seq2[string, string]) bool) {
+						for _, stem := range conversion.Dictionary.Files() {
+							dictionary, err := openCC.ReadDictionaryByStem(stem)
+							if err != nil {
+								slog.Error("无法读取字典", "err", err)
+								os.Exit(1)
+							}
+							if !yield(dictionary) {
+								return
+							}
+						}
+					})
+
+					if !yield(t) {
+						return
 					}
-					return dictionary
-				})
-				return trie.FromMap(dictionaries...)
+				}
 			})...,
 		)
 		converters = append(converters, conv)

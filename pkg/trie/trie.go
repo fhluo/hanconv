@@ -2,6 +2,7 @@ package trie
 
 import (
 	"fmt"
+	"iter"
 	"unicode/utf8"
 )
 
@@ -31,6 +32,16 @@ func New() *Trie {
 func FromMap(dictionaries ...map[string]string) *Trie {
 	trie := New()
 	for _, dict := range dictionaries {
+		for k, v := range dict {
+			trie.Set(k, v)
+		}
+	}
+	return trie
+}
+
+func FromIter(dictionaries iter.Seq[iter.Seq2[string, string]]) *Trie {
+	trie := New()
+	for dict := range dictionaries {
 		for k, v := range dict {
 			trie.Set(k, v)
 		}

@@ -10,11 +10,14 @@ import (
 	"github.com/go-git/go-git/v5/storage/memory"
 	"github.com/samber/lo"
 	"io"
-	"io/fs"
+	"iter"
 	"os"
 	"path"
 	"regexp"
+	"slices"
 	"strings"
+	"sync"
+	"unsafe"
 )
 
 const (
@@ -48,18 +51,21 @@ func NewOpenCC() (*OpenCC, error) {
 }
 
 // Configs 返回所有配置文件名
-func (o *OpenCC) Configs() ([]string, error) {
+func (o *OpenCC) Configs() (iter.Seq[string], error) {
 	configs, err := o.ReadDir(ConfigDir)
 	if err != nil {
 		return nil, err
 	}
 
-	return lo.FilterMap(configs, func(info fs.FileInfo, _ int) (string, bool) {
-		if path.Ext(info.Name()) == ".json" {
-			return path.Join(ConfigDir, info.Name()), true
+	return func(yield func(string) bool) {
+		for info := range slices.Values(configs) {
+			if path.Ext(info.Name()) == ".json" {
+				if !yield(path.Join(ConfigDir, info.Name())) {
+					return
+				}
+			}
 		}
-		return "", false
-	}), nil
+	}, nil
 }
 
 // ReadConfig 读取配置
@@ -74,18 +80,21 @@ func (o *OpenCC) ReadConfig(filename string) (config Config, err error) {
 }
 
 // Dictionaries 返回所有字典文件名
-func (o *OpenCC) Dictionaries() ([]string, error) {
+func (o *OpenCC) Dictionaries() (iter.Seq[string], error) {
 	dictionaries, err := o.ReadDir(DictionaryDir)
 	if err != nil {
 		return nil, err
 	}
 
-	return lo.FilterMap(dictionaries, func(info fs.FileInfo, _ int) (string, bool) {
-		if path.Ext(info.Name()) == ".txt" {
-			return path.Join(DictionaryDir, info.Name()), true
+	return func(yield func(string) bool) {
+		for info := range slices.Values(dictionaries) {
+			if path.Ext(info.Name()) == ".txt" {
+				if !yield(path.Join(DictionaryDir, info.Name())) {
+					return
+				}
+			}
 		}
-		return "", false
-	}), nil
+	}, nil
 }
 
 // ReadFile 读取文件
@@ -101,79 +110,69 @@ func (o *OpenCC) ReadFile(filename string) ([]byte, error) {
 	return io.ReadAll(f)
 }
 
+var linesRE = sync.OnceValue(func() *regexp.Regexp {
+	return regexp.MustCompile(`\r?\n`)
+})
+
+func splitLines(s string) []string {
+	return linesRE().Split(s, -1)
+}
+
 // ReadDictionary 读取字典
-func (o *OpenCC) ReadDictionary(filename string) (map[string]string, error) {
+func (o *OpenCC) ReadDictionary(filename string) (iter.Seq2[string, string], error) {
 	data, err := o.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
+	lines := splitLines(unsafe.String(unsafe.SliceData(data), len(data)))
 
-	lines := regexp.MustCompile(`\r?\n`).Split(string(data), -1)
-
-	spacesRE := regexp.MustCompile(`\s`)
-
-	dictionary := make(map[string]string)
-
-	for _, line := range lines {
-		items := spacesRE.Split(strings.TrimSpace(line), -1)
-		if len(items) >= 2 {
-			dictionary[items[0]] = items[1]
+	return func(yield func(string, string) bool) {
+		for line := range slices.Values(lines) {
+			items := strings.Fields(line)
+			if len(items) >= 2 {
+				if !yield(items[0], items[1]) {
+					return
+				}
+			}
 		}
-	}
-
-	return dictionary, nil
+	}, nil
 }
 
 // ReadDictionaryReverse 读取字典，交换键值
-func (o *OpenCC) ReadDictionaryReverse(filename string) (map[string]string, error) {
+func (o *OpenCC) ReadDictionaryReverse(filename string) (iter.Seq2[string, string], error) {
 	data, err := o.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
+	lines := splitLines(unsafe.String(unsafe.SliceData(data), len(data)))
 
-	lines := regexp.MustCompile(`\r?\n`).Split(string(data), -1)
-
-	spacesRE := regexp.MustCompile(`\s`)
-
-	dictionary := make(map[string]string)
-
-	for _, line := range lines {
-		items := spacesRE.Split(strings.TrimSpace(line), -1)
-		for _, item := range items[1:] {
-			if item != items[0] {
-				dictionary[item] = items[0]
+	return func(yield func(string, string) bool) {
+		for line := range slices.Values(lines) {
+			items := strings.Fields(line)
+			if len(items) >= 2 {
+				if !yield(items[1], items[0]) {
+					return
+				}
 			}
 		}
-	}
-
-	return dictionary, nil
+	}, nil
 }
 
-func (o *OpenCC) ReadDictionaryByStem(stem string) (map[string]string, error) {
+func (o *OpenCC) ReadDictionaryByStem(stem string) (iter.Seq2[string, string], error) {
 	dictionaries, err := o.Dictionaries()
 	if err != nil {
 		return nil, err
 	}
 
-	dictionary, ok := lo.Find(dictionaries, func(dictionary string) bool {
+	for dictionary := range dictionaries {
 		base := path.Base(dictionary)
-		return strings.TrimSuffix(base, path.Ext(base)) == stem
-	})
-	if ok {
-		return o.ReadDictionary(dictionary)
-	}
-
-	if !strings.HasSuffix(stem, "Rev") {
-		return nil, fmt.Errorf("找不到该字典文件：%s.txt", stem)
-	}
-
-	stem = strings.TrimSuffix(stem, "Rev")
-	dictionary, ok = lo.Find(dictionaries, func(dictionary string) bool {
-		base := path.Base(dictionary)
-		return strings.TrimSuffix(base, path.Ext(base)) == stem
-	})
-	if ok {
-		return o.ReadDictionaryReverse(dictionary)
+		target := strings.TrimSuffix(base, path.Ext(base))
+		if target == stem {
+			return o.ReadDictionary(dictionary)
+		}
+		if target+"Rev" == stem {
+			return o.ReadDictionaryReverse(dictionary)
+		}
 	}
 
 	return nil, fmt.Errorf("找不到该字典文件：%sRev.txt", stem)
