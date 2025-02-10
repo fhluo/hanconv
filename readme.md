@@ -1,6 +1,6 @@
 <div align="center">
 
-# gocc
+# hanconv
 
 Convert between Simplified Chinese and Traditional Chinese
 
