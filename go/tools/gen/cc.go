@@ -13,11 +13,8 @@ import (
 	"iter"
 	"os"
 	"path"
-	"regexp"
 	"slices"
 	"strings"
-	"sync"
-	"unsafe"
 )
 
 const (
@@ -108,74 +105,6 @@ func (o *OpenCC) ReadFile(filename string) ([]byte, error) {
 	}()
 
 	return io.ReadAll(f)
-}
-
-var linesRE = sync.OnceValue(func() *regexp.Regexp {
-	return regexp.MustCompile(`\r?\n`)
-})
-
-func splitLines(s string) []string {
-	return linesRE().Split(s, -1)
-}
-
-// ReadDictionary 读取字典
-func (o *OpenCC) ReadDictionary(filename string) (iter.Seq2[string, string], error) {
-	data, err := o.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	lines := splitLines(unsafe.String(unsafe.SliceData(data), len(data)))
-
-	return func(yield func(string, string) bool) {
-		for line := range slices.Values(lines) {
-			items := strings.Fields(line)
-			if len(items) >= 2 {
-				if !yield(items[0], items[1]) {
-					return
-				}
-			}
-		}
-	}, nil
-}
-
-// ReadDictionaryReverse 读取字典，交换键值
-func (o *OpenCC) ReadDictionaryReverse(filename string) (iter.Seq2[string, string], error) {
-	data, err := o.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	lines := splitLines(unsafe.String(unsafe.SliceData(data), len(data)))
-
-	return func(yield func(string, string) bool) {
-		for line := range slices.Values(lines) {
-			items := strings.Fields(line)
-			if len(items) >= 2 {
-				if !yield(items[1], items[0]) {
-					return
-				}
-			}
-		}
-	}, nil
-}
-
-func (o *OpenCC) ReadDictionaryByStem(stem string) (iter.Seq2[string, string], error) {
-	dictionaries, err := o.Dictionaries()
-	if err != nil {
-		return nil, err
-	}
-
-	for dictionary := range dictionaries {
-		base := path.Base(dictionary)
-		target := strings.TrimSuffix(base, path.Ext(base))
-		if target == stem {
-			return o.ReadDictionary(dictionary)
-		}
-		if target+"Rev" == stem {
-			return o.ReadDictionaryReverse(dictionary)
-		}
-	}
-
-	return nil, fmt.Errorf("找不到该字典文件：%sRev.txt", stem)
 }
 
 type Dictionary struct {
