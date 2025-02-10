@@ -22,7 +22,7 @@ import (
 
 var (
 	rootCmd = &cobra.Command{
-		Use:   "gocc",
+		Use:   "hanconv",
 		Short: "简繁转换",
 	}
 )

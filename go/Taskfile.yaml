@@ -14,7 +14,7 @@ tasks:
 
   install: 
     cmds: 
-      - go install ./cmd/gocc
+      - go install ./cmd/hanconv
 
   gen:
     cmds: 
