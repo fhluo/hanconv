@@ -1,0 +1,8 @@
+[package]
+name = "hanconv"
+version = "0.2.0"
+edition = "2021"
+
+[dependencies]
+trie = { path = "../trie" }
+clap = { version = "4.5", features = ["derive"] }

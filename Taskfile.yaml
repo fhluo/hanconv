@@ -1,0 +1,27 @@
+version: 3
+
+includes:
+  app:
+    taskfile: app/Taskfile.yaml
+    dir: app
+  web:
+    taskfile: web/Taskfile.yaml
+    dir: web
+
+tasks:
+  setup:
+    deps:
+      - task: web:setup
+      - task: app:setup
+
+  build:
+    deps:
+      - task: app:build
+
+  debug:
+    deps:
+      - task: app:debug
+
+  dev:
+    deps:
+      - task: app:dev
