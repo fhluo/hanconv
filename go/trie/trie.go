@@ -1,9 +1,11 @@
 package trie
 
 import (
+	"bytes"
 	"fmt"
 	"iter"
 	"unicode/utf8"
+	"unsafe"
 )
 
 // Node 表示字典树的一个结点
@@ -119,6 +121,26 @@ func (t *Trie) Match(s string) (value string, count int) {
 	}
 
 	return
+}
+
+func (t *Trie) Convert(s string) string {
+	runes := []rune(s)
+
+	buffer := bytes.NewBuffer(make([]byte, 0, len(s)))
+
+	for len(runes) != 0 {
+		value, count := t.Match(string(runes[:t.Depth]))
+		if count == 0 {
+			value = string(runes[:1])
+			count = 1
+		}
+
+		buffer.WriteString(value)
+		runes = runes[count:]
+	}
+
+	r := buffer.Bytes()
+	return unsafe.String(unsafe.SliceData(r), len(r))
 }
 
 func build(node *Node, left string, dict map[string]string) {

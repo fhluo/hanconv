@@ -1,9 +1,7 @@
 package cc
 
 import (
-	"bytes"
-	"github.com/fhluo/hanconv/go/pkg/trie"
-	"unsafe"
+	"github.com/fhluo/hanconv/go/trie"
 )
 
 type Converter struct {
@@ -18,51 +16,14 @@ func New(name string, dictionaries ...*trie.Trie) *Converter {
 	}
 }
 
-func (c *Converter) Convert(data []byte) []byte {
+func (c *Converter) Convert(s string) string {
 	if len(c.Dictionaries) == 0 {
-		return nil
+		return s
 	}
 
-	depth := c.Dictionaries[0].Depth
-	for _, dict := range c.Dictionaries[1:] {
-		if dict.Depth > depth {
-			depth = dict.Depth
-		}
+	for _, dict := range c.Dictionaries {
+		s = dict.Convert(s)
 	}
 
-	buffer := new(bytes.Buffer)
-
-	runes := []rune(unsafe.String(unsafe.SliceData(data), len(data)))
-	for len(runes) != 0 {
-		var (
-			value string
-			count int
-		)
-
-		if len(runes) < depth {
-			depth = len(runes)
-		}
-
-		for _, dict := range c.Dictionaries {
-			value, count = dict.Match(string(runes[:depth]))
-			if count != 0 {
-				break
-			}
-		}
-
-		if count == 0 {
-			value = string(runes[:1])
-			count = 1
-		}
-
-		buffer.WriteString(value)
-		runes = runes[count:]
-	}
-
-	return buffer.Bytes()
-}
-
-func (c *Converter) ConvertString(s string) string {
-	r := c.Convert(unsafe.Slice(unsafe.StringData(s), len(s)))
-	return unsafe.String(unsafe.SliceData(r), len(r))
+	return s
 }

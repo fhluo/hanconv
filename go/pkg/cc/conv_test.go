@@ -1,14 +1,14 @@
 package cc
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/trie"
+	"github.com/fhluo/hanconv/go/trie"
 	"testing"
 )
 
 var c = New("", trie.FromMap(map[string]string{
 	"乾乾淨淨": "干干净净",
-	"無序":     "无序",
-	"書":       "书",
+	"無序":   "无序",
+	"書":    "书",
 }))
 
 func TestConverter_Convert(t *testing.T) {

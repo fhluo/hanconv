@@ -5,7 +5,7 @@ import (
 	_ "embed"
 	"encoding/json"
 	"github.com/fhluo/hanconv/go/pkg/cc"
-	"github.com/fhluo/hanconv/go/pkg/trie"
+	"github.com/fhluo/hanconv/go/trie"
 	"github.com/pelletier/go-toml/v2"
 	"iter"
 	"log"
