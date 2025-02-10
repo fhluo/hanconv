@@ -1,8 +1,8 @@
 package t2hk
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cc/t2hk"
 	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/pkg/t2hk"
 	"log/slog"
 	"os"
 )

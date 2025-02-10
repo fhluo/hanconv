@@ -1,8 +1,8 @@
 package s2twp
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cc/s2twp"
 	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/pkg/s2twp"
 	"log/slog"
 	"os"
 )

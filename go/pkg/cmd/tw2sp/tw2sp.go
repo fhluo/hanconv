@@ -1,8 +1,8 @@
 package tw2sp
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cc/tw2sp"
 	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/pkg/tw2sp"
 	"log/slog"
 	"os"
 )

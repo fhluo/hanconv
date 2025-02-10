@@ -1,8 +1,8 @@
 package s2hk
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cc/s2hk"
 	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/pkg/s2hk"
 	"log/slog"
 	"os"
 )

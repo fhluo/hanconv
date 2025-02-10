@@ -1,8 +1,8 @@
 package s2t
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cc/s2t"
 	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/pkg/s2t"
 	"log/slog"
 	"os"
 )

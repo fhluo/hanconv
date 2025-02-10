@@ -1,8 +1,8 @@
 package tw2s
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cc/tw2s"
 	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/pkg/tw2s"
 	"log/slog"
 	"os"
 )

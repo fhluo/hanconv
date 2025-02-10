@@ -51,6 +51,16 @@ func FromIter(dictionaries iter.Seq[iter.Seq2[string, string]]) *Trie {
 	return trie
 }
 
+func FromIters(dictionaries ...iter.Seq2[string, string]) *Trie {
+	trie := New()
+	for _, dict := range dictionaries {
+		for k, v := range dict {
+			trie.Set(k, v)
+		}
+	}
+	return trie
+}
+
 func (t *Trie) String() string {
 	return fmt.Sprint(t.ToMap())
 }

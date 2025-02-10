@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"unsafe"
 )
 
 var (
@@ -13,7 +14,7 @@ var (
 	Commands       []*cobra.Command
 )
 
-func Run(cmd *cobra.Command, convert func(data []byte) []byte) error {
+func Run(cmd *cobra.Command, convert func(s string) string) error {
 	var (
 		input  = os.Stdin
 		output = os.Stdout
@@ -48,14 +49,14 @@ func Run(cmd *cobra.Command, convert func(data []byte) []byte) error {
 		return err
 	}
 
-	if _, err = output.Write(convert(data)); err != nil {
+	if _, err = output.WriteString(convert(unsafe.String(unsafe.SliceData(data), len(data)))); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func New(use string, short string, convert func(data []byte) []byte) *cobra.Command {
+func New(use string, short string, convert func(s string) string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   use,
 		Short: short,
