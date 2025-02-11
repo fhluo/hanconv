@@ -106,12 +106,11 @@ impl Trie {
         true
     }
 
-    pub fn r#match(&self, s: &str) -> Option<(&str, usize)> {
+    pub fn r#match(&self, chars: impl Iterator<Item = char>) -> Option<(&str, usize)> {
         let mut node = &self.root;
-
         let mut result = None;
 
-        for (char, i) in s.chars().take(self.depth).zip(1..) {
+        for (char, i) in chars.take(self.depth).zip(1..) {
             if let Some(children) = &node.children {
                 if let Some(child) = children.get(&char) {
                     node = child;
@@ -135,9 +134,7 @@ impl Trie {
         let mut dst = String::with_capacity(s.len());
 
         while iter.peek().is_some() {
-            let s = iter.clone().take(self.depth).collect::<String>();
-
-            if let Some((r, n)) = self.r#match(&s) {
+            if let Some((r, n)) = self.r#match(iter.clone()) {
                 dst += r;
                 iter.by_ref().nth(n - 1);
             } else {
