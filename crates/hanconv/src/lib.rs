@@ -1,5 +1,5 @@
 pub mod conv;
 pub mod dict;
 
-pub use dict::Dictionary::*;
-pub use conv::Convertors::*;
+pub use conv::{Convertor, Convertors::*};
+pub use dict::{Dictionary, Dictionary::*};
