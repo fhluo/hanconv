@@ -39,29 +39,26 @@ impl RawDictionary {
         }
     }
 
-    pub fn iter(&self) -> impl Iterator<Item = (String, String)> {
+    pub fn iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> {
         self.text().lines().filter_map(|line| {
             let mut iter = line.split_whitespace();
 
             if let (Some(key), Some(value)) = (iter.next(), iter.next()) {
-                Some((key.to_string(), value.to_string()))
+                Some((key, value))
             } else {
                 None
             }
         })
     }
 
-    pub fn inv_iter(&self) -> impl Iterator<Item = (String, String)> {
+    pub fn inv_iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> {
         self.text()
             .lines()
             .filter_map(|line| {
                 let mut iter = line.split_whitespace().peekable();
 
                 if let (Some(key), Some(_)) = (iter.next(), iter.peek()) {
-                    Some(
-                        iter.map(|value| (value.to_string(), key.to_string()))
-                            .collect::<Vec<_>>(),
-                    )
+                    Some(iter.map(|value| (value, key)).collect::<Vec<_>>())
                 } else {
                     None
                 }
@@ -69,12 +66,12 @@ impl RawDictionary {
             .flatten()
     }
 
-    pub fn var_iter(&self) -> impl Iterator<Item = (String, Vec<String>)> {
+    pub fn var_iter(&self) -> impl Iterator<Item = (&'static str, Vec<&'static str>)> {
         self.text().lines().filter_map(|line| {
             let mut iter = line.split_whitespace().peekable();
 
             if let (Some(key), Some(_)) = (iter.next(), iter.peek()) {
-                Some((key.to_string(), iter.map(String::from).collect::<Vec<_>>()))
+                Some((key, iter.collect::<Vec<_>>()))
             } else {
                 None
             }
@@ -114,7 +111,7 @@ macro_rules! inv_iter {
 }
 
 impl Dictionary {
-    pub fn iter(&self) -> Box<dyn Iterator<Item = (String, String)>> {
+    pub fn iter(&self) -> Box<dyn Iterator<Item = (&'static str, &'static str)>> {
         match self {
             Dictionary::STCharacters => iter![STCharacters],
             Dictionary::STPhrases => iter![STPhrases],

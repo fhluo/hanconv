@@ -24,7 +24,7 @@ pub enum Convertors {
 
 macro_rules! trie {
     [$a:expr $(,$b:expr)*] => {
-        $a.iter()$(.chain($b.iter()))*.collect::<Trie>()
+        $a.iter()$(.chain($b.iter()))*.collect::<Trie<&'static str>>()
     };
 }
 
@@ -66,7 +66,7 @@ impl Convertors {
     }
 }
 
-pub struct Convertor(Vec<Trie>);
+pub struct Convertor(Vec<Trie<&'static str>>);
 
 impl Convertor {
     pub fn convert(&self, s: &str) -> String {

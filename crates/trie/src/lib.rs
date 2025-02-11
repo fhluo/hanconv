@@ -1,52 +1,49 @@
 use ahash::AHashMap;
 
 #[derive(Default)]
-pub struct Node {
-    children: Option<AHashMap<char, Node>>,
-    value: Option<String>,
+pub struct Node<T> {
+    children: Option<AHashMap<char, Node<T>>>,
+    value: Option<T>,
 }
 
-impl Node {
-    fn build_map(&self, left: String, map: &mut AHashMap<String, String>) {
-        if let Some(value) = &self.value {
-            map.insert(left.clone(), value.clone());
-        }
-
-        if let Some(children) = &self.children {
-            for (char, node) in children {
-                node.build_map(
-                    {
-                        let mut left = left.clone();
-                        left.push(*char);
-                        left
-                    },
-                    map,
-                );
-            }
-        }
-    }
-}
-
-impl From<Node> for AHashMap<String, String> {
-    fn from(node: Node) -> Self {
+impl<T> From<Node<T>> for AHashMap<String, T> {
+    fn from(node: Node<T>) -> Self {
         let mut map = AHashMap::default();
-        node.build_map(String::new(), &mut map);
+
+        fn build<T>(map: &mut AHashMap<String, T>, node: Node<T>, key: String) {
+            node.value.map(|value| map.insert(key.clone(), value));
+
+            node.children.map(|children| {
+                children.into_iter().for_each(|(char, node)| {
+                    build(map, node, {
+                        let mut key = key.clone();
+                        key.push(char);
+                        key
+                    })
+                })
+            });
+        }
+
+        build(&mut map, node, String::new());
+
         map
     }
 }
 
 #[derive(Default)]
-pub struct Trie {
-    root: Node,
+pub struct Trie<T> {
+    root: Node<T>,
     depth: usize,
 }
 
-impl Trie {
+impl<T> Trie<T> {
     pub fn get_depth(&self) -> usize {
         self.depth
     }
+}
 
-    pub fn insert(&mut self, key: &str, value: String) {
+impl<T: Default> Trie<T> {
+    pub fn insert(&mut self, key: &str, value: T) {
         if key.is_empty() {
             return;
         }
@@ -69,8 +66,10 @@ impl Trie {
         }
         node.value = Some(value);
     }
+}
 
-    pub fn get(&mut self, key: &str) -> Option<&str> {
+impl<T> Trie<T> {
+    pub fn get(&mut self, key: &str) -> Option<&T> {
         let mut node = &self.root;
 
         for char in key.chars() {
@@ -85,7 +84,7 @@ impl Trie {
             }
         }
 
-        node.value.as_ref().map(String::as_str)
+        node.value.as_ref()
     }
 
     pub fn starts_with(&self, prefix: &str) -> bool {
@@ -106,7 +105,7 @@ impl Trie {
         true
     }
 
-    pub fn r#match(&self, chars: impl Iterator<Item = char>) -> Option<(&str, usize)> {
+    pub fn r#match(&self, chars: impl Iterator<Item = char>) -> Option<(&T, usize)> {
         let mut node = &self.root;
         let mut result = None;
 
@@ -115,8 +114,8 @@ impl Trie {
                 if let Some(child) = children.get(&char) {
                     node = child;
 
-                    if let Some(value) = &node.value {
-                        result = Some((value.as_str(), i));
+                    if let Some(value) = node.value.as_ref() {
+                        result = Some((value, i));
                     }
                 } else {
                     return result;
@@ -128,14 +127,16 @@ impl Trie {
 
         result
     }
+}
 
+impl<T: AsRef<str>> Trie<T> {
     pub fn convert(&self, s: &str) -> String {
         let mut iter = s.chars().peekable();
         let mut dst = String::with_capacity(s.len());
 
         while iter.peek().is_some() {
             if let Some((r, n)) = self.r#match(iter.clone()) {
-                dst += r;
+                dst += r.as_ref();
                 iter.by_ref().nth(n - 1);
             } else {
                 dst.push(iter.next().unwrap());
@@ -146,30 +147,30 @@ impl Trie {
     }
 }
 
-impl From<Trie> for AHashMap<String, String> {
-    fn from(trie: Trie) -> Self {
+impl<T> From<Trie<T>> for AHashMap<String, T> {
+    fn from(trie: Trie<T>) -> Self {
         trie.root.into()
     }
 }
 
-impl From<AHashMap<String, String>> for Trie {
-    fn from(map: AHashMap<String, String>) -> Self {
+impl<K: AsRef<str>, V: Default> From<AHashMap<K, V>> for Trie<V> {
+    fn from(map: AHashMap<K, V>) -> Self {
         let mut trie = Trie::default();
 
         for (key, value) in map {
-            trie.insert(key.as_str(), value);
+            trie.insert(key.as_ref(), value);
         }
 
         trie
     }
 }
 
-impl FromIterator<(String, String)> for Trie {
-    fn from_iter<T: IntoIterator<Item = (String, String)>>(iter: T) -> Self {
+impl<K: AsRef<str>, V: Default> FromIterator<(K, V)> for Trie<V> {
+    fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
         let mut trie = Trie::default();
 
         for (key, value) in iter {
-            trie.insert(key.as_str(), value);
+            trie.insert(key.as_ref(), value);
         }
 
         trie
@@ -184,9 +185,9 @@ mod tests {
     fn test_trie() {
         let mut trie = Trie::default();
 
-        trie.insert("一分钟", String::from("一分鐘"));
+        trie.insert("一分钟", "一分鐘");
 
-        assert_eq!(trie.get("一分钟"), Some("一分鐘"));
+        assert_eq!(trie.get("一分钟"), Some("一分鐘").as_ref());
         assert_eq!(trie.convert("一分钟"), "一分鐘");
     }
 }
