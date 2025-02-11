@@ -11,7 +11,7 @@ import (
 // Node 表示字典树的一个结点
 type Node struct {
 	Children map[rune]*Node `json:"c,omitempty"` // 子结点
-	Value    *string        `json:"v,omitempty"` // 值
+	Value    string         `json:"v,omitempty"` // 值
 	Exist    bool           `json:"e"`           // 以该结点结尾的字符串是否存在
 }
 
@@ -94,7 +94,7 @@ func (t *Trie) Set(key, value string) {
 		node = node.Children[r]
 	}
 
-	node.Value = &value
+	node.Value = value
 	node.Exist = true
 }
 
@@ -109,15 +109,15 @@ func (t *Trie) Get(key string) string {
 		node = node.Children[r]
 	}
 
-	return *node.Value
+	return node.Value
 }
 
 // Match 返回最大正向匹配键对应的值和键的长度(rune)，s 的最大长度不应超过树的深度
-func (t *Trie) Match(s string) (value string, count int) {
+func (t *Trie) Match(runes []rune) (value string, count int) {
 	node := t.Root
 
 	// 迭代字符串 s 直到字符串末尾
-	for i, r := range []rune(s) {
+	for i, r := range runes {
 		if _, ok := node.Children[r]; !ok {
 			break
 		}
@@ -125,7 +125,7 @@ func (t *Trie) Match(s string) (value string, count int) {
 		// 若以当前字符结尾的字符串存在，则更新值为当前结点的值并更新键的长度
 		node = node.Children[r]
 		if node.Exist {
-			value = *node.Value
+			value = node.Value
 			count = i + 1
 		}
 	}
@@ -139,14 +139,14 @@ func (t *Trie) Convert(s string) string {
 	buffer := bytes.NewBuffer(make([]byte, 0, len(s)))
 
 	for len(runes) != 0 {
-		value, count := t.Match(string(runes[:t.Depth]))
+		value, count := t.Match(runes[:t.Depth])
 		if count == 0 {
-			value = string(runes[:1])
-			count = 1
+			buffer.WriteRune(runes[0])
+			runes = runes[1:]
+		} else {
+			buffer.WriteString(value)
+			runes = runes[count:]
 		}
-
-		buffer.WriteString(value)
-		runes = runes[count:]
 	}
 
 	r := buffer.Bytes()
@@ -155,7 +155,7 @@ func (t *Trie) Convert(s string) string {
 
 func build(node *Node, left string, dict map[string]string) {
 	if node.Exist {
-		dict[left] = *node.Value
+		dict[left] = node.Value
 	}
 
 	for k, v := range node.Children {

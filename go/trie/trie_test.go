@@ -55,7 +55,7 @@ func TestTrie_Match(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v, c := trie.Match(test.s); v != test.value || c != test.count {
+		if v, c := trie.Match([]rune(test.s)); v != test.value || c != test.count {
 			t.Errorf("trie.Match(%v), got (%v, %v), want (%v, %v)", test.s, v, c, test.value, test.count)
 		}
 	}

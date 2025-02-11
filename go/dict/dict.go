@@ -3,10 +3,7 @@ package dict
 import (
 	_ "embed"
 	"iter"
-	"regexp"
-	"slices"
 	"strings"
-	"sync"
 )
 
 type RawDictionary string
@@ -55,20 +52,21 @@ var (
 	JPVariants RawDictionary
 )
 
-var linesRE = sync.OnceValue(func() *regexp.Regexp {
-	return regexp.MustCompile(`\r?\n`)
-})
-
-func splitLines(s string) []string {
-	return linesRE().Split(s, -1)
+func Parse(s string) iter.Seq[[]string] {
+	return func(yield func([]string) bool) {
+		for len(s) > 0 {
+			line, rest, _ := strings.Cut(s, "\n")
+			if !yield(strings.Fields(line)) {
+				return
+			}
+			s = rest
+		}
+	}
 }
 
 func (dict RawDictionary) Iter() iter.Seq2[string, string] {
-	lines := splitLines(string(dict))
-
 	return func(yield func(string, string) bool) {
-		for line := range slices.Values(lines) {
-			items := strings.Fields(line)
+		for items := range Parse(string(dict)) {
 			if len(items) >= 2 {
 				if !yield(items[0], items[1]) {
 					return
@@ -79,11 +77,8 @@ func (dict RawDictionary) Iter() iter.Seq2[string, string] {
 }
 
 func (dict RawDictionary) InvIter() iter.Seq2[string, string] {
-	lines := splitLines(string(dict))
-
 	return func(yield func(string, string) bool) {
-		for line := range slices.Values(lines) {
-			items := strings.Fields(line)
+		for items := range Parse(string(dict)) {
 			if len(items) >= 2 {
 				for _, item := range items[1:] {
 					if !yield(item, items[0]) {
@@ -96,11 +91,8 @@ func (dict RawDictionary) InvIter() iter.Seq2[string, string] {
 }
 
 func (dict RawDictionary) VarIter() iter.Seq2[string, []string] {
-	lines := splitLines(string(dict))
-
 	return func(yield func(string, []string) bool) {
-		for line := range slices.Values(lines) {
-			items := strings.Fields(line)
+		for items := range Parse(string(dict)) {
 			if len(items) >= 2 {
 				if !yield(items[0], items[1:]) {
 					return

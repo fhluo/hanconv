@@ -8,23 +8,7 @@ import (
 func chain(iters iter.Seq[iter.Seq2[string, string]]) iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
 		for seq := range iters {
-			for k, v := range seq {
-				if !yield(k, v) {
-					return
-				}
-			}
-		}
-	}
-}
-
-func chain_(iters ...iter.Seq2[string, string]) iter.Seq2[string, string] {
-	return func(yield func(string, string) bool) {
-		for _, seq := range iters {
-			for k, v := range seq {
-				if !yield(k, v) {
-					return
-				}
-			}
+			seq(yield)
 		}
 	}
 }
