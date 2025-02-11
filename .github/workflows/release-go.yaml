@@ -1,8 +1,8 @@
-name: Release
+name: Release Go hanconv
 
 on:
   push:
-    tags: ["v*.*.*"]
+    tags: ["go/v*.*.*"]
 
 jobs:
   build:
@@ -18,13 +18,13 @@ jobs:
           go-version: 'stable'
 
       - name: Set up Task
-        run: go install github.com/go-task/task/v3/cmd/task@latest
+        uses: arduino/setup-task@v2
 
       - name: Build
-        run: task build
+        run: task go:build
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
-            bin/*.exe
+            go/bin/*.exe
