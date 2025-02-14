@@ -2,7 +2,11 @@
 name = "hanconv"
 version = "0.2.0"
 edition = "2021"
+description = "Convert between Simplified and Traditional Chinese"
+keywords = ["chinese"]
+repository = "https://github.com/fhluo/hanconv"
+license = "MIT"
 
 [dependencies]
-trie = { path = "../trie" }
+trie = { path = "../trie", version = "0.1.0" }
 clap = { version = "4.5", features = ["derive"] }
