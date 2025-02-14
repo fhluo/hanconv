@@ -1,6 +1,6 @@
+use crate::trie::Trie;
 use crate::Dictionary::*;
 use std::sync::LazyLock;
-use trie::Trie;
 
 pub enum Convertors {
     S2T,

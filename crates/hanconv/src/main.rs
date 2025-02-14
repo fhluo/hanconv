@@ -1,5 +1,5 @@
 use clap::{Args, Parser, Subcommand};
-use hanconv::conv::{Convertor, Convertors::*};
+use hanconv::{Convertor, Convertors::*};
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader, BufWriter, Read, Write};

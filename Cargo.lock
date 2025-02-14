@@ -1553,8 +1553,8 @@ dependencies = [
 name = "hanconv"
 version = "0.2.0"
 dependencies = [
+ "ahash",
  "clap",
- "trie",
 ]
 
 [[package]]
@@ -4394,13 +4394,6 @@ dependencies = [
  "serde",
  "thiserror 1.0.69",
  "windows-sys 0.59.0",
-]
-
-[[package]]
-name = "trie"
-version = "0.1.0"
-dependencies = [
- "ahash",
 ]
 
 [[package]]
