@@ -130,7 +130,8 @@ impl<T> Trie<T> {
 }
 
 impl<T: AsRef<str>> Trie<T> {
-    pub fn convert(&self, s: &str) -> String {
+    pub fn convert(&self, s: impl AsRef<str>) -> String {
+        let s = s.as_ref();
         let mut iter = s.chars().peekable();
         let mut dst = String::with_capacity(s.len());
 
