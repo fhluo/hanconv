@@ -2,7 +2,7 @@
 name = "hanconv"
 version = "0.2.0"
 edition = "2021"
-description = "Convert between Simplified and Traditional Chinese"
+description = "Convert between Chinese characters variants."
 keywords = ["chinese"]
 repository = "https://github.com/fhluo/hanconv"
 license = "MIT"
