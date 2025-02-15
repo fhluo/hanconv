@@ -1,6 +1,6 @@
 <div align="center">
 
-# hanconv
+# Hanconv
 
 Convert between Chinese characters variants.
 
