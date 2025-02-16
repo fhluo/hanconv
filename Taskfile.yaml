@@ -1,15 +1,18 @@
 version: 3
 
 includes:
-  go:
-    taskfile: go/Taskfile.yaml
-    dir: go
+  lib:
+    taskfile: crates/hanconv/Taskfile.yaml
+    dir: crates/hanconv
   app:
     taskfile: app/Taskfile.yaml
     dir: app
   web:
     taskfile: web/Taskfile.yaml
     dir: web
+  go:
+    taskfile: go/Taskfile.yaml
+    dir: go
 
 tasks:
   setup:

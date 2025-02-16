@@ -6,6 +6,7 @@ description = "Convert between Chinese characters variants."
 keywords = ["chinese"]
 repository = "https://github.com/fhluo/hanconv"
 license = "MIT"
+exclude = ["Taskfile.yaml"]
 
 [dependencies]
 ahash = "0.8"
