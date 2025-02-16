@@ -18,84 +18,84 @@ enum Commands {
     /// Simplified Chinese to Traditional Chinese
     ///
     /// 简体中文 → 繁体中文
-    S2T(Command),
+    S2T(Conversion),
     /// Traditional Chinese to Simplified Chinese
     ///
     /// 繁体中文 → 简体中文
-    T2S(Command),
+    T2S(Conversion),
     /// Simplified Chinese to Traditional Chinese (Taiwan)
     ///
     /// 简体中文 → 繁体中文（台湾）
-    S2TW(Command),
+    S2TW(Conversion),
     /// Traditional Chinese (Taiwan) to Simplified Chinese
     ///
     /// 繁体中文（台湾）→ 简体中文
-    TW2S(Command),
+    TW2S(Conversion),
     /// Simplified Chinese to Traditional Chinese (Taiwan) with Taiwanese idiom
     ///
     /// 简体中文 → 繁体中文（台湾），转换为台湾常用词
-    S2TWP(Command),
+    S2TWP(Conversion),
     /// Traditional Chinese (Taiwan) to Simplified Chinese with Mainland Chinese idiom
     ///
     /// 繁体中文（台湾）→ 简体中文，转化为中国大陆常用词
-    TW2SP(Command),
+    TW2SP(Conversion),
     /// Traditional Chinese to Traditional Chinese (Taiwan)
     ///
     /// 繁体中文 → 繁体中文（台湾）
-    T2TW(Command),
+    T2TW(Conversion),
     /// Traditional Chinese (Taiwan) to Traditional Chinese
     ///
     /// 繁体中文（台湾）→ 繁体中文
-    TW2T(Command),
+    TW2T(Conversion),
     /// Simplified Chinese to Traditional Chinese (Hong Kong)
     ///
     /// 简体中文 → 繁体中文（香港）
-    S2HK(Command),
+    S2HK(Conversion),
     /// Traditional Chinese (Hong Kong) to Simplified Chinese
     ///
     /// 繁体中文（香港）→ 简体中文
-    HK2S(Command),
+    HK2S(Conversion),
     /// Traditional Chinese to Traditional Chinese (Hong Kong)
     ///
     /// 繁体中文 → 繁体中文（香港）
-    T2HK(Command),
+    T2HK(Conversion),
     /// Traditional Chinese (Hong Kong) to Traditional Chinese
     ///
     /// 繁体中文（香港）→ 繁体中文
-    HK2T(Command),
+    HK2T(Conversion),
     /// Traditional Chinese characters (Kyūjitai) to New Japanese Kanji (Shinjitai)
     ///
     /// 繁体字 → 日文新字体
-    T2JP(Command),
+    T2JP(Conversion),
     /// New Japanese Kanji (Shinjitai) to Traditional Chinese characters (Kyūjitai)
     ///
     /// 日文新字体 → 繁体字
-    JP2T(Command),
+    JP2T(Conversion),
 }
 
 impl Commands {
     fn run(self) -> Result<(), Box<dyn Error>> {
         match self {
-            Commands::S2T(command) => command.run(S2T.new()),
-            Commands::T2S(command) => command.run(T2S.new()),
-            Commands::S2TW(command) => command.run(S2TW.new()),
-            Commands::TW2S(command) => command.run(TW2S.new()),
-            Commands::S2TWP(command) => command.run(S2TWP.new()),
-            Commands::TW2SP(command) => command.run(TW2SP.new()),
-            Commands::T2TW(command) => command.run(T2TW.new()),
-            Commands::TW2T(command) => command.run(TW2T.new()),
-            Commands::S2HK(command) => command.run(S2HK.new()),
-            Commands::HK2S(command) => command.run(HK2S.new()),
-            Commands::T2HK(command) => command.run(T2HK.new()),
-            Commands::HK2T(command) => command.run(HK2T.new()),
-            Commands::T2JP(command) => command.run(T2JP.new()),
-            Commands::JP2T(command) => command.run(JP2T.new()),
+            Commands::S2T(conversion) => conversion.run(S2T.new()),
+            Commands::T2S(conversion) => conversion.run(T2S.new()),
+            Commands::S2TW(conversion) => conversion.run(S2TW.new()),
+            Commands::TW2S(conversion) => conversion.run(TW2S.new()),
+            Commands::S2TWP(conversion) => conversion.run(S2TWP.new()),
+            Commands::TW2SP(conversion) => conversion.run(TW2SP.new()),
+            Commands::T2TW(conversion) => conversion.run(T2TW.new()),
+            Commands::TW2T(conversion) => conversion.run(TW2T.new()),
+            Commands::S2HK(conversion) => conversion.run(S2HK.new()),
+            Commands::HK2S(conversion) => conversion.run(HK2S.new()),
+            Commands::T2HK(conversion) => conversion.run(T2HK.new()),
+            Commands::HK2T(conversion) => conversion.run(HK2T.new()),
+            Commands::T2JP(conversion) => conversion.run(T2JP.new()),
+            Commands::JP2T(conversion) => conversion.run(JP2T.new()),
         }
     }
 }
 
 #[derive(Args)]
-struct Command {
+struct Conversion {
     /// Input file
     #[arg(short, value_name = "PATH")]
     input: Option<String>,
@@ -115,7 +115,7 @@ struct Command {
     items: Option<Vec<String>>,
 }
 
-impl Command {
+impl Conversion {
     fn get_input_encoding(&self) -> Option<&'static Encoding> {
         self.input_encoding
             .as_ref()
@@ -158,7 +158,7 @@ impl Command {
 
         if matches!(
             self,
-            Command {
+            Conversion {
                 encoding: None,
                 input_encoding: None,
                 output_encoding: None,
