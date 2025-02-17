@@ -1,21 +1,17 @@
 version: 3
 
-tasks: 
+tasks:
   build-windows:
     env:
       GOOS: windows
       GOARCH: amd64
-    cmds: 
+    cmds:
       - go build -o ./bin/ ./cmd/...
 
   build:
     deps:
       - build-windows
 
-  install: 
-    cmds: 
+  install:
+    cmds:
       - go install ./cmd/hanconv
-
-  gen:
-    cmds: 
-      - go run ./tools/gen

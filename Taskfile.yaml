@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: 3
 
 includes:
@@ -31,3 +32,8 @@ tasks:
   dev:
     deps:
       - task: app:dev
+
+  update:
+    desc: update dictionaries
+    dir: tools
+    cmd: go run ./update ../crates/hanconv/data ../go/dict/data
