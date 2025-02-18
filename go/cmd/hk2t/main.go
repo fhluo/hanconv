@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cmd/hk2t"
+	"github.com/fhluo/hanconv/go/internal/cmd/hk2t"
 	"log"
 )
 

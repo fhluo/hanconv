@@ -1,7 +1,7 @@
 package t2tw
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/internal/cmd"
 	"github.com/fhluo/hanconv/go/pkg/t2tw"
 	"log/slog"
 	"os"

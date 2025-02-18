@@ -1,7 +1,7 @@
 package t2jp
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/internal/cmd"
 	"github.com/fhluo/hanconv/go/pkg/t2jp"
 	"log/slog"
 	"os"

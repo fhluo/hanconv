@@ -1,7 +1,7 @@
 package jp2t
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/internal/cmd"
 	"github.com/fhluo/hanconv/go/pkg/jp2t"
 	"log/slog"
 	"os"

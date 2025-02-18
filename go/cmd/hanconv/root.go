@@ -1,21 +1,21 @@
 package main
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cmd"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/hk2s"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/hk2t"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/jp2t"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/s2hk"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/s2t"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/s2tw"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/s2twp"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/t2hk"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/t2jp"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/t2s"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/t2tw"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/tw2s"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/tw2sp"
-	_ "github.com/fhluo/hanconv/go/pkg/cmd/tw2t"
+	"github.com/fhluo/hanconv/go/internal/cmd"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/hk2s"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/hk2t"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/jp2t"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/s2hk"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/s2t"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/s2tw"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/s2twp"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/t2hk"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/t2jp"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/t2s"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/t2tw"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/tw2s"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/tw2sp"
+	_ "github.com/fhluo/hanconv/go/internal/cmd/tw2t"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -23,7 +23,7 @@ import (
 var (
 	rootCmd = &cobra.Command{
 		Use:   "hanconv",
-		Short: "简繁转换",
+		Short: "汉字转换",
 	}
 )
 

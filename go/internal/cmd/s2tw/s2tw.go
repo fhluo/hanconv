@@ -1,7 +1,7 @@
 package s2tw
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/internal/cmd"
 	"github.com/fhluo/hanconv/go/pkg/s2tw"
 	"log/slog"
 	"os"

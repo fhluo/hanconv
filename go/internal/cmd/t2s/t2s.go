@@ -1,7 +1,7 @@
 package t2s
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/internal/cmd"
 	"github.com/fhluo/hanconv/go/pkg/t2s"
 	"log/slog"
 	"os"

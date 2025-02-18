@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cmd/t2tw"
+	"github.com/fhluo/hanconv/go/internal/cmd/t2tw"
 	"log"
 )
 

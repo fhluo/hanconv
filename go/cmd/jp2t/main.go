@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cmd/jp2t"
+	"github.com/fhluo/hanconv/go/internal/cmd/jp2t"
 	"log"
 )
 

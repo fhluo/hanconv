@@ -1,7 +1,7 @@
 package tw2t
 
 import (
-	"github.com/fhluo/hanconv/go/pkg/cmd"
+	"github.com/fhluo/hanconv/go/internal/cmd"
 	"github.com/fhluo/hanconv/go/pkg/tw2t"
 	"log/slog"
 	"os"
