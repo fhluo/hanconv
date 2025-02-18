@@ -14,6 +14,9 @@ includes:
   go:
     taskfile: go/Taskfile.yaml
     dir: go
+  tools:
+    taskfile: tools/Taskfile.yaml
+    dir: tools
 
 tasks:
   setup:
