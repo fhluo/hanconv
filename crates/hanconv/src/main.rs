@@ -1,6 +1,6 @@
 use clap::{Args, Parser, Subcommand};
 use encoding_rs::{Encoding, UTF_8};
-use hanconv::{Convertor, Convertors::*};
+use hanconv::{Converter, Converters::*};
 use std::error::Error;
 use std::fs::File;
 use std::io;
@@ -130,16 +130,16 @@ impl Conversion {
             .and_then(|encoding| Encoding::for_label(encoding.as_bytes()))
     }
 
-    fn convert_items(&self, convertor: &Convertor) {
+    fn convert_items(&self, converter: &Converter) {
         if let Some(ref items) = self.items {
             for item in items {
-                println!("{}", convertor.convert(item));
+                println!("{}", converter.convert(item));
             }
         }
     }
 
-    fn run(&self, convertor: Convertor) -> Result<(), Box<dyn Error>> {
-        self.convert_items(&convertor);
+    fn run(&self, converter: Converter) -> Result<(), Box<dyn Error>> {
+        self.convert_items(&converter);
 
         let mut input: Box<dyn BufRead> = if let Some(ref input) = self.input {
             Box::new(BufReader::new(File::open(input)?))
@@ -165,7 +165,7 @@ impl Conversion {
                 ..
             }
         ) {
-            output.write_all(convertor.convert(String::from_utf8(buffer)?).as_bytes())?;
+            output.write_all(converter.convert(String::from_utf8(buffer)?).as_bytes())?;
             return Ok(());
         }
 
@@ -177,7 +177,7 @@ impl Conversion {
             return Err(format!("Error decoding in encoding {}", input_encoding.name()).into());
         }
 
-        let r = convertor.convert(cow);
+        let r = converter.convert(cow);
         let (cow, _, err) = output_encoding.encode(&r);
         if err {
             return Err(format!("Error encoding in encoding {}", output_encoding.name()).into());
