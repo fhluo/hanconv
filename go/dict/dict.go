@@ -54,12 +54,10 @@ var (
 
 func Parse(s string) iter.Seq[[]string] {
 	return func(yield func([]string) bool) {
-		for len(s) > 0 {
-			line, rest, _ := strings.Cut(s, "\n")
+		for line := range strings.Lines(s) {
 			if !yield(strings.Fields(line)) {
 				return
 			}
-			s = rest
 		}
 	}
 }
@@ -67,10 +65,8 @@ func Parse(s string) iter.Seq[[]string] {
 func (dict RawDictionary) Iter() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
 		for items := range Parse(string(dict)) {
-			if len(items) >= 2 {
-				if !yield(items[0], items[1]) {
-					return
-				}
+			if len(items) >= 2 && !yield(items[0], items[1]) {
+				return
 			}
 		}
 	}
@@ -79,11 +75,13 @@ func (dict RawDictionary) Iter() iter.Seq2[string, string] {
 func (dict RawDictionary) InvIter() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
 		for items := range Parse(string(dict)) {
-			if len(items) >= 2 {
-				for _, item := range items[1:] {
-					if !yield(item, items[0]) {
-						return
-					}
+			if len(items) < 2 {
+				continue
+			}
+
+			for _, item := range items[1:] {
+				if !yield(item, items[0]) {
+					return
 				}
 			}
 		}
@@ -93,10 +91,8 @@ func (dict RawDictionary) InvIter() iter.Seq2[string, string] {
 func (dict RawDictionary) VarIter() iter.Seq2[string, []string] {
 	return func(yield func(string, []string) bool) {
 		for items := range Parse(string(dict)) {
-			if len(items) >= 2 {
-				if !yield(items[0], items[1:]) {
-					return
-				}
+			if len(items) >= 2 && !yield(items[0], items[1:]) {
+				return
 			}
 		}
 	}
