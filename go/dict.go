@@ -15,7 +15,7 @@ func chain(iters iter.Seq[iter.Seq2[string, string]]) iter.Seq2[string, string] 
 
 type Dictionary func() iter.Seq2[string, string]
 
-func NewDictionary(rawDictionaries ...dict.RawDictionary) Dictionary {
+func NewDictionary(rawDictionaries ...dict.TextDictionary) Dictionary {
 	return func() iter.Seq2[string, string] {
 		return chain(func(yield func(iter.Seq2[string, string]) bool) {
 			for _, rawDictionary := range rawDictionaries {
@@ -27,7 +27,7 @@ func NewDictionary(rawDictionaries ...dict.RawDictionary) Dictionary {
 	}
 }
 
-func NewInvDictionary(rawDictionaries ...dict.RawDictionary) Dictionary {
+func NewInvDictionary(rawDictionaries ...dict.TextDictionary) Dictionary {
 	return func() iter.Seq2[string, string] {
 		return chain(func(yield func(iter.Seq2[string, string]) bool) {
 			for _, rawDictionary := range rawDictionaries {
@@ -40,20 +40,20 @@ func NewInvDictionary(rawDictionaries ...dict.RawDictionary) Dictionary {
 }
 
 var (
-	STCharacters          = NewDictionary(dict.STCharacters)
-	STPhrases             = NewDictionary(dict.STPhrases)
-	TSCharacters          = NewDictionary(dict.TSCharacters)
-	TSPhrases             = NewDictionary(dict.TSPhrases)
-	TWPhrases             = NewDictionary(dict.TWPhrasesIT, dict.TWPhrasesName, dict.TWPhrasesOther)
-	TWPhrasesRev          = NewInvDictionary(dict.TWPhrasesIT, dict.TWPhrasesName, dict.TWPhrasesOther)
-	TWVariants            = NewDictionary(dict.TWVariants)
-	TWVariantsRev         = NewInvDictionary(dict.TWVariants)
-	TWVariantsRevPhrases  = NewDictionary(dict.TWVariantsRevPhrases)
-	HKVariants            = NewDictionary(dict.HKVariants)
-	HKVariantsRev         = NewInvDictionary(dict.HKVariants)
-	HKVariantsRevPhrases  = NewDictionary(dict.HKVariantsRevPhrases)
-	JPShinjitaiCharacters = NewDictionary(dict.JPShinjitaiCharacters)
-	JPShinjitaiPhrases    = NewDictionary(dict.JPShinjitaiPhrases)
-	JPVariants            = NewDictionary(dict.JPVariants)
-	JPVariantsRev         = NewInvDictionary(dict.JPVariants)
+	STCharacters          = NewDictionary(dict.STCharactersText)
+	STPhrases             = NewDictionary(dict.STPhrasesText)
+	TSCharacters          = NewDictionary(dict.TSCharactersText)
+	TSPhrases             = NewDictionary(dict.TSPhrasesText)
+	TWPhrases             = NewDictionary(dict.TWPhrasesITText, dict.TWPhrasesNameText, dict.TWPhrasesOtherText)
+	TWPhrasesRev          = NewInvDictionary(dict.TWPhrasesITText, dict.TWPhrasesNameText, dict.TWPhrasesOtherText)
+	TWVariants            = NewDictionary(dict.TWVariantsText)
+	TWVariantsRev         = NewInvDictionary(dict.TWVariantsText)
+	TWVariantsRevPhrases  = NewDictionary(dict.TWVariantsRevPhrasesText)
+	HKVariants            = NewDictionary(dict.HKVariantsText)
+	HKVariantsRev         = NewInvDictionary(dict.HKVariantsText)
+	HKVariantsRevPhrases  = NewDictionary(dict.HKVariantsRevPhrasesText)
+	JPShinjitaiCharacters = NewDictionary(dict.JPShinjitaiCharactersText)
+	JPShinjitaiPhrases    = NewDictionary(dict.JPShinjitaiPhrasesText)
+	JPVariants            = NewDictionary(dict.JPVariantsText)
+	JPVariantsRev         = NewInvDictionary(dict.JPVariantsText)
 )

@@ -6,50 +6,50 @@ import (
 	"strings"
 )
 
-type RawDictionary string
+type TextDictionary string
 
 var (
 	//go:embed data/STCharacters.txt
-	STCharacters RawDictionary
+	STCharactersText TextDictionary
 
 	//go:embed data/STPhrases.txt
-	STPhrases RawDictionary
+	STPhrasesText TextDictionary
 
 	//go:embed data/TSCharacters.txt
-	TSCharacters RawDictionary
+	TSCharactersText TextDictionary
 
 	//go:embed data/TSPhrases.txt
-	TSPhrases RawDictionary
+	TSPhrasesText TextDictionary
 
 	//go:embed data/TWPhrasesIT.txt
-	TWPhrasesIT RawDictionary
+	TWPhrasesITText TextDictionary
 
 	//go:embed data/TWPhrasesName.txt
-	TWPhrasesName RawDictionary
+	TWPhrasesNameText TextDictionary
 
 	//go:embed data/TWPhrasesOther.txt
-	TWPhrasesOther RawDictionary
+	TWPhrasesOtherText TextDictionary
 
 	//go:embed data/TWVariants.txt
-	TWVariants RawDictionary
+	TWVariantsText TextDictionary
 
 	//go:embed data/TWVariantsRevPhrases.txt
-	TWVariantsRevPhrases RawDictionary
+	TWVariantsRevPhrasesText TextDictionary
 
 	//go:embed data/HKVariants.txt
-	HKVariants RawDictionary
+	HKVariantsText TextDictionary
 
 	//go:embed data/HKVariantsRevPhrases.txt
-	HKVariantsRevPhrases RawDictionary
+	HKVariantsRevPhrasesText TextDictionary
 
 	//go:embed data/JPShinjitaiCharacters.txt
-	JPShinjitaiCharacters RawDictionary
+	JPShinjitaiCharactersText TextDictionary
 
 	//go:embed data/JPShinjitaiPhrases.txt
-	JPShinjitaiPhrases RawDictionary
+	JPShinjitaiPhrasesText TextDictionary
 
 	//go:embed data/JPVariants.txt
-	JPVariants RawDictionary
+	JPVariantsText TextDictionary
 )
 
 func Parse(s string) iter.Seq[[]string] {
@@ -62,7 +62,7 @@ func Parse(s string) iter.Seq[[]string] {
 	}
 }
 
-func (dict RawDictionary) Iter() iter.Seq2[string, string] {
+func (dict TextDictionary) Iter() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
 		for items := range Parse(string(dict)) {
 			if len(items) >= 2 && !yield(items[0], items[1]) {
@@ -72,7 +72,7 @@ func (dict RawDictionary) Iter() iter.Seq2[string, string] {
 	}
 }
 
-func (dict RawDictionary) InvIter() iter.Seq2[string, string] {
+func (dict TextDictionary) InvIter() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
 		for items := range Parse(string(dict)) {
 			if len(items) < 2 {
@@ -88,7 +88,7 @@ func (dict RawDictionary) InvIter() iter.Seq2[string, string] {
 	}
 }
 
-func (dict RawDictionary) VarIter() iter.Seq2[string, []string] {
+func (dict TextDictionary) VarIter() iter.Seq2[string, []string] {
 	return func(yield func(string, []string) bool) {
 		for items := range Parse(string(dict)) {
 			if len(items) >= 2 && !yield(items[0], items[1:]) {
