@@ -4,38 +4,14 @@ import (
 	"iter"
 )
 
-func chain(iters iter.Seq[iter.Seq2[string, string]]) iter.Seq2[string, string] {
-	return func(yield func(string, string) bool) {
-		for seq := range iters {
-			seq(yield)
-		}
-	}
-}
-
 type Dictionary func() iter.Seq2[string, string]
 
-func NewDictionary(rawDictionaries ...TextDictionary) Dictionary {
-	return func() iter.Seq2[string, string] {
-		return chain(func(yield func(iter.Seq2[string, string]) bool) {
-			for _, rawDictionary := range rawDictionaries {
-				if !yield(rawDictionary.Iter()) {
-					return
-				}
-			}
-		})
-	}
+func NewDictionary(dictionaries ...TextDictionary) Dictionary {
+	return TextDictionaries(dictionaries).Iter
 }
 
-func NewInvDictionary(rawDictionaries ...TextDictionary) Dictionary {
-	return func() iter.Seq2[string, string] {
-		return chain(func(yield func(iter.Seq2[string, string]) bool) {
-			for _, rawDictionary := range rawDictionaries {
-				if !yield(rawDictionary.InvIter()) {
-					return
-				}
-			}
-		})
-	}
+func NewInvDictionary(dictionaries ...TextDictionary) Dictionary {
+	return TextDictionaries(dictionaries).InvIter
 }
 
 var (

@@ -52,9 +52,16 @@ var (
 	JPVariantsText TextDictionary
 )
 
-func Parse(s string) iter.Seq[[]string] {
+type TextDictionaryIterator interface {
+	Parse() iter.Seq[[]string]
+	Iter() iter.Seq2[string, string]
+	InvIter() iter.Seq2[string, string]
+	VarIter() iter.Seq2[string, []string]
+}
+
+func (dict TextDictionary) Parse() iter.Seq[[]string] {
 	return func(yield func([]string) bool) {
-		for line := range strings.Lines(s) {
+		for line := range strings.Lines(string(dict)) {
 			if !yield(strings.Fields(line)) {
 				return
 			}
@@ -64,7 +71,7 @@ func Parse(s string) iter.Seq[[]string] {
 
 func (dict TextDictionary) Iter() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
-		for items := range Parse(string(dict)) {
+		for items := range dict.Parse() {
 			if len(items) >= 2 && !yield(items[0], items[1]) {
 				return
 			}
@@ -74,7 +81,7 @@ func (dict TextDictionary) Iter() iter.Seq2[string, string] {
 
 func (dict TextDictionary) InvIter() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
-		for items := range Parse(string(dict)) {
+		for items := range dict.Parse() {
 			if len(items) < 2 {
 				continue
 			}
@@ -90,10 +97,44 @@ func (dict TextDictionary) InvIter() iter.Seq2[string, string] {
 
 func (dict TextDictionary) VarIter() iter.Seq2[string, []string] {
 	return func(yield func(string, []string) bool) {
-		for items := range Parse(string(dict)) {
+		for items := range dict.Parse() {
 			if len(items) >= 2 && !yield(items[0], items[1:]) {
 				return
 			}
+		}
+	}
+}
+
+type TextDictionaries []TextDictionary
+
+func (dictionaries TextDictionaries) Parse() iter.Seq[[]string] {
+	return func(yield func([]string) bool) {
+		for _, dictionary := range dictionaries {
+			dictionary.Parse()(yield)
+		}
+	}
+}
+
+func (dictionaries TextDictionaries) Iter() iter.Seq2[string, string] {
+	return func(yield func(string, string) bool) {
+		for _, dictionary := range dictionaries {
+			dictionary.Iter()(yield)
+		}
+	}
+}
+
+func (dictionaries TextDictionaries) InvIter() iter.Seq2[string, string] {
+	return func(yield func(string, string) bool) {
+		for _, dictionary := range dictionaries {
+			dictionary.InvIter()(yield)
+		}
+	}
+}
+
+func (dictionaries TextDictionaries) VarIter() iter.Seq2[string, []string] {
+	return func(yield func(string, []string) bool) {
+		for _, dictionary := range dictionaries {
+			dictionary.VarIter()(yield)
 		}
 	}
 }
