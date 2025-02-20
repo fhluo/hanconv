@@ -39,7 +39,7 @@ impl RawDictionary {
         }
     }
 
-    pub fn iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> {
+    pub fn iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
         self.text().lines().filter_map(|line| {
             let mut iter = line.split_whitespace();
 
@@ -51,7 +51,7 @@ impl RawDictionary {
         })
     }
 
-    pub fn inv_iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> {
+    pub fn inv_iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
         self.text()
             .lines()
             .filter_map(|line| {
@@ -66,7 +66,7 @@ impl RawDictionary {
             .flatten()
     }
 
-    pub fn var_iter(&self) -> impl Iterator<Item = (&'static str, Vec<&'static str>)> {
+    pub fn var_iter(&self) -> impl Iterator<Item = (&'static str, Vec<&'static str>)> + use<> {
         self.text().lines().filter_map(|line| {
             let mut iter = line.split_whitespace().peekable();
 
