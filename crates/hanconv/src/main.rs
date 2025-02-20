@@ -96,6 +96,8 @@ impl Commands {
 
 #[derive(Args)]
 struct Conversion {
+    #[arg(skip)]
+    converter: Option<Converter>,
     /// Input file
     #[arg(short, value_name = "PATH")]
     input: Option<String>,
@@ -112,43 +114,35 @@ struct Conversion {
     #[arg(long, value_name = "ENCODING")]
     output_encoding: Option<String>,
     #[arg(conflicts_with_all = &["input", "output"])]
-    items: Option<Vec<String>>,
+    texts: Option<Vec<String>>,
 }
 
 impl Conversion {
-    fn get_input_encoding(&self) -> Option<&'static Encoding> {
-        self.input_encoding
-            .as_ref()
-            .or(self.encoding.as_ref())
-            .and_then(|encoding| Encoding::for_label(encoding.as_bytes()))
-    }
+    fn handle_texts(self) -> Result<(), Box<dyn Error>> {
+        let converter = self.converter.unwrap_or_else(|| T2S.new());
 
-    fn get_output_encoding(&self) -> Option<&'static Encoding> {
-        self.output_encoding
-            .as_ref()
-            .or(self.encoding.as_ref())
-            .and_then(|encoding| Encoding::for_label(encoding.as_bytes()))
-    }
-
-    fn convert_items(&self, converter: &Converter) {
-        if let Some(ref items) = self.items {
-            for item in items {
-                println!("{}", converter.convert(item));
+        if let Some(ref texts) = self.texts {
+            let mut writer = BufWriter::new(io::stdout());
+            for text in texts {
+                write!(writer, "{}", converter.convert(text))?;
             }
+            writer.flush()?;
         }
+
+        Ok(())
     }
 
-    fn run(&self, converter: Converter) -> Result<(), Box<dyn Error>> {
-        self.convert_items(&converter);
+    fn handle_io(self) -> Result<(), Box<dyn Error>> {
+        let converter = self.converter.unwrap_or_else(|| T2S.new());
 
-        let mut input: Box<dyn BufRead> = if let Some(ref input) = self.input {
+        let mut input: Box<dyn BufRead> = if let Some(input) = self.input {
             Box::new(BufReader::new(File::open(input)?))
         } else {
             Box::new(BufReader::new(io::stdin()))
         };
 
-        let mut output: Box<dyn Write> = if let Some(ref output) = self.output {
-            Box::new(BufWriter::new(File::create(&output)?))
+        let mut output: Box<dyn Write> = if let Some(output) = self.output {
+            Box::new(BufWriter::new(File::create(output)?))
         } else {
             Box::new(BufWriter::new(io::stdout()))
         };
@@ -169,8 +163,18 @@ impl Conversion {
             return Ok(());
         }
 
-        let input_encoding = self.get_input_encoding().unwrap_or(UTF_8);
-        let output_encoding = self.get_output_encoding().unwrap_or(UTF_8);
+        let input_encoding = self
+            .input_encoding
+            .as_ref()
+            .or(self.encoding.as_ref())
+            .and_then(|encoding| Encoding::for_label(encoding.as_bytes()))
+            .unwrap_or(UTF_8);
+        let output_encoding = self
+            .output_encoding
+            .as_ref()
+            .or(self.encoding.as_ref())
+            .and_then(|encoding| Encoding::for_label(encoding.as_bytes()))
+            .unwrap_or(UTF_8);
 
         let (cow, _, err) = input_encoding.decode(&buffer);
         if err {
@@ -183,6 +187,18 @@ impl Conversion {
             return Err(format!("Error encoding in encoding {}", output_encoding.name()).into());
         }
         output.write_all(cow.as_ref())?;
+
+        Ok(())
+    }
+
+    fn run(mut self, converter: Converter) -> Result<(), Box<dyn Error>> {
+        self.converter = Some(converter);
+
+        if self.texts.is_some() {
+            self.handle_texts()?;
+        } else {
+            self.handle_io()?;
+        }
 
         Ok(())
     }
