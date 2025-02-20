@@ -13,6 +13,12 @@ struct CLI {
     command: Commands,
 }
 
+impl CLI {
+    fn run(self) -> Result<(), Box<dyn Error>> {
+        self.command.run()
+    }
+}
+
 #[derive(Subcommand)]
 enum Commands {
     /// Convert Simplified Chinese to Traditional Chinese
@@ -205,5 +211,5 @@ impl Conversion {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    CLI::parse().command.run()
+    CLI::parse().run()
 }
