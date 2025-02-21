@@ -1,10 +1,12 @@
 use clap::{Args, Parser, Subcommand};
 use encoding_rs::{Encoding, UTF_8};
 use hanconv::{Converter, Converters::*};
+use std::borrow::Cow;
 use std::error::Error;
 use std::fs::File;
 use std::io;
 use std::io::{BufRead, BufReader, BufWriter, Read, Write};
+use std::path::{Path, PathBuf};
 
 #[derive(Parser)]
 #[command(version, about)]
@@ -104,12 +106,15 @@ impl Commands {
 struct Conversion {
     #[arg(skip)]
     converter: Option<Converter>,
-    /// Input file
+    /// Input filename
     #[arg(short, value_name = "PATH")]
-    input: Option<String>,
-    /// Output file
+    input_filename: Option<String>,
+    /// Output filename
     #[arg(short, value_name = "PATH")]
-    output: Option<String>,
+    output_filename: Option<String>,
+    /// Generate an output filename from the input filename
+    #[arg(short, conflicts_with = "output_filename")]
+    generate_output_filename: bool,
     /// Specify input and output encoding
     #[arg(long, conflicts_with_all = &["input_encoding", "output_encoding"])]
     encoding: Option<String>,
@@ -119,7 +124,7 @@ struct Conversion {
     /// Specify output encoding
     #[arg(long, value_name = "ENCODING")]
     output_encoding: Option<String>,
-    #[arg(conflicts_with_all = &["input", "output"])]
+    #[arg(value_name = "TEXT", conflicts_with_all = &["input_filename", "output_filename"])]
     texts: Option<Vec<String>>,
 }
 
@@ -138,25 +143,71 @@ impl Conversion {
         Ok(())
     }
 
-    fn handle_io(self) -> Result<(), Box<dyn Error>> {
-        let converter = self.converter.unwrap_or_else(|| T2S.new());
+    fn input_encoding(&self) -> &'static Encoding {
+        self.input_encoding
+            .as_ref()
+            .or(self.encoding.as_ref())
+            .and_then(|encoding| Encoding::for_label(encoding.as_bytes()))
+            .unwrap_or(UTF_8)
+    }
 
-        let mut input: Box<dyn BufRead> = if let Some(input) = self.input {
-            Box::new(BufReader::new(File::open(input)?))
+    fn output_encoding(&self) -> &'static Encoding {
+        self.output_encoding
+            .as_ref()
+            .or(self.encoding.as_ref())
+            .and_then(|encoding| Encoding::for_label(encoding.as_bytes()))
+            .unwrap_or(UTF_8)
+    }
+
+    fn input(&self) -> Result<Box<dyn BufRead>, Box<dyn Error>> {
+        let input: Box<dyn BufRead> = if let Some(ref filename) = self.input_filename {
+            Box::new(BufReader::new(File::open(filename)?))
         } else {
             Box::new(BufReader::new(io::stdin()))
         };
 
-        let mut output: Box<dyn Write> = if let Some(output) = self.output {
-            Box::new(BufWriter::new(File::create(output)?))
+        Ok(input)
+    }
+
+    fn output(&self) -> Result<Box<dyn Write>, Box<dyn Error>> {
+        let output: Box<dyn Write> = if let Some(ref filename) = self.output_filename {
+            Box::new(BufWriter::new(File::create(filename)?))
+        } else if let Some(filename) = self.generate_output_filename() {
+            Box::new(BufWriter::new(File::create(filename)?))
         } else {
             Box::new(BufWriter::new(io::stdout()))
         };
 
-        let mut buffer = Vec::new();
-        input.read_to_end(&mut buffer)?;
+        Ok(output)
+    }
 
-        if matches!(
+    fn generate_output_filename(&self) -> Option<impl AsRef<Path>> {
+        if !self.generate_output_filename || self.input_filename.is_none() {
+            return None;
+        }
+
+        let input_filename = self.input_filename.as_ref().unwrap();
+        let output_filename = &self.converter.as_ref().unwrap().convert(input_filename);
+
+        if input_filename != output_filename {
+            return Some(output_filename.into());
+        }
+
+        let mut path = PathBuf::from(output_filename);
+        let stem = path
+            .file_stem()
+            .unwrap_or_default()
+            .to_string_lossy()
+            .into_owned();
+        let ext = path.extension().unwrap_or_default().to_string_lossy();
+
+        path.set_file_name(stem + "_converted" + &ext);
+
+        Some(path)
+    }
+
+    fn encoding_unspecified(&self) -> bool {
+        matches!(
             self,
             Conversion {
                 encoding: None,
@@ -164,35 +215,45 @@ impl Conversion {
                 output_encoding: None,
                 ..
             }
-        ) {
+        )
+    }
+
+    fn decode<'a>(&self, buffer: &'a [u8]) -> Result<Cow<'a, str>, Box<dyn Error>> {
+        let encoding = self.input_encoding();
+        let (cow, _, err) = encoding.decode(&buffer);
+        if err {
+            Err(format!("Error decoding in encoding {}", encoding.name()).into())
+        } else {
+            Ok(cow)
+        }
+    }
+
+    fn encode<'a>(&self, s: &'a str) -> Result<Cow<'a, [u8]>, Box<dyn Error>> {
+        let encoding = self.output_encoding();
+        let (cow, _, err) = encoding.encode(s);
+        if err {
+            Err(format!("Error encoding in encoding {}", encoding.name()).into())
+        } else {
+            Ok(cow)
+        }
+    }
+
+    fn handle_io(self) -> Result<(), Box<dyn Error>> {
+        let mut input = self.input()?;
+        let mut output = self.output()?;
+
+        let mut buffer = Vec::new();
+        input.read_to_end(&mut buffer)?;
+
+        let converter = self.converter.as_ref().unwrap();
+
+        if self.encoding_unspecified() {
             output.write_all(converter.convert(String::from_utf8(buffer)?).as_bytes())?;
             return Ok(());
+        } else {
+            let r = converter.convert(self.decode(&buffer)?);
+            output.write_all(&self.encode(&r)?)?;
         }
-
-        let input_encoding = self
-            .input_encoding
-            .as_ref()
-            .or(self.encoding.as_ref())
-            .and_then(|encoding| Encoding::for_label(encoding.as_bytes()))
-            .unwrap_or(UTF_8);
-        let output_encoding = self
-            .output_encoding
-            .as_ref()
-            .or(self.encoding.as_ref())
-            .and_then(|encoding| Encoding::for_label(encoding.as_bytes()))
-            .unwrap_or(UTF_8);
-
-        let (cow, _, err) = input_encoding.decode(&buffer);
-        if err {
-            return Err(format!("Error decoding in encoding {}", input_encoding.name()).into());
-        }
-
-        let r = converter.convert(cow);
-        let (cow, _, err) = output_encoding.encode(&r);
-        if err {
-            return Err(format!("Error encoding in encoding {}", output_encoding.name()).into());
-        }
-        output.write_all(cow.as_ref())?;
 
         Ok(())
     }
