@@ -49,6 +49,29 @@ cargo install hanconv
 
 2. Use the provided conversion functions in your project.
 
+    ```rust
+    fn main() {
+        let result = hanconv::s2t("简繁转换");
+        println!("{}", result);
+    }
+    ```
+
+3. Available conversion functions:
+    - `s2t`: Simplified Chinese → Traditional Chinese
+    - `t2s`: Traditional Chinese → Simplified Chinese
+    - `s2tw`: Simplified Chinese → Traditional Chinese (Taiwan)
+    - `tw2s`: Traditional Chinese (Taiwan) → Simplified Chinese
+    - `s2twp`: Simplified Chinese → Traditional Chinese (Taiwan) with Taiwanese idiom
+    - `tw2sp`: Traditional Chinese (Taiwan) → Simplified Chinese with Mainland Chinese idiom
+    - `t2tw`: Traditional Chinese → Traditional Chinese (Taiwan)
+    - `tw2t`: Traditional Chinese (Taiwan) → Traditional Chinese
+    - `s2hk`: Simplified Chinese → Traditional Chinese (Hong Kong)
+    - `hk2s`: Traditional Chinese (Hong Kong) → Simplified Chinese
+    - `t2hk`: Traditional Chinese → Traditional Chinese (Hong Kong)
+    - `hk2t`: Traditional Chinese (Hong Kong) → Traditional Chinese
+    - `t2jp`: Traditional Chinese characters (Kyūjitai) → New Japanese Kanji (Shinjitai)
+    - `jp2t`: New Japanese Kanji (Shinjitai) → Traditional Chinese characters (Kyūjitai)
+
 ## Conversions
 
 | Conversion |                  Source                   |                      Target                       |
