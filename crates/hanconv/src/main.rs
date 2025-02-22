@@ -113,8 +113,15 @@ struct Conversion {
     #[arg(short, value_name = "PATH")]
     output_filename: Option<String>,
     /// Generate an output filename from the input filename
-    #[arg(short, conflicts_with = "output_filename")]
+    #[arg(short, requires = "input_filename", conflicts_with = "output_filename")]
     generate_output_filename: bool,
+    /// Customize the suffix of the generated output filename
+    #[arg(
+        long,
+        requires = "generate_output_filename",
+        conflicts_with = "output_filename"
+    )]
+    suffix: Option<String>,
     /// Specify input and output encoding
     #[arg(long, conflicts_with_all = &["input_encoding", "output_encoding"])]
     encoding: Option<String>,
@@ -124,7 +131,7 @@ struct Conversion {
     /// Specify output encoding
     #[arg(long, value_name = "ENCODING")]
     output_encoding: Option<String>,
-    #[arg(value_name = "TEXT", conflicts_with_all = &["input_filename", "output_filename"])]
+    #[arg(value_name = "TEXT", exclusive = true)]
     texts: Option<Vec<String>>,
 }
 
@@ -182,7 +189,7 @@ impl Conversion {
     }
 
     fn generate_output_filename(&self) -> Option<impl AsRef<Path>> {
-        if !self.generate_output_filename || self.input_filename.is_none() {
+        if self.input_filename.is_none() || !self.generate_output_filename {
             return None;
         }
 
@@ -201,7 +208,7 @@ impl Conversion {
             .into_owned();
         let ext = path.extension().unwrap_or_default().to_string_lossy();
 
-        path.set_file_name(stem + "_converted" + &ext);
+        path.set_file_name(stem + self.suffix.as_deref().unwrap_or("_converted") + &ext);
 
         Some(path)
     }
