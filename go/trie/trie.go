@@ -139,7 +139,7 @@ func (t *Trie) Convert(s string) string {
 	buffer := bytes.NewBuffer(make([]byte, 0, len(s)))
 
 	for len(runes) != 0 {
-		value, count := t.Match(runes[:t.Depth])
+		value, count := t.Match(runes[:min(len(runes), t.Depth)])
 		if count == 0 {
 			buffer.WriteRune(runes[0])
 			runes = runes[1:]
