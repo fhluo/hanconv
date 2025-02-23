@@ -1,12 +1,12 @@
-name: Release Go hanconv
+name: Build
 
 on:
   push:
-    tags: ["go/v*.*.*"]
+    tags: ["v*.*.*"]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     permissions:
       contents: write
     steps:
@@ -17,14 +17,18 @@ jobs:
         with:
           go-version: 'stable'
 
+      - name: Set up Rust
+        run: rustup default stable
+
       - name: Set up Task
-        uses: arduino/setup-task@v2
+        run: go install github.com/go-task/task/v3/cmd/task@latest
 
       - name: Build
-        run: task go:build
-
+        run: |
+          task cli:build
+    
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            go/bin/*.exe
+            target/release/hanconv.exe
