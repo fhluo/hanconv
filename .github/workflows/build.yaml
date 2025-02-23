@@ -18,7 +18,9 @@ jobs:
           go-version: 'stable'
 
       - name: Set up Rust
-        run: rustup default stable
+        run: |
+          rustup default stable
+          rustup update
 
       - name: Set up Task
         run: winget install --id Task.Task
