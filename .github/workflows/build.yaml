@@ -32,5 +32,6 @@ jobs:
 
       - name: Build
         run: |
-          task go:build
           task cli:build
+          task go:build
+          task tools:build
