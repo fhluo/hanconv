@@ -23,7 +23,7 @@ jobs:
           rustup update
 
       - name: Set up Task
-        run: winget install --id Task.Task --accept_source_agreements --accept_package_agreements
+        run: winget install --id Task.Task --accept-source-agreements --accept-package-agreements
 
       - name: Build
         run: |
