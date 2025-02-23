@@ -16,6 +16,9 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 'stable'
+          cache-dependency-path: |
+            go/go.sum
+            tools/go.sum
 
       - name: Set up Rust
         run: |
