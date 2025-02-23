@@ -2,11 +2,11 @@ name: Build
 
 on:
   push:
-    tags: ["v*.*.*"]
+    tags: [ "v*.*.*" ]
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2025
     permissions:
       contents: write
     steps:
@@ -21,12 +21,12 @@ jobs:
         run: rustup default stable
 
       - name: Set up Task
-        run: go install github.com/go-task/task/v3/cmd/task@latest
+        run: winget install --id Task.Task
 
       - name: Build
         run: |
           task cli:build
-    
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
