@@ -2,7 +2,7 @@
 version: 3
 
 includes:
-  lib:
+  cli:
     taskfile: crates/hanconv/Taskfile.yaml
     dir: crates/hanconv
   app:
