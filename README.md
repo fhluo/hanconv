@@ -66,7 +66,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
     ```toml
     [dependencies]
-    hanconv = "0.2"
+    hanconv = "0.3"
     ```
 
 2. Use the provided conversion functions in your project.
