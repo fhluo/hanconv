@@ -29,10 +29,8 @@ jobs:
         run: |
           winget install --id Task.Task --accept-source-agreements --accept-package-agreements
           "$env:LOCALAPPDATA\Microsoft\WinGet\Links" | Out-File -FilePath "$env:GITHUB_PATH" -Append
-          echo $env:Path
 
       - name: Build
         run: |
-          echo $env:Path
           task go:build
           task cli:build
