@@ -3,3 +3,6 @@ version: 3
 tasks:
   build:
     cmd: go build ./update
+
+  update:
+    cmd: go get -u all

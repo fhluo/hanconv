@@ -36,7 +36,14 @@ tasks:
     deps:
       - task: app:dev
 
-  update:
-    desc: update dictionaries
+  update-dictionaries:
     dir: tools
     cmd: go run ./update ../crates/hanconv/data ../go/dict/data
+
+  update:
+    deps:
+      - task: tools:update
+      - task: go:update
+    cmds:
+      - task: update-dictionaries
+      - cargo update

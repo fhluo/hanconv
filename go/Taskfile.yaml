@@ -16,3 +16,6 @@ tasks:
   install:
     cmds:
       - go install ./cmd/hanconv
+
+  update:
+    cmd: go get -u all
