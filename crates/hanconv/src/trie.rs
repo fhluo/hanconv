@@ -13,7 +13,7 @@ impl<T> From<Node<T>> for AHashMap<String, T> {
         fn build<T>(map: &mut AHashMap<String, T>, node: Node<T>, key: String) {
             node.value.map(|value| map.insert(key.clone(), value));
 
-            node.children.map(|children| {
+            if let Some(children) = node.children {
                 children.into_iter().for_each(|(char, node)| {
                     build(map, node, {
                         let mut key = key.clone();
@@ -21,7 +21,7 @@ impl<T> From<Node<T>> for AHashMap<String, T> {
                         key
                     })
                 })
-            });
+            }
         }
 
         build(&mut map, node, String::new());

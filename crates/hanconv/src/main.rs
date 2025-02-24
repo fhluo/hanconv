@@ -84,20 +84,20 @@ enum Commands {
 impl Commands {
     fn run(self) -> Result<(), Box<dyn Error>> {
         match self {
-            Commands::S2T(conversion) => conversion.run(S2T.new()),
-            Commands::T2S(conversion) => conversion.run(T2S.new()),
-            Commands::S2TW(conversion) => conversion.run(S2TW.new()),
-            Commands::TW2S(conversion) => conversion.run(TW2S.new()),
-            Commands::S2TWP(conversion) => conversion.run(S2TWP.new()),
-            Commands::TW2SP(conversion) => conversion.run(TW2SP.new()),
-            Commands::T2TW(conversion) => conversion.run(T2TW.new()),
-            Commands::TW2T(conversion) => conversion.run(TW2T.new()),
-            Commands::S2HK(conversion) => conversion.run(S2HK.new()),
-            Commands::HK2S(conversion) => conversion.run(HK2S.new()),
-            Commands::T2HK(conversion) => conversion.run(T2HK.new()),
-            Commands::HK2T(conversion) => conversion.run(HK2T.new()),
-            Commands::T2JP(conversion) => conversion.run(T2JP.new()),
-            Commands::JP2T(conversion) => conversion.run(JP2T.new()),
+            Commands::S2T(conversion) => conversion.run(S2T.new_converter()),
+            Commands::T2S(conversion) => conversion.run(T2S.new_converter()),
+            Commands::S2TW(conversion) => conversion.run(S2TW.new_converter()),
+            Commands::TW2S(conversion) => conversion.run(TW2S.new_converter()),
+            Commands::S2TWP(conversion) => conversion.run(S2TWP.new_converter()),
+            Commands::TW2SP(conversion) => conversion.run(TW2SP.new_converter()),
+            Commands::T2TW(conversion) => conversion.run(T2TW.new_converter()),
+            Commands::TW2T(conversion) => conversion.run(TW2T.new_converter()),
+            Commands::S2HK(conversion) => conversion.run(S2HK.new_converter()),
+            Commands::HK2S(conversion) => conversion.run(HK2S.new_converter()),
+            Commands::T2HK(conversion) => conversion.run(T2HK.new_converter()),
+            Commands::HK2T(conversion) => conversion.run(HK2T.new_converter()),
+            Commands::T2JP(conversion) => conversion.run(T2JP.new_converter()),
+            Commands::JP2T(conversion) => conversion.run(JP2T.new_converter()),
         }
     }
 }
@@ -142,7 +142,7 @@ struct Conversion {
 
 impl Conversion {
     fn handle_texts(self) -> Result<(), Box<dyn Error>> {
-        let converter = self.converter.unwrap_or_else(|| T2S.new());
+        let converter = self.converter.unwrap_or_else(|| T2S.new_converter());
 
         if let Some(ref texts) = self.texts {
             let mut writer = BufWriter::new(io::stdout());
@@ -232,7 +232,7 @@ impl Conversion {
 
     fn decode<'a>(&self, buffer: &'a [u8]) -> Result<Cow<'a, str>, Box<dyn Error>> {
         let encoding = self.input_encoding();
-        let (cow, _, err) = encoding.decode(&buffer);
+        let (cow, _, err) = encoding.decode(buffer);
         if err {
             Err(format!("Error decoding in encoding {}", encoding.name()).into())
         } else {
