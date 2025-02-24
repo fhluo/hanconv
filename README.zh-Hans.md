@@ -3,6 +3,19 @@
 # Hanconv
 
 汉字转换
+<br><br>
+<a href="https://github.com/fhluo/hanconv/blob/main/LICENSE">
+<img src="https://img.shields.io/github/license/fhluo/hanconv" alt="license">
+</a>
+<a href="https://github.com/fhluo/hanconv/actions/workflows/build.yaml">
+<img src="https://github.com/fhluo/hanconv/actions/workflows/build.yaml/badge.svg" alt="build workflow">
+</a>
+<a href="https://crates.io/crates/hanconv">
+<img src="https://img.shields.io/crates/v/hanconv" alt="version">
+</a>
+<a href="https://goreportcard.com/report/github.com/fhluo/hanconv/go">
+<img src="https://goreportcard.com/badge/github.com/fhluo/hanconv/go" alt="go report card">
+</a>
 
 <samp>
 
