@@ -112,16 +112,21 @@ struct Conversion {
     /// Output filename
     #[arg(short, value_name = "PATH")]
     output_filename: Option<String>,
-    /// Generate an output filename from the input filename
+    /// Generate an output filename based on the input filename
+    ///
+    /// This option converts the input filename using the converter.
+    /// If the converted filename is identical to the original,
+    /// the specified suffix is appended to differentiate the output file.
     #[arg(short, requires = "input_filename", conflicts_with = "output_filename")]
     generate_output_filename: bool,
-    /// Customize the suffix of the generated output filename
+    /// Specify the suffix to append to the generated output filename
     #[arg(
         long,
         requires = "generate_output_filename",
-        conflicts_with = "output_filename"
+        conflicts_with = "output_filename",
+        default_value = "_converted"
     )]
-    suffix: Option<String>,
+    suffix: String,
     /// Specify input and output encoding
     #[arg(long, conflicts_with_all = &["input_encoding", "output_encoding"])]
     encoding: Option<String>,
@@ -208,7 +213,7 @@ impl Conversion {
             .into_owned();
         let ext = path.extension().unwrap_or_default().to_string_lossy();
 
-        path.set_file_name(stem + self.suffix.as_deref().unwrap_or("_converted") + &ext);
+        path.set_file_name(stem + self.suffix.as_str() + &ext);
 
         Some(path)
     }
