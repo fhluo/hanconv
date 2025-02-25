@@ -1,0 +1,23 @@
+[project]
+name = "hanconv"
+description = "Convert between Chinese characters variants."
+readme = "README.md"
+authors = [
+    { name = "fhluo", email = "20843637+fhluo@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = []
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+
+[build-system]
+requires = ["maturin>=1.8,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+

@@ -2,5 +2,6 @@
 resolver = "3"
 members = [
     "app",
+    "bindings/py",
     "crates/hanconv",
 ]
