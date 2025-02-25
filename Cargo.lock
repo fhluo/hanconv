@@ -1607,6 +1607,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "hanconv-wasm"
+version = "0.3.0"
+dependencies = [
+ "getrandom 0.2.15",
+ "hanconv 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
