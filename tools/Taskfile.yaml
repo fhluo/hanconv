@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: 3
 
 tasks:
@@ -5,4 +6,6 @@ tasks:
     cmd: go build ./update
 
   update:
-    cmd: go get -u all
+    cmds:
+      - go get -u all
+      - go mod tidy

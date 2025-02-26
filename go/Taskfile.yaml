@@ -18,4 +18,6 @@ tasks:
       - go install ./cmd/hanconv
 
   update:
-    cmd: go get -u all
+    cmds:
+      - go get -u all
+      - go mod tidy
