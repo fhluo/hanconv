@@ -1538,16 +1538,6 @@ dependencies = [
 [[package]]
 name = "hanconv"
 version = "0.3.2"
-dependencies = [
- "ahash",
- "clap",
- "encoding_rs",
- "rayon",
-]
-
-[[package]]
-name = "hanconv"
-version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5e55ceefa5f4ac4024fefc477e3ab4718bcba8e3299ba08617ac17b338c2f32f"
 dependencies = [
@@ -1557,10 +1547,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "hanconv"
+version = "0.3.3"
+dependencies = [
+ "ahash",
+ "clap",
+ "encoding_rs",
+ "rayon",
+]
+
+[[package]]
 name = "hanconv-py"
 version = "0.3.0"
 dependencies = [
- "hanconv 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hanconv 0.3.2",
  "pyo3",
 ]
 
@@ -1580,7 +1580,7 @@ name = "hanconv-wasm"
 version = "0.3.0"
 dependencies = [
  "getrandom 0.2.15",
- "hanconv 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hanconv 0.3.2",
  "wasm-bindgen",
 ]
 
@@ -2153,9 +2153,9 @@ checksum = "d26c52dbd32dccf2d10cac7725f8eae5296885fb5703b261f7d0a0739ec807ab"
 
 [[package]]
 name = "litemap"
-version = "0.7.4"
+version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ee93343901ab17bd981295f2cf0026d4ad018c7c31ba84549a4ddbb47a45104"
+checksum = "23fb14cb19457329c82206317a5663005a4d404783dc74f4252769b0d5f42856"
 
 [[package]]
 name = "lock_api"
@@ -3902,9 +3902,9 @@ dependencies = [
 
 [[package]]
 name = "tao"
-version = "0.32.2"
+version = "0.32.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9899a4cb2590e669dd9d32ea6360ac67f29843fbf0424e06f9fc0e9e1ec9579a"
+checksum = "3d8f5e5fe19612f3dd187ac3928d48f5ad23d3edd9821806d05b0c3beb6537bd"
 dependencies = [
  "bitflags 2.8.0",
  "core-foundation",
@@ -4645,9 +4645,9 @@ checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 
 [[package]]
 name = "uuid"
-version = "1.15.0"
+version = "1.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bd8dcafa1ca14750d8d7a05aa05988c17aab20886e1f3ae33a40223c58d92ef7"
+checksum = "e0f540e3240398cce6128b64ba83fdbdd86129c16a3aa1a3a252efd66eb3d587"
 dependencies = [
  "getrandom 0.3.1",
  "serde",
@@ -5423,9 +5423,9 @@ checksum = "1e9df38ee2d2c3c5948ea468a8406ff0db0b29ae1ffde1bcf20ef305bcc95c51"
 
 [[package]]
 name = "wry"
-version = "0.50.0"
+version = "0.50.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eaa83204cc976ccffdc50559914edb93945f472863916c61de5cc772d452fb4a"
+checksum = "2a5eabce267929af61619166232d5221aeec2d7af8712bc33cf54a78416ad711"
 dependencies = [
  "base64 0.22.1",
  "block2 0.6.0",
@@ -5606,18 +5606,18 @@ dependencies = [
 
 [[package]]
 name = "zerofrom"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cff3ee08c995dee1859d998dea82f7374f2826091dd9cd47def953cae446cd2e"
+checksum = "50cc42e0333e05660c3587f3bf9d0478688e15d870fab3346451ce7f8c9fbea5"
 dependencies = [
  "zerofrom-derive",
 ]
 
 [[package]]
 name = "zerofrom-derive"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "595eed982f7d355beb85837f651fa22e90b3c044842dc7f2c2842c086f295808"
+checksum = "d71e5d6e06ab090c67b5e44993ec16b72dcbaabc526db883a360057678b48502"
 dependencies = [
  "proc-macro2",
  "quote",
