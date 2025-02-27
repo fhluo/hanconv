@@ -1,6 +1,7 @@
 use clap::{Args, Parser, Subcommand};
 use encoding_rs::{Encoding, UTF_8};
 use hanconv::{Converter, Converters::*};
+use rayon::prelude::*;
 use std::borrow::Cow;
 use std::error::Error;
 use std::fs::File;
@@ -259,12 +260,21 @@ impl Conversion {
 
         let converter = self.converter.as_ref().unwrap();
 
-        if self.encoding_unspecified() {
-            output.write_all(converter.convert(String::from_utf8(buffer)?).as_bytes())?;
-            return Ok(());
+        let s = if self.encoding_unspecified() {
+            Cow::Owned(String::from_utf8(buffer)?)
         } else {
-            let r = converter.convert(self.decode(&buffer)?);
-            output.write_all(&self.encode(&r)?)?;
+            self.decode(&buffer)?
+        };
+
+        let s = s
+            .par_split_inclusive('\n')
+            .map(|s| converter.convert(s))
+            .collect::<String>();
+
+        if self.encoding_unspecified() {
+            output.write_all(s.as_bytes())?;
+        } else {
+            output.write_all(&self.encode(&s)?)?;
         }
 
         Ok(())
