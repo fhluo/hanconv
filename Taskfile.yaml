@@ -44,6 +44,7 @@ tasks:
     deps:
       - task: tools:update
       - task: go:update
+      - task: web:update
     cmds:
       - task: update-dictionaries
       - cargo update

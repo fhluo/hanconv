@@ -9,3 +9,6 @@ tasks:
 
   dev:
     cmd: bun run dev
+
+  update:
+    cmd: bun update
