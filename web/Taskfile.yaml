@@ -12,3 +12,6 @@ tasks:
 
   update:
     cmd: bun update
+
+  fromat:
+    cmd: bun format
