@@ -1,3 +1,6 @@
+use tauri::Manager;
+use window_vibrancy::apply_mica;
+
 #[tauri::command]
 async fn s2t(s: String) -> String {
     hanconv::s2t(s)
@@ -72,6 +75,16 @@ async fn jp2t(s: String) -> String {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .setup(|app| {
+            let window = app.get_webview_window("main").unwrap();
+
+            #[cfg(target_os = "windows")]
+            {
+                apply_mica(&window, Some(false))?;
+            }
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             s2t, t2s, s2tw, tw2s, s2twp, tw2sp, t2tw, tw2t, s2hk, hk2s, t2hk, hk2t, t2jp, jp2t
         ])
