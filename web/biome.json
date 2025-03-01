@@ -1,12 +1,14 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "include": [
-      "./src"
-    ]
+    "include": ["./src", "*.json", "index.html"]
   },
   "json": {
+    "parser": {
+      "allowComments": true
+    },
     "formatter": {
+      "indentStyle": "space",
       "indentWidth": 2
     }
   }
