@@ -67,6 +67,18 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     hanconv t2s -i input.txt -o output.txt --encoding GBK
     ```
 
+- **Convert text directly from command line:**
+
+    ```shell
+    hanconv s2t "简繁转换"
+    ```
+
+- **Read from stdin and write to stdout:**
+
+    ```shell
+    cat input.txt | hanconv s2t > output.txt
+    ```
+
 ### Rust
 
 1. Add `hanconv` as a dependency in your `Cargo.toml`.
@@ -119,6 +131,20 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
         fmt.Println(result)
     }
     ```
+
+## Advanced Usage
+
+### Handling Different Encodings
+
+For files with non-UTF-8 encodings, specify the encoding:
+
+```shell
+# Same encoding for input and output
+hanconv s2t -i input.txt -o output.txt --encoding GBK
+
+# Different encodings for input and output
+hanconv s2t -i input.txt -o output.txt --input-encoding GBK --output-encoding UTF-8
+```
 
 ## Conversions
 

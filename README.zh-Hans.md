@@ -65,13 +65,25 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     hanconv t2s -i input.txt -o output.txt --encoding GBK
     ```
 
+- **直接转换命令行中的文本：**
+
+    ```shell
+    hanconv s2t "简繁转换"
+    ```
+
+- **从标准输入读取并写入标准输出：**
+
+    ```shell
+    cat input.txt | hanconv s2t > output.txt
+    ```
+
 ### Rust
 
 1. 在 `Cargo.toml` 中添加 `hanconv` 依赖：
 
     ```toml
     [dependencies]
-    hanconv = "0.2"
+    hanconv = "0.3"
     ```
 
 2. 在项目中使用提供的转换函数：
@@ -117,6 +129,20 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
         fmt.Println(result)
     }
     ```
+
+## 高级用法
+
+### 处理不同编码
+
+对于非 UTF-8 编码的文件，可以指定编码：
+
+```shell
+# 输入和输出使用相同编码
+hanconv s2t -i input.txt -o output.txt --encoding GBK
+
+# 输入和输出使用不同编码
+hanconv s2t -i input.txt -o output.txt --input-encoding GBK --output-encoding UTF-8
+```
 
 ## 转换类型
 
