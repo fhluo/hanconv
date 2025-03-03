@@ -61,12 +61,6 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     hanconv t2s -i input.txt -o output.txt
     ```
 
-- **Specify input and output encoding:**
-
-    ```shell
-    hanconv t2s -i input.txt -o output.txt --encoding GBK
-    ```
-
 - **Convert text directly from command line:**
 
     ```shell
@@ -77,6 +71,16 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
     ```shell
     cat input.txt | hanconv s2t > output.txt
+    ```
+
+- **For files with non-UTF-8 encodings, specify the encoding:**
+
+    ```shell
+    # Same encoding for input and output
+    hanconv t2s -i input.txt -o output.txt --encoding GBK
+    
+    # Different encodings for input and output
+    hanconv t2s -i input.txt -o output.txt --input-encoding GBK --output-encoding UTF-8
     ```
 
 ### Rust
@@ -131,20 +135,6 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
         fmt.Println(result)
     }
     ```
-
-## Advanced Usage
-
-### Handling Different Encodings
-
-For files with non-UTF-8 encodings, specify the encoding:
-
-```shell
-# Same encoding for input and output
-hanconv s2t -i input.txt -o output.txt --encoding GBK
-
-# Different encodings for input and output
-hanconv s2t -i input.txt -o output.txt --input-encoding GBK --output-encoding UTF-8
-```
 
 ## Conversions
 

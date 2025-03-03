@@ -32,10 +32,26 @@ cargo install hanconv
     hanconv t2s -i input.txt -o output.txt
     ```
 
-- **Specify input and output encoding:**
+- **Convert text directly from command line:**
 
     ```shell
+    hanconv s2t "简繁转换"
+    ```
+
+- **Read from stdin and write to stdout:**
+
+    ```shell
+    cat input.txt | hanconv s2t > output.txt
+    ```
+
+- **For files with non-UTF-8 encodings, specify the encoding:**
+
+    ```shell
+    # Same encoding for input and output
     hanconv t2s -i input.txt -o output.txt --encoding GBK
+    
+    # Different encodings for input and output
+    hanconv t2s -i input.txt -o output.txt --input-encoding GBK --output-encoding UTF-8
     ```
 
 ### As a Library

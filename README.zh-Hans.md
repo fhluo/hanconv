@@ -59,12 +59,6 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     hanconv t2s -i input.txt -o output.txt
     ```
 
-- **指定输入和输出编码：**
-
-    ```shell
-    hanconv t2s -i input.txt -o output.txt --encoding GBK
-    ```
-
 - **直接转换命令行中的文本：**
 
     ```shell
@@ -75,6 +69,16 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
     ```shell
     cat input.txt | hanconv s2t > output.txt
+    ```
+
+- **对于非 UTF-8 编码的文件，可以指定编码：**
+
+    ```shell
+    # 输入和输出使用相同编码
+    hanconv t2s -i input.txt -o output.txt --encoding GBK
+    
+    # 输入和输出使用不同编码
+    hanconv t2s -i input.txt -o output.txt --input-encoding GBK --output-encoding UTF-8
     ```
 
 ### Rust
@@ -129,20 +133,6 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
         fmt.Println(result)
     }
     ```
-
-## 高级用法
-
-### 处理不同编码
-
-对于非 UTF-8 编码的文件，可以指定编码：
-
-```shell
-# 输入和输出使用相同编码
-hanconv s2t -i input.txt -o output.txt --encoding GBK
-
-# 输入和输出使用不同编码
-hanconv s2t -i input.txt -o output.txt --input-encoding GBK --output-encoding UTF-8
-```
 
 ## 转换类型
 
