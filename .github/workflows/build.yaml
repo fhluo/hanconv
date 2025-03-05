@@ -36,6 +36,9 @@ jobs:
       - name: Set up Tauri CLI
         run: cargo binstall tauri-cli
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
       - name: Build
         run: |
           task build
