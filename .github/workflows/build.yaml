@@ -15,7 +15,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 'stable'
+          go-version: "stable"
           cache-dependency-path: |
             go/go.sum
             tools/go.sum
@@ -41,4 +41,5 @@ jobs:
 
       - name: Build
         run: |
+          task web:setup
           task build
