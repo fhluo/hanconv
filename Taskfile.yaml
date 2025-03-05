@@ -26,6 +26,9 @@ tasks:
 
   build:
     deps:
+      - task: go:build
+      - task: tools:build
+      - task: cli:build
       - task: app:build
 
   debug:

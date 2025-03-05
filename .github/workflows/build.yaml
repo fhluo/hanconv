@@ -30,8 +30,12 @@ jobs:
           winget install --id Task.Task --accept-source-agreements --accept-package-agreements
           "$env:LOCALAPPDATA\Microsoft\WinGet\Links" | Out-File -FilePath "$env:GITHUB_PATH" -Append
 
+      - name: Set up Cargo Binary Install
+        uses: cargo-bins/cargo-binstall@main
+
+      - name: Set up Tauri CLI
+        run: cargo binstall tauri-cli
+
       - name: Build
         run: |
-          task cli:build
-          task go:build
-          task tools:build
+          task build
