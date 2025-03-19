@@ -107,20 +107,18 @@ impl Commands {
 struct Conversion {
     #[arg(skip)]
     converter: Option<Converter>,
-    /// Input filename
+    /// Input file path (stdin if not specified)
     #[arg(short, value_name = "PATH")]
     input_filename: Option<String>,
-    /// Output filename
+    /// Output file path (stdout if not specified)
     #[arg(short, value_name = "PATH")]
     output_filename: Option<String>,
-    /// Generate an output filename based on the input filename
+    /// Auto-generate output filename by converting input filename
     ///
-    /// This option converts the input filename using the converter.
-    /// If the converted filename is identical to the original,
-    /// the specified suffix is appended to differentiate the output file.
+    /// Adds suffix if names are identical
     #[arg(short, requires = "input_filename", conflicts_with = "output_filename")]
     generate_output_filename: bool,
-    /// Specify the suffix to append to the generated output filename
+    /// Suffix for auto-generated filenames
     #[arg(
         long,
         requires = "generate_output_filename",
@@ -128,15 +126,20 @@ struct Conversion {
         default_value = "_converted"
     )]
     suffix: String,
-    /// Specify input and output encoding
+    /// Set both input and output encoding
     #[arg(long, conflicts_with_all = &["input_encoding", "output_encoding"])]
     encoding: Option<String>,
-    /// Specify input encoding
+    /// Set input encoding
+    ///
+    /// [default: UTF-8]
     #[arg(long, value_name = "ENCODING")]
     input_encoding: Option<String>,
-    /// Specify output encoding
+    /// Set output encoding
+    ///
+    /// [default: UTF-8]
     #[arg(long, value_name = "ENCODING")]
     output_encoding: Option<String>,
+    /// Text to convert directly from command line
     #[arg(value_name = "TEXT", exclusive = true)]
     texts: Option<Vec<String>>,
 }
@@ -219,7 +222,7 @@ impl Conversion {
         Some(path)
     }
 
-    fn encoding_unspecified(&self) -> bool {
+    fn use_default_encoding(&self) -> bool {
         matches!(
             self,
             Conversion {
@@ -260,7 +263,7 @@ impl Conversion {
 
         let converter = self.converter.as_ref().unwrap();
 
-        let s = if self.encoding_unspecified() {
+        let s = if self.use_default_encoding() {
             Cow::Owned(String::from_utf8(buffer)?)
         } else {
             self.decode(&buffer)?
@@ -271,7 +274,7 @@ impl Conversion {
             .map(|s| converter.convert(s))
             .collect::<String>();
 
-        if self.encoding_unspecified() {
+        if self.use_default_encoding() {
             output.write_all(s.as_bytes())?;
         } else {
             output.write_all(&self.encode(&s)?)?;
