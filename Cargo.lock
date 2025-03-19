@@ -1570,6 +1570,8 @@ dependencies = [
 [[package]]
 name = "hanconv"
 version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba36cb9564dbda4b5eee5bbeb2d611412e001768392029e5afe9daec77828adc"
 dependencies = [
  "ahash",
  "clap",
@@ -1579,9 +1581,7 @@ dependencies = [
 
 [[package]]
 name = "hanconv"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba36cb9564dbda4b5eee5bbeb2d611412e001768392029e5afe9daec77828adc"
+version = "0.3.4"
 dependencies = [
  "ahash",
  "clap",
@@ -1593,7 +1593,7 @@ dependencies = [
 name = "hanconv-py"
 version = "0.3.0"
 dependencies = [
- "hanconv 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hanconv 0.3.3",
  "pyo3",
 ]
 
@@ -1601,7 +1601,7 @@ dependencies = [
 name = "hanconv-tauri"
 version = "0.2.0"
 dependencies = [
- "hanconv 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hanconv 0.3.3",
  "serde",
  "serde_json",
  "tauri",
@@ -1618,7 +1618,7 @@ name = "hanconv-wasm"
 version = "0.3.0"
 dependencies = [
  "getrandom 0.2.15",
- "hanconv 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hanconv 0.3.3",
  "wasm-bindgen",
 ]
 
