@@ -73,12 +73,10 @@ impl<T> Trie<T> {
         let mut node = &self.root;
 
         for char in key.chars() {
-            if let Some(children) = &node.children {
-                if let Some(child) = children.get(&char) {
-                    node = child;
-                } else {
-                    return None;
-                }
+            if let Some(children) = &node.children
+                && let Some(child) = children.get(&char)
+            {
+                node = child;
             } else {
                 return None;
             }
@@ -91,12 +89,10 @@ impl<T> Trie<T> {
         let mut node = &self.root;
 
         for char in prefix.chars() {
-            if let Some(children) = &node.children {
-                if let Some(child) = children.get(&char) {
-                    node = child;
-                } else {
-                    return false;
-                }
+            if let Some(children) = &node.children
+                && let Some(child) = children.get(&char)
+            {
+                node = child;
             } else {
                 return false;
             }
@@ -110,15 +106,13 @@ impl<T> Trie<T> {
         let mut result = None;
 
         for (char, i) in chars.take(self.depth).zip(1..) {
-            if let Some(children) = &node.children {
-                if let Some(child) = children.get(&char) {
-                    node = child;
+            if let Some(children) = &node.children
+                && let Some(child) = children.get(&char)
+            {
+                node = child;
 
-                    if let Some(value) = node.value.as_ref() {
-                        result = Some((value, i));
-                    }
-                } else {
-                    return result;
+                if let Some(value) = node.value.as_ref() {
+                    result = Some((value, i));
                 }
             } else {
                 return result;
