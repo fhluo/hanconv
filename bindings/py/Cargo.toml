@@ -8,5 +8,5 @@ name = "hanconv"
 crate-type = ["cdylib"]
 
 [dependencies]
-hanconv = "0.3"
+hanconv = { workspace = true }
 pyo3 = { version = "0.25", features = ["extension-module"] }

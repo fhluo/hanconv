@@ -8,6 +8,6 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
-hanconv = "0.3"
+hanconv = { workspace = true }
 wasm-bindgen = "0.2"
-getrandom = {version = "0.2", features = ["js"]}
+getrandom = { version = "0.2", features = ["js"] }

@@ -6,3 +6,6 @@ members = [
     "bindings/wasm",
     "crates/hanconv",
 ]
+
+[workspace.dependencies]
+hanconv = "0.4"
