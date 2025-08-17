@@ -1,4 +1,7 @@
 /target
 
 .idea
+
 *.exe
+
+.DS_Store
