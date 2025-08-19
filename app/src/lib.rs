@@ -1,5 +1,5 @@
-use tauri::Manager;
-use window_vibrancy::apply_mica;
+#[cfg(target_os = "windows")]
+use {tauri::Manager, window_vibrancy::apply_mica};
 
 #[tauri::command]
 async fn s2t(s: String) -> String {
@@ -73,24 +73,26 @@ async fn jp2t(s: String) -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    tauri::Builder::default()
+    let app = tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
-        .plugin(tauri_plugin_process::init())
-        .setup(|app| {
+        .plugin(tauri_plugin_process::init());
+
+    #[cfg(target_os = "windows")]
+    {
+        app.setup(|app| {
             let window = app.get_webview_window("main").unwrap();
 
-            #[cfg(target_os = "windows")]
-            {
-                apply_mica(&window, Some(false))?;
-            }
+            apply_mica(&window, Some(false))?;
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![
-            s2t, t2s, s2tw, tw2s, s2twp, tw2sp, t2tw, tw2t, s2hk, hk2s, t2hk, hk2t, t2jp, jp2t
-        ])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+    }
+
+    app.invoke_handler(tauri::generate_handler![
+        s2t, t2s, s2tw, tw2s, s2twp, tw2sp, t2tw, tw2t, s2hk, hk2s, t2hk, hk2t, t2jp, jp2t
+    ])
+    .run(tauri::generate_context!())
+    .expect("error while running tauri application");
 }
