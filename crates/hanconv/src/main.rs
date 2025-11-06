@@ -210,14 +210,13 @@ impl Conversion {
         }
 
         let mut path = PathBuf::from(output_filename);
-        let stem = path
-            .file_stem()
-            .unwrap_or_default()
-            .to_string_lossy()
-            .into_owned();
-        let ext = path.extension().unwrap_or_default().to_string_lossy();
 
-        path.set_file_name(stem + self.suffix.as_str() + &ext);
+        let mut stem = path.file_stem().unwrap_or_default().to_owned();
+        let ext = path.extension().unwrap_or_default().to_owned();
+
+        stem.push(&self.suffix);
+        path.set_file_name(stem);
+        path.set_extension(ext);
 
         Some(path)
     }
