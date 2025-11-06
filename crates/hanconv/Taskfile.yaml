@@ -12,3 +12,6 @@ tasks:
 
   publish:
     cmd: cargo publish
+
+  install:
+    cmd: cargo install --path .
