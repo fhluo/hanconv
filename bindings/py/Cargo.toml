@@ -9,4 +9,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 hanconv = { workspace = true }
-pyo3 = { version = "0.25", features = ["extension-module"] }
+pyo3 = { version = "0.27", features = ["extension-module"] }
