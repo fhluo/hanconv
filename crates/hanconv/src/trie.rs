@@ -71,7 +71,7 @@ impl<T: Default> Trie<T> {
 }
 
 impl<T> Trie<T> {
-    pub fn get(&mut self, key: &str) -> Option<&T> {
+    pub fn get(&self, key: &str) -> Option<&T> {
         let mut node = &self.root;
 
         for char in key.chars() {
