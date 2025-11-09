@@ -81,7 +81,7 @@ func main() {
 			for _, dir := range dirs {
 				dst := filepath.Join(dir, filepath.Base(filename))
 				if err := CopyFile(fs, filename, dst); err != nil {
-					slog.Error("failed to copy file", "src", filename, "dst", "err", err)
+					slog.Error("failed to copy file", "src", filename, "dst", dst, "err", err)
 				}
 			}
 
