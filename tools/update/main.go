@@ -1,18 +1,19 @@
 package main
 
 import (
-	"github.com/go-git/go-billy/v5"
-	"github.com/go-git/go-billy/v5/memfs"
-	"github.com/go-git/go-billy/v5/util"
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/go-git/go-git/v5/storage/memory"
 	"io"
 	"log"
 	"log/slog"
 	"os"
 	"path/filepath"
 	"sync"
+
+	"github.com/go-git/go-billy/v5"
+	"github.com/go-git/go-billy/v5/memfs"
+	"github.com/go-git/go-billy/v5/util"
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/storage/memory"
 )
 
 func init() {
@@ -75,18 +76,14 @@ func main() {
 
 	var wg sync.WaitGroup
 	for _, filename := range files {
-		wg.Add(1)
-
-		go func() {
+		wg.Go(func() {
 			for _, dir := range dirs {
 				dst := filepath.Join(dir, filepath.Base(filename))
 				if err := CopyFile(fs, filename, dst); err != nil {
 					slog.Error("failed to copy file", "src", filename, "dst", dst, "err", err)
 				}
 			}
-
-			wg.Done()
-		}()
+		})
 	}
 	wg.Wait()
 }
