@@ -8,25 +8,24 @@ pub struct Node<T> {
 
 impl<T> From<Node<T>> for AHashMap<String, T> {
     fn from(node: Node<T>) -> Self {
-        let mut map = AHashMap::default();
+        let mut map = AHashMap::new();
 
-        fn build<T>(map: &mut AHashMap<String, T>, node: Node<T>, key: String) {
+        fn build<T>(map: &mut AHashMap<String, T>, node: Node<T>, key: &mut String) {
             if let Some(value) = node.value {
                 map.insert(key.clone(), value);
             }
 
             if let Some(children) = node.children {
-                children.into_iter().for_each(|(char, node)| {
-                    build(map, node, {
-                        let mut key = key.clone();
-                        key.push(char);
-                        key
-                    })
-                })
+                for (char, node) in children {
+                    key.push(char);
+                    build(map, node, key);
+                    key.pop();
+                }
             }
         }
 
-        build(&mut map, node, String::new());
+        let mut key = String::new();
+        build(&mut map, node, &mut key);
 
         map
     }
