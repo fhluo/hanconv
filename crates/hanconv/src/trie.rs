@@ -1,9 +1,17 @@
 use ahash::AHashMap;
 
-#[derive(Default)]
 pub struct Node<T> {
     children: Option<AHashMap<char, Node<T>>>,
     value: Option<T>,
+}
+
+impl<T> Default for Node<T> {
+    fn default() -> Self {
+        Node {
+            children: Default::default(),
+            value: Default::default(),
+        }
+    }
 }
 
 impl<T> From<Node<T>> for AHashMap<String, T> {
@@ -31,10 +39,18 @@ impl<T> From<Node<T>> for AHashMap<String, T> {
     }
 }
 
-#[derive(Default)]
 pub struct Trie<T> {
     root: Node<T>,
     depth: usize,
+}
+
+impl<T> Default for Trie<T> {
+    fn default() -> Self {
+        Trie {
+            root: Default::default(),
+            depth: Default::default(),
+        }
+    }
 }
 
 impl<T> Trie<T> {
@@ -43,7 +59,7 @@ impl<T> Trie<T> {
     }
 }
 
-impl<T: Default> Trie<T> {
+impl<T> Trie<T> {
     pub fn insert(&mut self, key: &str, value: T) {
         if key.is_empty() {
             return;
@@ -149,7 +165,7 @@ impl<T> From<Trie<T>> for AHashMap<String, T> {
     }
 }
 
-impl<K: AsRef<str>, V: Default> From<AHashMap<K, V>> for Trie<V> {
+impl<K: AsRef<str>, V> From<AHashMap<K, V>> for Trie<V> {
     fn from(map: AHashMap<K, V>) -> Self {
         let mut trie = Trie::default();
 
@@ -161,7 +177,7 @@ impl<K: AsRef<str>, V: Default> From<AHashMap<K, V>> for Trie<V> {
     }
 }
 
-impl<K: AsRef<str>, V: Default> FromIterator<(K, V)> for Trie<V> {
+impl<K: AsRef<str>, V> FromIterator<(K, V)> for Trie<V> {
     fn from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
         let mut trie = Trie::default();
 
