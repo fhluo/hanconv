@@ -12,3 +12,6 @@ tasks:
 
   dev:
     cmd: cargo tauri dev
+
+  icon:
+    cmd: cargo tauri icon
