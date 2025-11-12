@@ -1,3 +1,6 @@
+use window_vibrancy::NSGlassEffectViewStyle;
+#[cfg(target_os = "macos")]
+use {tauri::Manager, window_vibrancy::apply_liquid_glass};
 #[cfg(target_os = "windows")]
 use {tauri::Manager, window_vibrancy::apply_mica};
 
@@ -73,26 +76,25 @@ async fn jp2t(s: String) -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let app = tauri::Builder::default()
+    tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
-        .plugin(tauri_plugin_process::init());
-
-    #[cfg(target_os = "windows")]
-    {
-        app.setup(|app| {
+        .plugin(tauri_plugin_process::init())
+        .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
 
+            #[cfg(target_os = "windows")]
             apply_mica(&window, Some(false))?;
+
+            #[cfg(target_os = "macos")]
+            apply_liquid_glass(&window, NSGlassEffectViewStyle::Clear, None, Some(16.0))?;
 
             Ok(())
         })
-    }
-
-    app.invoke_handler(tauri::generate_handler![
-        s2t, t2s, s2tw, tw2s, s2twp, tw2sp, t2tw, tw2t, s2hk, hk2s, t2hk, hk2t, t2jp, jp2t
-    ])
-    .run(tauri::generate_context!())
-    .expect("error while running tauri application");
+        .invoke_handler(tauri::generate_handler![
+            s2t, t2s, s2tw, tw2s, s2twp, tw2sp, t2tw, tw2t, s2hk, hk2s, t2hk, hk2t, t2jp, jp2t
+        ])
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
 }
