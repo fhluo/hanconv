@@ -1,8 +1,10 @@
-use window_vibrancy::NSGlassEffectViewStyle;
-#[cfg(target_os = "macos")]
-use {tauri::Manager, window_vibrancy::apply_liquid_glass};
 #[cfg(target_os = "windows")]
 use {tauri::Manager, window_vibrancy::apply_mica};
+#[cfg(target_os = "macos")]
+use {
+    tauri::Manager,
+    window_vibrancy::{NSGlassEffectViewStyle, apply_liquid_glass},
+};
 
 #[tauri::command]
 async fn s2t(s: String) -> String {
