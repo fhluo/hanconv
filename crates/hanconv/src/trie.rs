@@ -146,12 +146,13 @@ impl<T: AsRef<str>> Trie<T> {
         let mut iter = s.chars().peekable();
         let mut dst = String::with_capacity(s.len());
 
-        while iter.peek().is_some() {
+        while let Some(&c) = iter.peek() {
             if let Some((r, n)) = self.r#match(iter.clone()) {
-                dst += r.as_ref();
-                iter.by_ref().nth(n - 1);
+                dst.push_str(r.as_ref());
+                iter.nth(n - 1);
             } else {
-                dst.push(iter.next().unwrap());
+                dst.push(c);
+                iter.next();
             }
         }
 
