@@ -141,22 +141,23 @@ impl<T> Trie<T> {
 }
 
 impl<T: AsRef<str>> Trie<T> {
-    pub fn convert(&self, s: impl AsRef<str>) -> String {
-        let s = s.as_ref();
-        let mut iter = s.chars().peekable();
-        let mut dst = String::with_capacity(s.len());
+    pub fn convert(&self, input: impl AsRef<str>) -> String {
+        let input = input.as_ref();
+        let mut iter = input.chars();
+        let mut output = String::with_capacity(input.len());
 
-        while let Some(&c) = iter.peek() {
-            if let Some((r, n)) = self.r#match(iter.clone()) {
-                dst.push_str(r.as_ref());
-                iter.nth(n - 1);
+        loop {
+            if let Some((r, len)) = self.r#match(iter.clone()) {
+                output.push_str(r.as_ref());
+                iter.nth(len - 1);
+            } else if let Some(c) = iter.next() {
+                output.push(c);
             } else {
-                dst.push(c);
-                iter.next();
+                break;
             }
         }
 
-        dst
+        output
     }
 }
 
