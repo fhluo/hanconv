@@ -25,7 +25,7 @@ pub enum Converters {
     S2TWP,
     /// Traditional Chinese (Taiwan) to Simplified Chinese with Mainland Chinese idiom
     ///
-    /// 繁体中文（台湾）→ 简体中文，转化为中国大陆常用词
+    /// 繁体中文（台湾）→ 简体中文，转换为中国大陆常用词
     TW2SP,
     /// Traditional Chinese to Traditional Chinese (Taiwan)
     ///
@@ -174,7 +174,7 @@ pub fn s2twp(s: impl AsRef<str>) -> String {
 
 /// Traditional Chinese (Taiwan) to Simplified Chinese with Mainland Chinese idiom
 ///
-/// 繁体中文（台湾）→ 简体中文，转化为中国大陆常用词
+/// 繁体中文（台湾）→ 简体中文，转换为中国大陆常用词
 pub fn tw2sp(s: impl AsRef<str>) -> String {
     static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::TW2SP.new_converter());
     CONVERTER.convert(s)

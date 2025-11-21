@@ -76,7 +76,7 @@ export const S2TWP = new Conversion(
 /**
  * Traditional Chinese (Taiwan) to Simplified Chinese with Mainland Chinese idiom
  *
- * 繁体中文（台湾）→ 简体中文，转化为中国大陆常用词
+ * 繁体中文（台湾）→ 简体中文，转换为中国大陆常用词
  */
 export const TW2SP = new Conversion(
   "tw2sp",
@@ -239,7 +239,7 @@ export async function s2twp(text: string): Promise<string> {
 /**
  * Traditional Chinese (Taiwan) to Simplified Chinese with Mainland Chinese idiom
  *
- * 繁体中文（台湾）→ 简体中文，转化为中国大陆常用词
+ * 繁体中文（台湾）→ 简体中文，转换为中国大陆常用词
  */
 export async function tw2sp(text: string): Promise<string> {
   return await TW2SP.convert(text);

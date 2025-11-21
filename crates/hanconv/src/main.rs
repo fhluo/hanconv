@@ -46,7 +46,7 @@ enum Commands {
     S2TWP(Conversion),
     /// Convert Traditional Chinese (Taiwan) to Simplified Chinese with Mainland Chinese idiom
     ///
-    /// 繁体中文（台湾）→ 简体中文，转化为中国大陆常用词
+    /// 繁体中文（台湾）→ 简体中文，转换为中国大陆常用词
     TW2SP(Conversion),
     /// Convert Traditional Chinese to Traditional Chinese (Taiwan)
     ///
