@@ -24,8 +24,8 @@ impl<T> From<Node<T>> for AHashMap<String, T> {
             }
 
             if let Some(children) = node.children {
-                for (char, node) in children {
-                    key.push(char);
+                for (c, node) in children {
+                    key.push(c);
                     build(map, node, key);
                     key.pop();
                 }
@@ -68,11 +68,11 @@ impl<T> Trie<T> {
         let mut node = &mut self.root;
         let mut depth = 0usize;
 
-        for char in key.chars() {
+        for c in key.chars() {
             node = node
                 .children
                 .get_or_insert_default()
-                .entry(char)
+                .entry(c)
                 .or_default();
 
             depth += 1;
@@ -89,9 +89,9 @@ impl<T> Trie<T> {
     pub fn get(&self, key: &str) -> Option<&T> {
         let mut node = &self.root;
 
-        for char in key.chars() {
+        for c in key.chars() {
             if let Some(children) = &node.children
-                && let Some(child) = children.get(&char)
+                && let Some(child) = children.get(&c)
             {
                 node = child;
             } else {
@@ -105,9 +105,9 @@ impl<T> Trie<T> {
     pub fn starts_with(&self, prefix: &str) -> bool {
         let mut node = &self.root;
 
-        for char in prefix.chars() {
+        for c in prefix.chars() {
             if let Some(children) = &node.children
-                && let Some(child) = children.get(&char)
+                && let Some(child) = children.get(&c)
             {
                 node = child;
             } else {
@@ -122,9 +122,9 @@ impl<T> Trie<T> {
         let mut node = &self.root;
         let mut result = None;
 
-        for (char, i) in chars.take(self.depth).zip(1..) {
+        for (c, i) in chars.take(self.depth).zip(1..) {
             if let Some(children) = &node.children
-                && let Some(child) = children.get(&char)
+                && let Some(child) = children.get(&c)
             {
                 node = child;
 
