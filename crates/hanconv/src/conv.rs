@@ -67,52 +67,50 @@ macro_rules! trie {
     };
 }
 
+static S2T_DICT: LazyLock<Trie<&'static str>> = LazyLock::new(|| trie![STPhrases, STCharacters]);
+static T2S_DICT: LazyLock<Trie<&'static str>> = LazyLock::new(|| trie![TSPhrases, TSCharacters]);
+static T2TW_VARIANTS_DICT: LazyLock<Trie<&'static str>> = LazyLock::new(|| trie![TWVariants]);
+static T2TW_PHRASES_DICT: LazyLock<Trie<&'static str>> = LazyLock::new(|| trie![TWPhrases]);
+static TW2T_VARIANTS_DICT: LazyLock<Trie<&'static str>> =
+    LazyLock::new(|| trie![TWVariantsRevPhrases, TWVariantsRev]);
+static TW2T_PHRASES_VARIANTS_DICT: LazyLock<Trie<&'static str>> =
+    LazyLock::new(|| trie![TWPhrasesRev, TWVariantsRevPhrases, TWVariantsRev]);
+static T2HK_VARIANTS_DICT: LazyLock<Trie<&'static str>> = LazyLock::new(|| trie![HKVariants]);
+static HK2T_VARIANTS_DICT: LazyLock<Trie<&'static str>> =
+    LazyLock::new(|| trie![HKVariantsRevPhrases, HKVariantsRev]);
+static T2JP_VARIANTS_DICT: LazyLock<Trie<&'static str>> = LazyLock::new(|| trie![JPVariants]);
+static JP2T_DICT: LazyLock<Trie<&'static str>> =
+    LazyLock::new(|| trie![JPShinjitaiPhrases, JPShinjitaiCharacters, JPVariantsRev]);
+
 impl Converters {
     pub fn new_converter(&self) -> Converter {
         Converter::new(self.dictionaries())
     }
 
-    pub fn dictionaries(&self) -> Vec<Trie<&'static str>> {
+    pub fn dictionaries(&self) -> Vec<&'static Trie<&'static str>> {
         match self {
-            Converters::S2T => vec![trie![STPhrases, STCharacters]],
-            Converters::S2TW => vec![trie![STPhrases, STCharacters], trie![TWVariants]],
-            Converters::S2TWP => vec![
-                trie![STPhrases, STCharacters],
-                trie![TWPhrases],
-                trie![TWVariants],
-            ],
-            Converters::T2S => vec![trie![TSPhrases, TSCharacters]],
-            Converters::T2TW => vec![trie![TWVariants]],
-            Converters::TW2S => vec![
-                trie![TWVariantsRevPhrases, TWVariantsRev],
-                trie![TSPhrases, TSCharacters],
-            ],
-            Converters::TW2SP => vec![
-                trie![TWPhrasesRev, TWVariantsRevPhrases, TWVariantsRev],
-                trie![TSPhrases, TSCharacters],
-            ],
-            Converters::TW2T => vec![trie![TWVariantsRevPhrases, TWVariantsRev]],
-            Converters::S2HK => vec![trie![STPhrases, STCharacters], trie![HKVariants]],
-            Converters::HK2S => vec![
-                trie![HKVariantsRevPhrases, HKVariantsRev],
-                trie![TSPhrases, TSCharacters],
-            ],
-            Converters::HK2T => vec![trie![HKVariantsRevPhrases, HKVariantsRev]],
-            Converters::T2HK => vec![trie![HKVariants]],
-            Converters::T2JP => vec![trie![JPVariants]],
-            Converters::JP2T => vec![trie![
-                JPShinjitaiPhrases,
-                JPShinjitaiCharacters,
-                JPVariantsRev
-            ]],
+            Converters::S2T => vec![&*S2T_DICT],
+            Converters::S2TW => vec![&*S2T_DICT, &*T2TW_VARIANTS_DICT],
+            Converters::S2TWP => vec![&*S2T_DICT, &*T2TW_PHRASES_DICT, &*T2TW_VARIANTS_DICT],
+            Converters::T2S => vec![&*T2S_DICT],
+            Converters::T2TW => vec![&*T2TW_VARIANTS_DICT],
+            Converters::TW2S => vec![&*TW2T_VARIANTS_DICT, &*T2S_DICT],
+            Converters::TW2SP => vec![&*TW2T_PHRASES_VARIANTS_DICT, &*T2S_DICT],
+            Converters::TW2T => vec![&*TW2T_VARIANTS_DICT],
+            Converters::S2HK => vec![&*S2T_DICT, &*T2HK_VARIANTS_DICT],
+            Converters::HK2S => vec![&*HK2T_VARIANTS_DICT, &*T2S_DICT],
+            Converters::HK2T => vec![&*HK2T_VARIANTS_DICT],
+            Converters::T2HK => vec![&*T2HK_VARIANTS_DICT],
+            Converters::T2JP => vec![&*T2JP_VARIANTS_DICT],
+            Converters::JP2T => vec![&*JP2T_DICT],
         }
     }
 }
 
-pub struct Converter(Vec<Trie<&'static str>>);
+pub struct Converter(Vec<&'static Trie<&'static str>>);
 
 impl Converter {
-    pub fn new(dictionaries: Vec<Trie<&'static str>>) -> Self {
+    pub fn new(dictionaries: Vec<&'static Trie<&'static str>>) -> Self {
         Self(dictionaries)
     }
 
