@@ -48,7 +48,7 @@ var (
 
 	// TW2SPConverter converts Traditional Chinese (Taiwan) to Simplified Chinese with Mainland Chinese idiom
 	//
-	// 繁体中文（台湾）→ 简体中文，转化为中国大陆常用词
+	// 繁体中文（台湾）→ 简体中文，转换为中国大陆常用词
 	TW2SPConverter = sync.OnceValue(func() *Converter {
 		return NewConverter("tw2sp", trie.FromIters(dict.TWPhrasesRev(), dict.TWVariantsRevPhrases(), dict.TWVariantsRev()),
 			trie.FromIters(dict.TSPhrases(), dict.TSCharacters()))
@@ -177,7 +177,7 @@ func S2TWP(s string) string {
 
 // TW2SP converts Traditional Chinese (Taiwan) to Simplified Chinese with Mainland Chinese idiom
 //
-// 繁体中文（台湾）→ 简体中文，转化为中国大陆常用词
+// 繁体中文（台湾）→ 简体中文，转换为中国大陆常用词
 func TW2SP(s string) string {
 	return TW2SPConverter().Convert(s)
 }
