@@ -4,12 +4,7 @@
     let isOpen = $state(false);
     let tag = $state("zh-Hans");
 
-    interface Language {
-        tag: string;
-        name: string;
-    }
-
-    const languages: Language[] = [
+    const languages = [
         {
             tag: "zh-Hans",
             name: "简体中文"
@@ -22,7 +17,9 @@
             tag: "en",
             name: "English"
         }
-    ];
+    ] as const;
+
+    type Language = (typeof languages)[number];
 </script>
 
 {#snippet languageOption(lang: Language) }
