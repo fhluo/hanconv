@@ -4,7 +4,12 @@
     let isOpen = $state(false);
     let tag = $state("zh-Hans");
 
-    const languages: { tag: string, name: string }[] = [
+    interface Language {
+        tag: string;
+        name: string;
+    }
+
+    const languages: Language[] = [
         {
             tag: "zh-Hans",
             name: "简体中文"
@@ -19,6 +24,20 @@
         }
     ];
 </script>
+
+{#snippet languageOption(lang: Language) }
+    <button onclick={()=> { tag = lang.tag; isOpen = false; }} class={[
+                "flex items-center px-2 py-1.5 w-full rounded select-none outline-none transition-colors",
+                tag === lang.tag ? 'text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800' :
+                 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800']}>
+                <span class="w-4 mr-1.5 flex items-center justify-center shrink-0">
+                    {#if tag === lang.tag}
+                        <Check size={12} strokeWidth={2.5} class="text-blue-600 dark:text-blue-400"/>
+                    {/if}
+                </span>
+        <span class="text-xs font-medium shrink-0">{lang.name}</span>
+    </button>
+{/snippet}
 
 <div class="relative">
     <button onclick={()=> {isOpen = !isOpen}} aria-label="Change language"
@@ -35,17 +54,7 @@
             "animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-200 ease-out origin-top-right"
         ]}>
             {#each languages as lang}
-                <button onclick={()=> { tag = lang.tag; isOpen = false; }} class={[
-                "flex items-center px-2 py-1.5 w-full rounded select-none outline-none transition-colors",
-                tag === lang.tag ? 'text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800' :
-                 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800']}>
-                <span class="w-4 mr-1.5 flex items-center justify-center shrink-0">
-                    {#if tag === lang.tag}
-                        <Check size={12} strokeWidth={2.5} class="text-blue-600 dark:text-blue-400"/>
-                    {/if}
-                </span>
-                    <span class="text-xs font-medium shrink-0">{lang.name}</span>
-                </button>
+                {@render languageOption(lang)}
             {/each}
         </div>
     {/if}
