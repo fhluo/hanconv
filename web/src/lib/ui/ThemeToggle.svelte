@@ -32,7 +32,10 @@
 </script>
 
 <button onclick={()=>{theme = theme === "light" ? "dark" : "light"}} aria-label="Toggle theme"
-        class="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+        class={[
+            "p-2 rounded-md transition-colors cursor-pointer",
+            "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+        ]}>
     {#if theme === "light" }
         <Moon size={18}/>
     {:else}
