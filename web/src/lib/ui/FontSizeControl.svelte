@@ -5,15 +5,11 @@
   const MAX_SIZE = 72;
 
   function decrease() {
-    if (size > MIN_SIZE) {
-      size -= 1;
-    }
+    size = Math.max(MIN_SIZE, size - 1);
   }
 
   function increase() {
-    if (size < MAX_SIZE) {
-      size += 1;
-    }
+    size = Math.min(MAX_SIZE, size + 1);
   }
 </script>
 
