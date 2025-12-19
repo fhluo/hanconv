@@ -49,7 +49,7 @@
         <div class="fixed inset-0 z-40" onclick={() => isOpen = false} role="presentation"></div>
 
         <div class={[
-            "absolute top-full right-0 min-w-[120px] z-50 p-1 mt-2 flex flex-col rounded-lg shadow-sm",
+            "absolute top-full right-0 min-w-30 z-50 p-1 mt-2 flex flex-col rounded-lg shadow-sm",
             "border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900",
             "animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-200 ease-out origin-top-right"
         ]}>
