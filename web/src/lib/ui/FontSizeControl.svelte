@@ -2,7 +2,7 @@
   let size = $state(16);
 
   const MIN_SIZE = 12;
-  const MAX_SIZE = 72;
+  const MAX_SIZE = 36;
 
   function decrease() {
     size = Math.max(MIN_SIZE, size - 1);
