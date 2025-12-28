@@ -1,5 +1,11 @@
 <script lang="ts">
-  let size = $state(16);
+  import { t } from "../i18n.svelte";
+
+  interface Props {
+    size?: number;
+  }
+
+  let { size = $bindable(16) }: Props = $props();
 
   const MIN_SIZE = 12;
   const MAX_SIZE = 36;
@@ -15,7 +21,7 @@
 
 <div class="flex flex-col gap-1">
   <span class="text-[10px] tracking-wider font-medium text-gray-400 px-2"
-    >字体大小</span
+    >{t("Font Size")}</span
   >
   <div class="flex items-center justify-between px-2 py-1">
     <button

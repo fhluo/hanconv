@@ -1,11 +1,16 @@
 <script lang="ts">
   import { Check } from "@lucide/svelte";
+  import { t } from "../i18n.svelte";
 
-  type Font = "Sans Serif" | "Serif" | "Monospace";
+  export type Font = "Sans Serif" | "Serif" | "Monospace";
 
   let fonts: Font[] = ["Sans Serif", "Serif", "Monospace"];
 
-  let selected = $state<Font>("Sans Serif");
+  interface Props {
+    selected?: Font;
+  }
+
+  let { selected = $bindable("Sans Serif") }: Props = $props();
 </script>
 
 {#snippet fontOption(font: Font)}
@@ -27,12 +32,14 @@
         />
       {/if}
     </div>
-    <span class="font-medium">{font}</span>
+    <span class="font-medium">{t(font)}</span>
   </button>
 {/snippet}
 
 <div class="flex flex-col gap-1">
-  <span class="text-[10px] font-medium text-gray-400 tracking-wider px-2">字体</span>
+  <span class="text-[10px] font-medium text-gray-400 tracking-wider px-2"
+    >{t("Font")}</span
+  >
   {#each fonts as font}
     {@render fontOption(font)}
   {/each}

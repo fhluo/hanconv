@@ -1,7 +1,17 @@
 <script lang="ts">
   import { Type } from "@lucide/svelte";
-  import FontFamilySelector from "./FontFamilySelector.svelte";
+  import FontFamilySelector, { type Font } from "./FontFamilySelector.svelte";
   import FontSizeControl from "./FontSizeControl.svelte";
+
+  interface Props {
+    fontFamily?: Font;
+    fontSize?: number;
+  }
+
+  let {
+    fontFamily = $bindable("Sans Serif"),
+    fontSize = $bindable(16),
+  }: Props = $props();
 
   let isOpen = $state(false);
 </script>
@@ -34,9 +44,9 @@
         "animate-in fade-in zoom-in-95 slide-in-from-bottom-2 duration-200 ease-out origin-bottom-right",
       ]}
     >
-      <FontFamilySelector />
+      <FontFamilySelector bind:selected={fontFamily} />
       <div class="h-px my-1 bg-gray-100 dark:bg-gray-800"></div>
-      <FontSizeControl />
+      <FontSizeControl bind:size={fontSize} />
     </div>
   {/if}
 </div>
