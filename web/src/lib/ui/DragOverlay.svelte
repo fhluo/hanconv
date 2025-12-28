@@ -1,5 +1,6 @@
 <script>
   import { FileText } from "@lucide/svelte";
+  import { t } from "../i18n.svelte";
 </script>
 
 <div
@@ -25,6 +26,6 @@
   </div>
 
   <span class="text-sm font-semibold text-gray-900 dark:text-gray-100"
-    >释放以导入文本</span
+    >{t("Drop to import text")}</span
   >
 </div>

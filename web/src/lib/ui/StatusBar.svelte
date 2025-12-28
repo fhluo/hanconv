@@ -1,10 +1,25 @@
 <script lang="ts">
-    import {Link2, Link2Off} from "@lucide/svelte";
-    import EncodingSelector from "../ui/EncodingSelector.svelte";
-    import FontSettings from "../ui/FontSettings.svelte";
+  import { Link2, Link2Off } from "@lucide/svelte";
+  import EncodingSelector, { type Encoding } from "./EncodingSelector.svelte";
+  import FontSettings from "./FontSettings.svelte";
+  import { t } from "../i18n.svelte";
+  import type { Font } from "./FontFamilySelector.svelte";
 
-    let charCount = $state(0);
-    let scrollSync = $state(false);
+  interface Props {
+    charCount?: number;
+    scrollSync?: boolean;
+    fontFamily?: Font;
+    fontSize?: number;
+    encoding?: Encoding;
+  }
+
+  let {
+    charCount = 0,
+    scrollSync = $bindable(false),
+    fontFamily = $bindable("Sans Serif"),
+    fontSize = $bindable(16),
+    encoding = $bindable("UTF-8"),
+  }: Props = $props();
 </script>
 
 <div
@@ -15,26 +30,27 @@
   ]}
 >
   {#if charCount > 0}
-    <span class="mr-2">{charCount} 字符</span>
+    <span class="mr-2">{charCount} {t("Characters")}</span>
   {/if}
 
   <button
     class={[
-        "p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors outline-none",
-        scrollSync
-          ? "text-blue-600 dark:text-blue-400"
-          : "text-gray-500 dark:text-gray-400",
-      ]}
+      "p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors outline-none",
+      scrollSync
+        ? "text-blue-600 dark:text-blue-400"
+        : "text-gray-500 dark:text-gray-400",
+    ]}
     onclick={() => (scrollSync = !scrollSync)}
+    title={t("Sync Scrolling")}
   >
     {#if scrollSync}
-      <Link2 size={14}/>
+      <Link2 size={14} />
     {:else}
-      <Link2Off size={14}/>
+      <Link2Off size={14} />
     {/if}
   </button>
 
-  <FontSettings/>
+  <FontSettings bind:fontFamily bind:fontSize />
   <div class="w-px h-4 mx-1 bg-gray-200 dark:bg-gray-800"></div>
-  <EncodingSelector/>
+  <EncodingSelector bind:selected={encoding} />
 </div>
