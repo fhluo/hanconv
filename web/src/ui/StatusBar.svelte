@@ -2,7 +2,7 @@
   import { Link2, Link2Off } from "@lucide/svelte";
   import EncodingSelector, { type Encoding } from "./EncodingSelector.svelte";
   import FontSettings from "./FontSettings.svelte";
-  import { t } from "../i18n.svelte";
+  import { t } from "../lib/i18n.svelte";
   import type { Font } from "./FontFamilySelector.svelte";
 
   interface Props {

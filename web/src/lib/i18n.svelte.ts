@@ -1,6 +1,6 @@
-import en from "./locales/en.json";
-import zhHans from "./locales/zh-Hans.json";
-import zhHant from "./locales/zh-Hant.json";
+import en from "../locales/en.json";
+import zhHans from "../locales/zh-Hans.json";
+import zhHant from "../locales/zh-Hant.json";
 
 const messages: Record<string, Record<string, string>> = {
   en: en,

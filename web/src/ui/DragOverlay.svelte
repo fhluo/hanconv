@@ -1,6 +1,6 @@
 <script>
   import { FileText } from "@lucide/svelte";
-  import { t } from "../i18n.svelte";
+  import { t } from "../lib/i18n.svelte";
 </script>
 
 <div

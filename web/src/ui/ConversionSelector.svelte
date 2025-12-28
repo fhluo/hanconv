@@ -3,7 +3,7 @@
   import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
   import { cubicInOut } from "svelte/easing";
   import { crossfade } from "svelte/transition";
-  import { t } from "../i18n.svelte";
+  import { t } from "../lib/i18n.svelte";
 
   export type Conversion =
     | "s2t"

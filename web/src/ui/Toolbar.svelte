@@ -7,7 +7,7 @@
     Save,
     Trash2,
   } from "@lucide/svelte";
-  import { t } from "../i18n.svelte";
+  import { t } from "../lib/i18n.svelte";
 
   interface Props {
     title: string;

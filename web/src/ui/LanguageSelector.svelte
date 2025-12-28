@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Check, Languages } from "@lucide/svelte";
-  import { changeLocale } from "../i18n.svelte";
+  import { changeLocale } from "../lib/i18n.svelte";
 
   let isOpen = $state(false);
   let tag = $state("zh-Hans");
