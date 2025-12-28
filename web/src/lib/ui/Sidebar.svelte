@@ -1,7 +1,15 @@
 <script lang="ts">
-  import ConversionSelector from "../ui/ConversionSelector.svelte";
+  import ConversionSelector, {
+    type Conversion,
+  } from "../ui/ConversionSelector.svelte";
   import ThemeToggle from "../ui/ThemeToggle.svelte";
   import LanguageSelector from "../ui/LanguageSelector.svelte";
+
+  interface Props {
+    selectedConversion?: Conversion;
+  }
+
+  let { selectedConversion = $bindable("s2t") }: Props = $props();
 </script>
 
 <aside
@@ -43,6 +51,6 @@
   </div>
 
   <div class="flex-1 overflow-hidden bg-white dark:bg-gray-900/50">
-    <ConversionSelector />
+    <ConversionSelector bind:selected={selectedConversion} />
   </div>
 </aside>

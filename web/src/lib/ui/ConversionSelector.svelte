@@ -1,11 +1,11 @@
 <script lang="ts">
   import { ArrowRight, Globe, MapPin } from "@lucide/svelte";
-  import { invoke } from "@tauri-apps/api/core";
   import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
   import { cubicInOut } from "svelte/easing";
   import { crossfade } from "svelte/transition";
+  import { t } from "../i18n.svelte";
 
-  type Conversion =
+  export type Conversion =
     | "s2t"
     | "t2s"
     | "s2tw"
@@ -19,19 +19,15 @@
     | "t2jp"
     | "jp2t";
 
-  type Category = "常用" | "台湾" | "香港" | "日本";
+  type Category = "Common" | "Taiwan" | "Hong Kong" | "Japan";
 
   type Variant =
-    | "简体中文"
-    | "繁体中文"
-    | "繁体中文（台湾）"
-    | "繁体中文（香港）"
-    | "繁体字"
-    | "日文新字体";
-
-  async function convert(conversion: Conversion, text: string) {
-    return await invoke(conversion, { s: text });
-  }
+    | "Simplified Chinese"
+    | "Traditional Chinese"
+    | "Traditional Chinese (Taiwan)"
+    | "Traditional Chinese (Hong Kong)"
+    | "Traditional Chinese characters"
+    | "Shinjitai";
 
   interface Group {
     category: Category;
@@ -45,86 +41,86 @@
 
   const groups: Group[] = [
     {
-      category: "常用",
+      category: "Common",
       icon: Globe,
       items: [
         {
           conversion: "s2t",
-          source: "简体中文",
-          target: "繁体中文",
+          source: "Simplified Chinese",
+          target: "Traditional Chinese",
         },
         {
           conversion: "t2s",
-          source: "繁体中文",
-          target: "简体中文",
+          source: "Traditional Chinese",
+          target: "Simplified Chinese",
         },
       ],
     },
     {
-      category: "台湾",
+      category: "Taiwan",
       icon: MapPin,
       items: [
         {
           conversion: "s2tw",
-          source: "简体中文",
-          target: "繁体中文（台湾）",
+          source: "Simplified Chinese",
+          target: "Traditional Chinese (Taiwan)",
         },
         {
           conversion: "tw2s",
-          source: "繁体中文（台湾）",
-          target: "简体中文",
+          source: "Traditional Chinese (Taiwan)",
+          target: "Simplified Chinese",
         },
         {
           conversion: "t2tw",
-          source: "繁体中文",
-          target: "繁体中文（台湾）",
+          source: "Traditional Chinese",
+          target: "Traditional Chinese (Taiwan)",
         },
         {
           conversion: "tw2t",
-          source: "繁体中文（台湾）",
-          target: "繁体中文",
+          source: "Traditional Chinese (Taiwan)",
+          target: "Traditional Chinese",
         },
       ],
     },
     {
-      category: "香港",
+      category: "Hong Kong",
       icon: MapPin,
       items: [
         {
           conversion: "s2hk",
-          source: "简体中文",
-          target: "繁体中文（香港）",
+          source: "Simplified Chinese",
+          target: "Traditional Chinese (Hong Kong)",
         },
         {
           conversion: "hk2s",
-          source: "繁体中文（香港）",
-          target: "简体中文",
+          source: "Traditional Chinese (Hong Kong)",
+          target: "Simplified Chinese",
         },
         {
           conversion: "t2hk",
-          source: "繁体中文",
-          target: "繁体中文（香港）",
+          source: "Traditional Chinese",
+          target: "Traditional Chinese (Hong Kong)",
         },
         {
           conversion: "hk2t",
-          source: "繁体中文（香港）",
-          target: "繁体中文",
+          source: "Traditional Chinese (Hong Kong)",
+          target: "Traditional Chinese",
         },
       ],
     },
     {
-      category: "日本",
+      category: "Japan",
       icon: MapPin,
       items: [
         {
           conversion: "t2jp",
-          source: "繁体字",
-          target: "日文新字体",
+          source: "Traditional Chinese characters",
+          target: "Shinjitai",
         },
         {
           conversion: "jp2t",
-          source: "日文新字体",
-          target: "繁体字",
+          source: "Shinjitai",
+          target: "Traditional Chinese characters",
         },
       ],
     },
@@ -132,7 +128,11 @@
 
   type ConversionItem = Group["items"][number];
 
-  let selected = $state<Conversion>("s2t");
+  interface Props {
+    selected?: Conversion;
+  }
+
+  let { selected = $bindable("s2t") }: Props = $props();
 
   const [send, receive] = crossfade({
     duration: 250,
@@ -204,7 +204,7 @@
       <div class="flex items-center justify-between">
         <span
           class="text-[10px] font-semibold opacity-60 pl-0.5 transition-colors"
-          >{item.source}</span
+          >{t(item.source)}</span
         >
       </div>
       <div class="flex items-center gap-2">
@@ -219,7 +219,7 @@
           <ArrowRight size={12} strokeWidth={2.5} />
         </span>
         <span class="text-sm font-semibold transition-colors"
-          >{item.target}</span
+          >{t(item.target)}</span
         >
       </div>
     </div>
@@ -234,7 +234,7 @@
     ]}
   >
     <Icon size={12} />
-    <span>{category}</span>
+    <span>{t(category)}</span>
   </div>
 {/snippet}
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Check, ChevronUp } from "@lucide/svelte";
 
-  type Encoding =
+  export type Encoding =
     | "UTF-8"
     | "GBK"
     | "GB2312"
@@ -20,8 +20,13 @@
     "UTF-16",
   ];
 
+  interface Props {
+    selected?: Encoding;
+  }
+
+  let { selected = $bindable("UTF-8") }: Props = $props();
+
   let isOpen = $state(false);
-  let selected = $state<Encoding>("UTF-8");
 </script>
 
 {#snippet encodingOption(encoding: Encoding)}
