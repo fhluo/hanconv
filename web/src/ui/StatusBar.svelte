@@ -18,7 +18,7 @@
     scrollSync = $bindable(false),
     fontFamily = $bindable("Sans Serif"),
     fontSize = $bindable(16),
-    encoding = $bindable("UTF-8"),
+    encoding = $bindable("Auto"),
   }: Props = $props();
 </script>
 

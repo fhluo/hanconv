@@ -2,6 +2,7 @@
   import { Check, ChevronUp } from "@lucide/svelte";
 
   export type Encoding =
+    | "Auto"
     | "UTF-8"
     | "GBK"
     | "GB2312"
@@ -11,6 +12,7 @@
     | "UTF-16";
 
   const encodings: Encoding[] = [
+    "Auto",
     "UTF-8",
     "GBK",
     "GB2312",
@@ -24,7 +26,7 @@
     selected?: Encoding;
   }
 
-  let { selected = $bindable("UTF-8") }: Props = $props();
+  let { selected = $bindable("Auto") }: Props = $props();
 
   let isOpen = $state(false);
 </script>
