@@ -5,19 +5,27 @@
 
 /* OverlayScrollbars Custom Theme */
 .os-theme-custom {
-    --os-size: 8px;
-    --os-padding-perpendicular: 2px;
-    --os-padding-axis: 2px;
-    --os-track-border-radius: 10px;
-    --os-handle-interactive-area-offset: 4px;
-    --os-handle-border-radius: 10px;
-    --os-handle-bg: rgba(0, 0, 0, 0.2);
-    --os-handle-bg-hover: rgba(0, 0, 0, 0.35);
-    --os-handle-bg-active: rgba(0, 0, 0, 0.5);
+  --os-size: 8px;
+  --os-padding-perpendicular: 2px;
+  --os-padding-axis: 2px;
+  --os-track-border-radius: 10px;
+  --os-handle-interactive-area-offset: 4px;
+  --os-handle-border-radius: 10px;
+  --os-handle-bg: rgba(0, 0, 0, 0.2);
+  --os-handle-bg-hover: rgba(0, 0, 0, 0.35);
+  --os-handle-bg-active: rgba(0, 0, 0, 0.5);
 }
 
 .dark .os-theme-custom {
-    --os-handle-bg: rgba(255, 255, 255, 0.2);
-    --os-handle-bg-hover: rgba(255, 255, 255, 0.35);
-    --os-handle-bg-active: rgba(255, 255, 255, 0.5);
+  --os-handle-bg: rgba(255, 255, 255, 0.2);
+  --os-handle-bg-hover: rgba(255, 255, 255, 0.35);
+  --os-handle-bg-active: rgba(255, 255, 255, 0.5);
+}
+
+::selection {
+  @apply bg-blue-500/20 text-blue-900 dark:text-blue-100;
+}
+
+.dark ::selection {
+  @apply bg-blue-500/30;
 }
