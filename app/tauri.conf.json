@@ -10,13 +10,18 @@
     "frontendDist": "../web/dist"
   },
   "app": {
+    "security": {
+      "capabilities": ["default"]
+    },
     "windows": [
       {
+        "label": "main",
         "title": "hanconv",
         "width": 800,
         "height": 600,
         "transparent": true,
-        "theme": "Light"
+        "titleBarStyle": "Overlay",
+        "hiddenTitle": true
       }
     ],
     "macOSPrivateApi": true
