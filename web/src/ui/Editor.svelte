@@ -3,8 +3,14 @@
   import DragOverlay from "./DragOverlay.svelte";
   import { LoaderCircle } from "@lucide/svelte";
   import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
+  import { invoke } from "@tauri-apps/api/core";
+  import { getCurrentWebview } from "@tauri-apps/api/webview";
+  import { readText, writeText } from "@tauri-apps/plugin-clipboard-manager";
+  import { open, save } from "@tauri-apps/plugin-dialog";
+  import { writeTextFile } from "@tauri-apps/plugin-fs";
   import type { Encoding } from "./EncodingSelector.svelte";
   import type { Font } from "./FontFamilySelector.svelte";
+  import { t } from "../lib/i18n.svelte";
 
   interface Props {
     value: string;
@@ -34,31 +40,180 @@
 
   let container: HTMLDivElement | undefined;
   let osComponent: any;
-
+  let currentFilePath = $state<string | null>(null);
+  let loadToken = 0;
   let isDragging = $state(false);
   let isFileLoading = $state(false);
   let copied = $state(false);
   let pasted = $state(false);
+  let ignoreScroll = 0;
 
-  export const openFile = () => {};
-  export const saveFile = () => {};
-  export const clear = () => {
-    value = "";
-  };
-  export const copy = () => {};
-  export const paste = () => {};
+  const fileFilters = [
+    { name: t("Text Files"), extensions: ["txt", "md"] },
+    { name: t("All Files"), extensions: ["*"] },
+  ];
 
-  export function scrollTo(scrollTop: number) {
-    const instance = osComponent?.osInstance?.();
-    if (instance) {
-      const { viewport } = instance.elements();
-      viewport.scrollTop = scrollTop;
+  function pulse(target: "copied" | "pasted", ms = 2000) {
+    if (target === "copied") {
+      copied = true;
+    } else {
+      pasted = true;
+    }
+
+    setTimeout(
+      () => (target === "copied" ? (copied = false) : (pasted = false)),
+      ms,
+    );
+  }
+
+  function hitTest(pos: { x: number; y: number }) {
+    const rect = container?.getBoundingClientRect();
+    return (
+      rect &&
+      pos.x >= rect.left &&
+      pos.x <= rect.right &&
+      pos.y >= rect.top &&
+      pos.y <= rect.bottom
+    );
+  }
+
+  async function loadFile(path: string, enc: Encoding) {
+    const token = ++loadToken;
+
+    isFileLoading = true;
+    try {
+      const [text, detected] = await invoke<[string, string]>(
+        "read_text_file",
+        {
+          path,
+          encoding: enc === "Auto" ? null : enc,
+        },
+      );
+
+      if (token !== loadToken || path !== currentFilePath) {
+        return;
+      }
+
+      if (text !== value) {
+        value = text;
+      }
+
+      onEncodingDetected?.(detected as Encoding);
+    } catch (e) {
+      console.error("Failed to load file:", e);
+    } finally {
+      if (token === loadToken) {
+        isFileLoading = false;
+      }
     }
   }
 
-  function handleScroll(scrollTop: number) {
-    onScroll?.(scrollTop);
+  export async function openFile() {
+    const selected = await open({
+      title: t("Open File"),
+      multiple: false,
+      filters: fileFilters,
+    }).catch(() => null);
+
+    if (selected) {
+      currentFilePath = selected;
+    }
   }
+
+  export async function saveFile() {
+    if (!value) {
+      return;
+    }
+
+    const filePath = await save({
+      title: t("Save File"),
+      filters: fileFilters,
+    }).catch(() => null);
+
+    if (!filePath) {
+      return;
+    }
+
+    isFileLoading = true;
+    try {
+      await writeTextFile(filePath, value);
+      currentFilePath = filePath;
+    } finally {
+      isFileLoading = false;
+    }
+  }
+
+  export function clear() {
+    value = "";
+    currentFilePath = null;
+  }
+
+  export async function copy() {
+    if (!value) {
+      return;
+    }
+
+    await writeText(value);
+    pulse("copied");
+  }
+
+  export async function paste() {
+    if (readonly) {
+      return;
+    }
+
+    const text = await readText().catch(() => null);
+    if (text) {
+      value = text;
+      pulse("pasted");
+    }
+  }
+
+  export function scrollTo(top: number) {
+    const viewport = osComponent?.osInstance?.()?.elements()?.viewport;
+
+    if (!viewport || Math.abs(viewport.scrollTop - top) <= 1) {
+      return;
+    }
+
+    ignoreScroll++;
+    viewport.scrollTop = top;
+    requestAnimationFrame(() => (ignoreScroll = Math.max(0, ignoreScroll - 1)));
+  }
+
+  function handleScroll(top: number) {
+    if (onScroll && ignoreScroll === 0) {
+      onScroll(top);
+    }
+  }
+
+  $effect(() => {
+    if (currentFilePath && encoding) {
+      loadFile(currentFilePath, encoding);
+    }
+  });
+
+  $effect(() => {
+    let unlisten: (() => void) | undefined;
+    getCurrentWebview()
+      .onDragDropEvent(({ payload }) => {
+        if (readonly || !container || payload.type === "leave") {
+          return (isDragging = false);
+        }
+
+        const inside = hitTest(payload.position) ?? false;
+        if (payload.type === "over") {
+          isDragging = inside;
+        } else {
+          if (inside) {
+            currentFilePath = payload.paths[0] ?? null;
+          }
+          isDragging = false;
+        }
+      })
+      .then((u) => (unlisten = u));
+    return () => unlisten?.();
+  });
 </script>
 
 <div
