@@ -105,13 +105,12 @@ async fn read_text_file(path: String, encoding: Option<String>) -> Result<(Strin
 
     let mut label = encoding.unwrap_or("auto".to_string());
 
-    if label.eq_ignore_ascii_case("auto") {
-        if let Some(best) = charset_normalizer_rs::from_bytes(&buffer, None)
+    if label.eq_ignore_ascii_case("auto")
+        && let Some(best) = charset_normalizer_rs::from_bytes(&buffer, None)
             .map_err(Error::Encoding)?
             .get_best()
-        {
-            label = best.encoding().to_string();
-        }
+    {
+        label = best.encoding().to_string();
     }
 
     let encoding = Encoding::for_label(label.as_bytes())
