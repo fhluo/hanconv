@@ -3,11 +3,9 @@ mod dict;
 mod trie;
 
 pub use conv::{
-    hk2s, hk2t, jp2t, s2hk, s2t, s2tw, s2twp, t2hk, t2jp, t2s, t2tw, tw2s, tw2sp, tw2t,
-};
-pub use conv::{
     Converter,
     Converters::{self, *},
+    hk2s, hk2t, jp2t, s2hk, s2t, s2tw, s2twp, t2hk, t2jp, t2s, t2tw, tw2s, tw2sp, tw2t,
 };
 pub use dict::{
     Dictionary::{self, *},

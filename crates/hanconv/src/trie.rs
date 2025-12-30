@@ -69,11 +69,7 @@ impl<T> Trie<T> {
         let mut depth = 0usize;
 
         for c in key.chars() {
-            node = node
-                .children
-                .get_or_insert_default()
-                .entry(c)
-                .or_default();
+            node = node.children.get_or_insert_default().entry(c).or_default();
 
             depth += 1;
         }
