@@ -28,7 +28,7 @@ Hanconv 基于 [OpenCC](https://github.com/BYVoid/OpenCC) 的词库和转换规�
 ### 使用 Cargo
 
 ```shell
-cargo install hanconv
+cargo install hanconv-cli
 ```
 
 ### 使用 Go

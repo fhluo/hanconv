@@ -30,7 +30,7 @@ command-line tool and as a library for integration into other projects.
 ### Using Cargo
 
 ```shell
-cargo install hanconv
+cargo install hanconv-cli
 ```
 
 ### Using Go

@@ -1,17 +1,8 @@
 version: 3
 
 tasks:
-  run:
-    cmd: cargo run {{.CLI_ARGS}}
-
-  build:
-    cmd: cargo build --release
-
   package:
     cmd: cargo package
 
   publish:
     cmd: cargo publish
-
-  install:
-    cmd: cargo install --path .

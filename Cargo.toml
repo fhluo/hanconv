@@ -5,6 +5,7 @@ members = [
     "bindings/py",
     "bindings/wasm",
     "crates/hanconv",
+    "crates/hanconv-cli",
 ]
 
 [workspace.dependencies]
