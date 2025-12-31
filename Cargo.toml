@@ -9,4 +9,4 @@ members = [
 ]
 
 [workspace.dependencies]
-hanconv = "0.4"
+hanconv = "0.5"

@@ -60,7 +60,7 @@ cargo install hanconv-cli
 
     ```toml
     [dependencies]
-    hanconv = "0.4"
+    hanconv = "0.5"
     ```
 
 2. Use the provided conversion functions in your project.
