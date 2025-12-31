@@ -3,8 +3,8 @@ version: 3
 
 includes:
   cli:
-    taskfile: crates/hanconv/Taskfile.yaml
-    dir: crates/hanconv
+    taskfile: crates/hanconv-cli/Taskfile.yaml
+    dir: crates/hanconv-cli
   app:
     taskfile: app/Taskfile.yaml
     dir: app
