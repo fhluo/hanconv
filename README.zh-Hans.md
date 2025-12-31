@@ -21,7 +21,7 @@
 
 ## 介绍
 
-Hanconv 基于 [OpenCC](https://github.com/BYVoid/OpenCC) 的词库和转换规则，在不同汉字变体之间进行高效转换。它既可以作为命令行工具使用，也可以作为库集成到其他项目中。
+Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转换规则的汉字简繁转换工具。它提供了命令行工具，并支持作为库集成到 Rust 和 Go 项目中，用于在不同汉字变体之间进行转换。
 
 ## 安装
 
@@ -41,37 +41,37 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
 ### 命令行界面
 
-- **显示帮助信息：**
+- **查看帮助信息：**
 
     ```shell
     hanconv --help
     ```
 
-- **将文本文件从简体转换为繁体：**
+- **文件转换（简体 → 繁体）：**
 
     ```shell
     hanconv s2t -i input.txt -o output.txt
     ```
 
-- **将文本文件从繁体转换为简体：**
+- **文件转换（繁体 → 简体）：**
 
     ```shell
     hanconv t2s -i input.txt -o output.txt
     ```
 
-- **直接转换命令行中的文本：**
+- **直接转换文本字符串：**
 
     ```shell
     hanconv s2t "简繁转换"
     ```
 
-- **从标准输入读取并写入标准输出：**
+- **使用管道（标准输入/输出）：**
 
     ```shell
     cat input.txt | hanconv s2t > output.txt
     ```
 
-- **对于非 UTF-8 编码的文件，可以指定编码：**
+- **指定文件编码（支持非 UTF-8）：**
 
     ```shell
     # 输入和输出使用相同编码
@@ -83,14 +83,16 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
 ### Rust
 
-1. 在 `Cargo.toml` 中添加 `hanconv` 依赖：
+1. **添加依赖**：
+
+    在 `Cargo.toml` 中添加 `hanconv`：
 
     ```toml
     [dependencies]
     hanconv = "0.5"
     ```
 
-2. 在项目中使用提供的转换函数：
+2. **调用转换函数**：
 
     ```rust
     fn main() {
@@ -99,7 +101,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     }
     ```
 
-3. 可用的转换函数：
+3. **支持的转换模式**：
     - `s2t`: 简体 → 繁体
     - `t2s`: 繁体 → 简体
     - `s2tw`: 简体 → 繁体（台湾）
@@ -117,13 +119,13 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
 ### Go
 
-1. 将 hanconv 添加到你的 Go 项目中：
+1. **获取模块**：
 
     ```shell
     go get github.com/fhluo/hanconv/go
     ```
 
-2. 在项目中导入并使用转换函数：
+2. **导入并使用**：
 
     ```go
     import hanconv "github.com/fhluo/hanconv/go"
