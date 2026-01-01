@@ -2,9 +2,13 @@
 extern crate rust_i18n;
 
 use gpui::prelude::*;
-use gpui::{div, px, size, Application, Bounds, Entity, Window, WindowBounds, WindowOptions};
+use gpui::{
+    div, px, size, AnyElement, Application, Bounds, Entity, SharedString,
+    Window, WindowBounds, WindowOptions,
+};
 use gpui_component::input::{Input, InputEvent, InputState};
-use gpui_component::{Root, TitleBar};
+use gpui_component::select::{Select, SelectEvent, SelectItem, SelectState};
+use gpui_component::{IndexPath, Root, TitleBar};
 use icu_locale::fallback::{LocaleFallbackConfig, LocaleFallbackPriority};
 use icu_locale::{DataLocale, Locale, LocaleFallbacker};
 use rust_i18n::set_locale;
@@ -17,6 +21,7 @@ i18n!("locales", fallback = "en");
 struct Hanconv {
     input_editor: Entity<InputState>,
     output_editor: Entity<InputState>,
+    conversion_select: Entity<SelectState<Vec<Conversion>>>,
 }
 
 impl Hanconv {
@@ -29,14 +34,40 @@ impl Hanconv {
             window,
             |view, state, event, window, cx| match event {
                 InputEvent::Change => {
-                    let content = state.read(cx).value();
-                    let result = hanconv::s2t(content);
+                    let conversion = view.selected_conversion(cx).unwrap_or_default();
 
-                    view.output_editor.update(cx, |state, cx| {
-                        state.set_value(result, window, cx);
-                    });
+                    view.conv(window, cx, conversion, state.read(cx).value());
                 }
                 _ => {}
+            },
+        )
+        .detach();
+
+        let conversion_select = cx.new(|cx| {
+            SelectState::new(
+                vec![
+                    "s2t", "t2s", "s2tw", "tw2s", "t2tw", "tw2t", "s2hk", "hk2s", "t2hk", "hk2t",
+                    "t2jp", "jp2t",
+                ]
+                .into_iter()
+                .map(SharedString::new)
+                .map(Conversion)
+                .collect::<Vec<_>>(),
+                Some(IndexPath::default()),
+                window,
+                cx,
+            )
+        });
+
+        cx.subscribe_in(
+            &conversion_select,
+            window,
+            |view, state, event, window, cx| match event {
+                SelectEvent::Confirm(value) => {
+                    let conversion = view.selected_conversion(cx).unwrap_or_default();
+
+                    view.conv(window, cx, conversion, view.input_editor.read(cx).value());
+                }
             },
         )
         .detach();
@@ -44,7 +75,67 @@ impl Hanconv {
         Hanconv {
             input_editor,
             output_editor,
+            conversion_select,
         }
+    }
+
+    fn selected_conversion(&self, cx: &mut Context<Self>) -> Option<String> {
+        self.conversion_select
+            .read(cx)
+            .selected_value()
+            .map(ToString::to_string)
+    }
+
+    fn conv(
+        &self,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+        conversion: impl AsRef<str>,
+        content: impl AsRef<str>,
+    ) {
+        let result = match conversion.as_ref() {
+            "s2t" => hanconv::s2t(content),
+            "t2s" => hanconv::t2s(content),
+            "s2tw" => hanconv::s2tw(content),
+            "tw2s" => hanconv::tw2s(content),
+            "t2tw" => hanconv::t2tw(content),
+            "tw2t" => hanconv::tw2t(content),
+            "s2hk" => hanconv::s2hk(content),
+            "hk2s" => hanconv::hk2s(content),
+            "t2hk" => hanconv::t2hk(content),
+            "hk2t" => hanconv::hk2t(content),
+            "t2jp" => hanconv::t2jp(content),
+            "jp2t" => hanconv::jp2t(content),
+            _ => String::new(),
+        };
+
+        self.output_editor.update(cx, |state, cx| {
+            state.set_value(result, window, cx);
+        });
+    }
+}
+
+#[derive(Debug, Clone)]
+struct Conversion(SharedString);
+
+impl SelectItem for Conversion {
+    type Value = SharedString;
+
+    fn title(&self) -> SharedString {
+        format!(
+            "{} -> {}",
+            t!(format!("{}.source", self.0)),
+            t!(format!("{}.target", self.0))
+        )
+        .into()
+    }
+
+    fn display_title(&self) -> Option<AnyElement> {
+        Some(div().child(self.title()).into_any_element())
+    }
+
+    fn value(&self) -> &Self::Value {
+        &self.0
     }
 }
 
@@ -55,7 +146,14 @@ impl Render for Hanconv {
             .h_full()
             .flex()
             .flex_col()
-            .child(TitleBar::new().child("Hanconv"))
+            .child(
+                TitleBar::new().child(
+                    div()
+                        .flex()
+                        .flex_row()
+                        .child(Select::new(&self.conversion_select)),
+                ),
+            )
             .child(
                 div()
                     .w_full()
