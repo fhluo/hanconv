@@ -1339,6 +1339,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "confy"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8807c397789cbe02bbdb1a27ea5f345584132808697b2a3f957c829829ee4814"
+dependencies = [
+ "etcetera",
+ "lazy_static",
+ "serde",
+ "thiserror 2.0.17",
+ "toml 0.9.10+spec-1.1.0",
+]
+
+[[package]]
 name = "const-random"
 version = "0.1.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2196,6 +2209,17 @@ checksum = "fc89bf99e5dc15954a60f707c1e09d7540e5cd9af85fa75caa0b510bc08c5342"
 dependencies = [
  "euclid",
  "svg_fmt",
+]
+
+[[package]]
+name = "etcetera"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "26c7b13d0780cb82722fd59f6f57f925e143427e4a75313a6c77243bf5326ae6"
+dependencies = [
+ "cfg-if",
+ "home",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -3408,12 +3432,14 @@ name = "hanconv-app"
 version = "0.5.0"
 dependencies = [
  "anyhow",
+ "confy",
  "gpui",
  "gpui-component",
  "gpui-component-assets",
  "hanconv 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "icu_locale",
  "rust-i18n",
+ "serde",
  "sys-locale",
 ]
 
@@ -3744,6 +3770,7 @@ checksum = "4c6b649701667bbe825c3b7e6388cb521c23d88644678e83c0c4d0a621a34b43"
 dependencies = [
  "displaydoc",
  "potential_utf",
+ "serde",
  "yoke 0.8.1",
  "zerofrom",
  "zerovec 0.11.5",
@@ -3760,6 +3787,7 @@ dependencies = [
  "icu_locale_data",
  "icu_provider 2.1.1",
  "potential_utf",
+ "serde",
  "tinystr 0.8.2",
  "zerovec 0.11.5",
 ]

@@ -5,10 +5,12 @@ use gpui::prelude::*;
 use gpui::{div, px, size, Application, Bounds, Entity, Window, WindowBounds, WindowOptions};
 use gpui_component::input::{Input, InputEvent, InputState};
 use gpui_component::{Root, TitleBar};
-use icu_locale::{Locale, LocaleExpander};
 use icu_locale::fallback::{LocaleFallbackConfig, LocaleFallbackPriority};
 use icu_locale::{DataLocale, Locale, LocaleFallbacker};
 use rust_i18n::set_locale;
+use serde::{Deserialize, Serialize};
+use std::ops::Deref;
+use std::sync::{LazyLock, RwLock};
 
 i18n!("locales", fallback = "en");
 
@@ -69,14 +71,36 @@ impl Render for Hanconv {
     }
 }
 
-fn get_app_locale() -> Option<String> {
+#[derive(Debug, Serialize, Deserialize)]
+struct Config {
+    locale: Option<Locale>,
+}
+
+impl Default for Config {
+    fn default() -> Self {
+        Config { locale: None }
+    }
+}
+
+static CONFIG: LazyLock<RwLock<Config>> =
+    LazyLock::new(|| RwLock::new(confy::load::<Config>("hanconv", None).unwrap_or_default()));
+
+fn get_app_locale() -> Option<Locale> {
     let mut fallback_iter = LocaleFallbacker::new()
         .for_config({
             let mut config = LocaleFallbackConfig::default();
             config.priority = LocaleFallbackPriority::Language;
             config
         })
-        .fallback_for(sys_locale::get_locale()?.parse::<Locale>().ok()?.into());
+        .fallback_for({
+            let config = CONFIG.read().unwrap();
+
+            if let Some(locale) = config.locale.clone() {
+                locale.into()
+            } else {
+                sys_locale::get_locale()?.parse::<Locale>().ok()?.into()
+            }
+        });
 
     let locales = available_locales!()
         .into_iter()
@@ -90,17 +114,32 @@ fn get_app_locale() -> Option<String> {
         }
 
         if locales.contains(locale) {
-            break Some(locale.to_string());
+            break Some(locale.into_locale());
         }
 
         fallback_iter.step();
     }
 }
 
-fn main() {
-    let locale = get_app_locale();
+fn main() -> anyhow::Result<()> {
+    {
+        let locale = get_app_locale();
+        let mut config = CONFIG.write().unwrap();
 
-    set_locale(locale.as_deref().unwrap_or("en"));
+        config.locale = locale;
+    }
+
+    let locale = {
+        let config = CONFIG.read().unwrap();
+        config.locale.clone()
+    };
+
+    set_locale(
+        locale
+            .map(|locale| locale.to_string())
+            .as_deref()
+            .unwrap_or("en"),
+    );
 
     let app = Application::new().with_assets(gpui_component_assets::Assets);
 
@@ -126,5 +165,18 @@ fn main() {
             Ok::<_, anyhow::Error>(())
         })
         .detach();
-    })
+
+        cx.on_app_quit(|_| {
+            let config = CONFIG.write().unwrap();
+
+            async move {
+                if let Err(err) = confy::store("hanconv", None, config.deref()) {
+                    eprintln!("{err}")
+                }
+            }
+        })
+        .detach();
+    });
+
+    Ok(())
 }
