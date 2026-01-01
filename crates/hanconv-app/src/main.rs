@@ -1,7 +1,14 @@
+#[macro_use]
+extern crate rust_i18n;
+
 use gpui::prelude::*;
 use gpui::{div, px, size, Application, Bounds, Entity, Window, WindowBounds, WindowOptions};
 use gpui_component::input::{Input, InputEvent, InputState};
 use gpui_component::{Root, TitleBar};
+use icu_locale::{Locale, LocaleExpander};
+use rust_i18n::set_locale;
+
+i18n!("locales", fallback = "en");
 
 struct Hanconv {
     input_editor: Entity<InputState>,
@@ -60,7 +67,21 @@ impl Render for Hanconv {
     }
 }
 
+fn get_sys_locale() -> Option<String> {
+    let mut locale: Locale = sys_locale::get_locale()?.parse().ok()?;
+
+    LocaleExpander::new_common().maximize(&mut locale.id);
+
+    if let Some(script) = locale.id.script {
+        Some(format!("{}-{}", locale.id.language, script))
+    } else {
+        Some(locale.id.to_string())
+    }
+}
+
 fn main() {
+    set_locale(get_sys_locale().as_deref().unwrap_or("en"));
+
     let app = Application::new().with_assets(gpui_component_assets::Assets);
 
     app.run(move |cx| {
