@@ -17,5 +17,5 @@ gpui-component = "0.5"
 gpui-component-assets = "0.5"
 rust-i18n = "3.1"
 sys-locale = "0.3"
-icu_locale = "2.1"
+icu_locale = { version = "2.1", features = ["compiled_data"] }
 anyhow = "1.0"

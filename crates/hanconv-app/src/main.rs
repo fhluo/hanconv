@@ -6,6 +6,8 @@ use gpui::{div, px, size, Application, Bounds, Entity, Window, WindowBounds, Win
 use gpui_component::input::{Input, InputEvent, InputState};
 use gpui_component::{Root, TitleBar};
 use icu_locale::{Locale, LocaleExpander};
+use icu_locale::fallback::{LocaleFallbackConfig, LocaleFallbackPriority};
+use icu_locale::{DataLocale, Locale, LocaleFallbacker};
 use rust_i18n::set_locale;
 
 i18n!("locales", fallback = "en");
@@ -67,20 +69,38 @@ impl Render for Hanconv {
     }
 }
 
-fn get_sys_locale() -> Option<String> {
-    let mut locale: Locale = sys_locale::get_locale()?.parse().ok()?;
+fn get_app_locale() -> Option<String> {
+    let mut fallback_iter = LocaleFallbacker::new()
+        .for_config({
+            let mut config = LocaleFallbackConfig::default();
+            config.priority = LocaleFallbackPriority::Language;
+            config
+        })
+        .fallback_for(sys_locale::get_locale()?.parse::<Locale>().ok()?.into());
 
-    LocaleExpander::new_common().maximize(&mut locale.id);
+    let locales = available_locales!()
+        .into_iter()
+        .filter_map(|locale| locale.parse::<Locale>().map(DataLocale::from).ok())
+        .collect::<Vec<_>>();
 
-    if let Some(script) = locale.id.script {
-        Some(format!("{}-{}", locale.id.language, script))
-    } else {
-        Some(locale.id.to_string())
+    loop {
+        let locale = fallback_iter.get();
+        if locale.is_unknown() {
+            break None;
+        }
+
+        if locales.contains(locale) {
+            break Some(locale.to_string());
+        }
+
+        fallback_iter.step();
     }
 }
 
 fn main() {
-    set_locale(get_sys_locale().as_deref().unwrap_or("en"));
+    let locale = get_app_locale();
+
+    set_locale(locale.as_deref().unwrap_or("en"));
 
     let app = Application::new().with_assets(gpui_component_assets::Assets);
 
