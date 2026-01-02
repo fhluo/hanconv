@@ -3439,6 +3439,7 @@ dependencies = [
  "hanconv 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "icu_locale",
  "rust-i18n",
+ "schemars 1.2.0",
  "serde",
  "sys-locale",
 ]

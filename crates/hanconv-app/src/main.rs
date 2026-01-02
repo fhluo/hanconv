@@ -3,15 +3,16 @@ extern crate rust_i18n;
 
 use gpui::prelude::*;
 use gpui::{
-    AnyElement, Application, Bounds, Entity, SharedString, Window, WindowBounds, WindowOptions,
-    div, px, size,
+    div, px, size, Action, Application, Bounds, Entity, Window, WindowBounds, WindowOptions,
 };
+use gpui_component::button::Button;
 use gpui_component::input::{Input, InputEvent, InputState};
-use gpui_component::select::{Select, SelectEvent, SelectItem, SelectState};
-use gpui_component::{IndexPath, Root, TitleBar};
+use gpui_component::menu::DropdownMenu;
+use gpui_component::{Root, TitleBar};
 use icu_locale::fallback::{LocaleFallbackConfig, LocaleFallbackPriority};
-use icu_locale::{DataLocale, Locale, LocaleFallbacker, locale};
+use icu_locale::{locale, DataLocale, Locale, LocaleFallbacker};
 use rust_i18n::set_locale;
+use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 i18n!("locales", fallback = "en");
@@ -21,7 +22,6 @@ struct Hanconv {
 
     input_editor: Entity<InputState>,
     output_editor: Entity<InputState>,
-    conversion_select: Entity<SelectState<Vec<Conversion>>>,
 }
 
 impl Hanconv {
@@ -32,45 +32,12 @@ impl Hanconv {
         cx.subscribe_in(
             &input_editor,
             window,
-            |view, state, event, window, cx| match event {
+            |view, _, event, window, cx| match event {
                 InputEvent::Change => {
-                    let conversion = view.selected_conversion(cx).unwrap_or_default();
-
-                    view.conv(window, cx, conversion, state.read(cx).value());
+                    let conversion = view.config.conversion;
+                    view.conv(&conversion, window, cx);
                 }
                 _ => {}
-            },
-        )
-        .detach();
-
-        let conversion_select = cx.new(|cx| {
-            SelectState::new(
-                vec![
-                    "s2t", "t2s", "s2tw", "tw2s", "t2tw", "tw2t", "s2hk", "hk2s", "t2hk", "hk2t",
-                    "t2jp", "jp2t",
-                ]
-                .into_iter()
-                .map(SharedString::new)
-                .map(Conversion)
-                .collect::<Vec<_>>(),
-                Some(IndexPath::default()),
-                window,
-                cx,
-            )
-        });
-
-        cx.subscribe_in(
-            &conversion_select,
-            window,
-            |view, _, event, window, cx| match event {
-                SelectEvent::Confirm(value) => {
-                    view.conv(
-                        window,
-                        cx,
-                        value.as_deref().map_or_else(String::new, |v| v.to_string()),
-                        view.input_editor.read(cx).value(),
-                    );
-                }
             },
         )
         .detach();
@@ -96,39 +63,14 @@ impl Hanconv {
             config: confy::load::<Config>("hanconv", None).unwrap_or_default(),
             input_editor,
             output_editor,
-            conversion_select,
         }
     }
 
-    fn selected_conversion(&self, cx: &mut Context<Self>) -> Option<String> {
-        self.conversion_select
-            .read(cx)
-            .selected_value()
-            .map(ToString::to_string)
-    }
+    fn conv(&mut self, conversion: &Conversion, window: &mut Window, cx: &mut Context<Self>) {
+        self.config.conversion = *conversion;
 
-    fn conv(
-        &self,
-        window: &mut Window,
-        cx: &mut Context<Self>,
-        conversion: impl AsRef<str>,
-        content: impl AsRef<str>,
-    ) {
-        let result = match conversion.as_ref() {
-            "s2t" => hanconv::s2t(content),
-            "t2s" => hanconv::t2s(content),
-            "s2tw" => hanconv::s2tw(content),
-            "tw2s" => hanconv::tw2s(content),
-            "t2tw" => hanconv::t2tw(content),
-            "tw2t" => hanconv::tw2t(content),
-            "s2hk" => hanconv::s2hk(content),
-            "hk2s" => hanconv::hk2s(content),
-            "t2hk" => hanconv::t2hk(content),
-            "hk2t" => hanconv::hk2t(content),
-            "t2jp" => hanconv::t2jp(content),
-            "jp2t" => hanconv::jp2t(content),
-            _ => String::new(),
-        };
+        let content = self.input_editor.read(cx).value();
+        let result = conversion.run(content);
 
         self.output_editor.update(cx, |state, cx| {
             state.set_value(result, window, cx);
@@ -136,52 +78,175 @@ impl Hanconv {
     }
 }
 
-#[derive(Debug, Clone)]
-struct Conversion(SharedString);
+#[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize, JsonSchema, Action)]
+#[serde(rename_all = "lowercase")]
+enum Conversion {
+    S2T,
+    T2S,
+    S2TW,
+    TW2S,
+    T2TW,
+    TW2T,
+    S2HK,
+    HK2S,
+    T2HK,
+    HK2T,
+    T2JP,
+    JP2T,
+}
 
-impl SelectItem for Conversion {
-    type Value = SharedString;
+impl Conversion {
+    fn name(&self) -> &'static str {
+        match self {
+            Conversion::S2T => "s2t",
+            Conversion::T2S => "t2s",
+            Conversion::S2TW => "s2tw",
+            Conversion::TW2S => "tw2s",
+            Conversion::T2TW => "t2tw",
+            Conversion::TW2T => "tw2t",
+            Conversion::S2HK => "s2hk",
+            Conversion::HK2S => "hk2s",
+            Conversion::T2HK => "t2hk",
+            Conversion::HK2T => "hk2t",
+            Conversion::T2JP => "t2jp",
+            Conversion::JP2T => "jp2t",
+        }
+    }
 
-    fn title(&self) -> SharedString {
+    fn title(&self) -> String {
         format!(
-            "{} -> {}",
-            t!(format!("{}.source", self.0)),
-            t!(format!("{}.target", self.0))
+            "{} → {}",
+            t!(format!("{}.source", self.name())),
+            t!(format!("{}.target", self.name()))
         )
-        .into()
     }
 
-    fn display_title(&self) -> Option<AnyElement> {
-        Some(div().child(self.title()).into_any_element())
+    fn run(&self, content: impl AsRef<str>) -> String {
+        match self {
+            Conversion::S2T => hanconv::s2t(content),
+            Conversion::T2S => hanconv::t2s(content),
+            Conversion::S2TW => hanconv::s2tw(content),
+            Conversion::TW2S => hanconv::tw2s(content),
+            Conversion::T2TW => hanconv::t2tw(content),
+            Conversion::TW2T => hanconv::tw2t(content),
+            Conversion::S2HK => hanconv::s2hk(content),
+            Conversion::HK2S => hanconv::hk2s(content),
+            Conversion::T2HK => hanconv::t2hk(content),
+            Conversion::HK2T => hanconv::hk2t(content),
+            Conversion::T2JP => hanconv::t2jp(content),
+            Conversion::JP2T => hanconv::jp2t(content),
+        }
     }
 
-    fn value(&self) -> &Self::Value {
-        &self.0
+    #[allow(dead_code)]
+    fn all() -> &'static [Conversion] {
+        &[
+            Conversion::S2T,
+            Conversion::T2S,
+            Conversion::S2TW,
+            Conversion::TW2S,
+            Conversion::T2TW,
+            Conversion::TW2T,
+            Conversion::S2HK,
+            Conversion::HK2S,
+            Conversion::T2HK,
+            Conversion::HK2T,
+            Conversion::T2JP,
+            Conversion::JP2T,
+        ]
     }
 }
 
 impl Render for Hanconv {
-    fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         div()
+            .on_action(cx.listener(Self::conv))
             .w_full()
             .h_full()
             .flex()
             .flex_col()
             .child(
                 TitleBar::new().child(
-                    div()
-                        .flex()
-                        .flex_row()
-                        .child(Select::new(&self.conversion_select)),
+                    div().flex().flex_row().child(
+                        Button::new("conversion-menu-button")
+                            .label(t!("conversion"))
+                            .dropdown_menu({
+                                let conversion = self.config.conversion.clone();
+                                move |menu, _, _| {
+                                    menu.menu_with_check(
+                                        Conversion::S2T.title(),
+                                        conversion == Conversion::S2T,
+                                        Box::new(Conversion::S2T),
+                                    )
+                                    .menu_with_check(
+                                        Conversion::T2S.title(),
+                                        conversion == Conversion::T2S,
+                                        Box::new(Conversion::T2S),
+                                    )
+                                    .separator()
+                                    .menu_with_check(
+                                        Conversion::S2TW.title(),
+                                        conversion == Conversion::S2TW,
+                                        Box::new(Conversion::S2TW),
+                                    )
+                                    .menu_with_check(
+                                        Conversion::TW2S.title(),
+                                        conversion == Conversion::TW2S,
+                                        Box::new(Conversion::TW2S),
+                                    )
+                                    .separator()
+                                    .menu_with_check(
+                                        Conversion::T2TW.title(),
+                                        conversion == Conversion::T2TW,
+                                        Box::new(Conversion::T2TW),
+                                    )
+                                    .menu_with_check(
+                                        Conversion::TW2T.title(),
+                                        conversion == Conversion::TW2T,
+                                        Box::new(Conversion::TW2T),
+                                    )
+                                    .separator()
+                                    .menu_with_check(
+                                        Conversion::S2HK.title(),
+                                        conversion == Conversion::S2HK,
+                                        Box::new(Conversion::S2HK),
+                                    )
+                                    .menu_with_check(
+                                        Conversion::HK2S.title(),
+                                        conversion == Conversion::HK2S,
+                                        Box::new(Conversion::HK2S),
+                                    )
+                                    .separator()
+                                    .menu_with_check(
+                                        Conversion::T2HK.title(),
+                                        conversion == Conversion::T2HK,
+                                        Box::new(Conversion::T2HK),
+                                    )
+                                    .menu_with_check(
+                                        Conversion::HK2T.title(),
+                                        conversion == Conversion::HK2T,
+                                        Box::new(Conversion::HK2T),
+                                    )
+                                    .separator()
+                                    .menu_with_check(
+                                        Conversion::T2JP.title(),
+                                        conversion == Conversion::T2JP,
+                                        Box::new(Conversion::T2JP),
+                                    )
+                                    .menu_with_check(
+                                        Conversion::JP2T.title(),
+                                        conversion == Conversion::JP2T,
+                                        Box::new(Conversion::JP2T),
+                                    )
+                                }
+                            }),
+                    ),
                 ),
             )
             .child(
                 div()
                     .w_full()
                     .h_full()
-                    .px_6()
-                    .py_6()
-                    .gap_3()
                     .flex()
                     .flex_row()
                     .child(Input::new(&self.input_editor).flex_1())
@@ -193,11 +258,15 @@ impl Render for Hanconv {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Config {
     locale: Option<Locale>,
+    conversion: Conversion,
 }
 
 impl Default for Config {
     fn default() -> Self {
-        Config { locale: None }
+        Config {
+            locale: None,
+            conversion: Conversion::S2T,
+        }
     }
 }
 
