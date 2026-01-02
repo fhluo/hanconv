@@ -3,22 +3,22 @@ extern crate rust_i18n;
 
 use gpui::prelude::*;
 use gpui::{
-    div, px, size, AnyElement, Application, Bounds, Entity, SharedString,
-    Window, WindowBounds, WindowOptions,
+    AnyElement, Application, Bounds, Entity, SharedString, Window, WindowBounds, WindowOptions,
+    div, px, size,
 };
 use gpui_component::input::{Input, InputEvent, InputState};
 use gpui_component::select::{Select, SelectEvent, SelectItem, SelectState};
 use gpui_component::{IndexPath, Root, TitleBar};
 use icu_locale::fallback::{LocaleFallbackConfig, LocaleFallbackPriority};
-use icu_locale::{DataLocale, Locale, LocaleFallbacker};
+use icu_locale::{DataLocale, Locale, LocaleFallbacker, locale};
 use rust_i18n::set_locale;
 use serde::{Deserialize, Serialize};
-use std::ops::Deref;
-use std::sync::{LazyLock, RwLock};
 
 i18n!("locales", fallback = "en");
 
 struct Hanconv {
+    config: Config,
+
     input_editor: Entity<InputState>,
     output_editor: Entity<InputState>,
     conversion_select: Entity<SelectState<Vec<Conversion>>>,
@@ -62,17 +62,38 @@ impl Hanconv {
         cx.subscribe_in(
             &conversion_select,
             window,
-            |view, state, event, window, cx| match event {
+            |view, _, event, window, cx| match event {
                 SelectEvent::Confirm(value) => {
-                    let conversion = view.selected_conversion(cx).unwrap_or_default();
-
-                    view.conv(window, cx, conversion, view.input_editor.read(cx).value());
+                    view.conv(
+                        window,
+                        cx,
+                        value.as_deref().map_or_else(String::new, |v| v.to_string()),
+                        view.input_editor.read(cx).value(),
+                    );
                 }
             },
         )
         .detach();
 
+        cx.spawn(async |view, cx| {
+            view.update(cx, |view, _| {
+                view.init_locale();
+            })
+        })
+        .detach();
+
+        cx.on_app_quit(|view, _| {
+            let config = view.config.clone();
+            async move {
+                if let Err(err) = confy::store("hanconv", None, config) {
+                    eprintln!("{err}")
+                }
+            }
+        })
+        .detach();
+
         Hanconv {
+            config: confy::load::<Config>("hanconv", None).unwrap_or_default(),
             input_editor,
             output_editor,
             conversion_select,
@@ -140,7 +161,7 @@ impl SelectItem for Conversion {
 }
 
 impl Render for Hanconv {
-    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
         div()
             .w_full()
             .h_full()
@@ -169,7 +190,7 @@ impl Render for Hanconv {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct Config {
     locale: Option<Locale>,
 }
@@ -180,65 +201,51 @@ impl Default for Config {
     }
 }
 
-static CONFIG: LazyLock<RwLock<Config>> =
-    LazyLock::new(|| RwLock::new(confy::load::<Config>("hanconv", None).unwrap_or_default()));
+impl Hanconv {
+    fn init_locale(&mut self) {
+        let mut fallback_iter = LocaleFallbacker::new()
+            .for_config({
+                let mut config = LocaleFallbackConfig::default();
+                config.priority = LocaleFallbackPriority::Language;
+                config
+            })
+            .fallback_for({
+                if let Some(locale) = self.config.locale.clone() {
+                    locale.into()
+                } else {
+                    sys_locale::get_locale()
+                        .unwrap_or_else(|| "en".to_string())
+                        .parse::<Locale>()
+                        .ok()
+                        .unwrap_or_else(|| locale!("en"))
+                        .into()
+                }
+            });
 
-fn get_app_locale() -> Option<Locale> {
-    let mut fallback_iter = LocaleFallbacker::new()
-        .for_config({
-            let mut config = LocaleFallbackConfig::default();
-            config.priority = LocaleFallbackPriority::Language;
-            config
-        })
-        .fallback_for({
-            let config = CONFIG.read().unwrap();
+        let locales = available_locales!()
+            .into_iter()
+            .filter_map(|locale| locale.parse::<Locale>().map(DataLocale::from).ok())
+            .collect::<Vec<_>>();
 
-            if let Some(locale) = config.locale.clone() {
-                locale.into()
-            } else {
-                sys_locale::get_locale()?.parse::<Locale>().ok()?.into()
+        let locale = loop {
+            let locale = fallback_iter.get();
+            if locale.is_unknown() {
+                break locale!("en");
             }
-        });
 
-    let locales = available_locales!()
-        .into_iter()
-        .filter_map(|locale| locale.parse::<Locale>().map(DataLocale::from).ok())
-        .collect::<Vec<_>>();
+            if locales.contains(locale) {
+                break locale.into_locale();
+            }
 
-    loop {
-        let locale = fallback_iter.get();
-        if locale.is_unknown() {
-            break None;
-        }
+            fallback_iter.step();
+        };
 
-        if locales.contains(locale) {
-            break Some(locale.into_locale());
-        }
-
-        fallback_iter.step();
+        set_locale(locale.to_string().as_str());
+        self.config.locale = Some(locale);
     }
 }
 
 fn main() -> anyhow::Result<()> {
-    {
-        let locale = get_app_locale();
-        let mut config = CONFIG.write().unwrap();
-
-        config.locale = locale;
-    }
-
-    let locale = {
-        let config = CONFIG.read().unwrap();
-        config.locale.clone()
-    };
-
-    set_locale(
-        locale
-            .map(|locale| locale.to_string())
-            .as_deref()
-            .unwrap_or("en"),
-    );
-
     let app = Application::new().with_assets(gpui_component_assets::Assets);
 
     app.run(move |cx| {
@@ -261,17 +268,6 @@ fn main() -> anyhow::Result<()> {
             )?;
 
             Ok::<_, anyhow::Error>(())
-        })
-        .detach();
-
-        cx.on_app_quit(|_| {
-            let config = CONFIG.write().unwrap();
-
-            async move {
-                if let Err(err) = confy::store("hanconv", None, config.deref()) {
-                    eprintln!("{err}")
-                }
-            }
         })
         .detach();
     });
