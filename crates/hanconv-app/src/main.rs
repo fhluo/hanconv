@@ -49,12 +49,10 @@ impl Hanconv {
         })
         .detach();
 
-        cx.on_app_quit(|view, _| {
+        cx.on_release(|view, _| {
             let config = view.config.clone();
-            async move {
-                if let Err(err) = confy::store("hanconv", None, config) {
-                    eprintln!("{err}")
-                }
+            if let Err(err) = confy::store("hanconv", None, config) {
+                eprintln!("{err}")
             }
         })
         .detach();
