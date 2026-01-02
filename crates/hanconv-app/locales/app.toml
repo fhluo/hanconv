@@ -1,0 +1,126 @@
+_version = 2
+
+[conversion]
+zh = "转换"
+zh-Hant = "轉換"
+en = "Conversion"
+
+[s2t.source]
+zh = "简体中文"
+zh-Hant = "簡體中文"
+en = "Simplified Chinese"
+
+[s2t.target]
+zh = "繁体中文"
+zh-Hant = "繁體中文"
+en = "Traditional Chinese"
+
+[t2s.source]
+zh = "繁体中文"
+zh-Hant = "繁體中文"
+en = "Traditional Chinese"
+
+[t2s.target]
+zh = "简体中文"
+zh-Hant = "簡體中文"
+en = "Simplified Chinese"
+
+[s2tw.source]
+zh = "简体中文"
+zh-Hant = "簡體中文"
+en = "Simplified Chinese"
+
+[s2tw.target]
+zh = "繁体中文（台湾）"
+zh-Hant = "繁體中文（臺灣）"
+en = "Traditional Chinese (Taiwan)"
+
+[tw2s.source]
+zh = "繁体中文（台湾）"
+zh-Hant = "繁體中文（臺灣）"
+en = "Traditional Chinese (Taiwan)"
+
+[tw2s.target]
+zh = "简体中文"
+zh-Hant = "簡體中文"
+en = "Simplified Chinese"
+
+[t2tw.source]
+zh = "繁体中文"
+zh-Hant = "繁體中文"
+en = "Traditional Chinese"
+
+[t2tw.target]
+zh = "繁体中文（台湾）"
+zh-Hant = "繁體中文（臺灣）"
+en = "Traditional Chinese (Taiwan)"
+
+[tw2t.source]
+zh = "繁体中文（台湾）"
+zh-Hant = "繁體中文（臺灣）"
+en = "Traditional Chinese (Taiwan)"
+
+[tw2t.target]
+zh = "繁体中文"
+zh-Hant = "繁體中文"
+en = "Traditional Chinese"
+
+[s2hk.source]
+zh = "简体中文"
+zh-Hant = "簡體中文"
+en = "Simplified Chinese"
+
+[s2hk.target]
+zh = "繁体中文（香港）"
+zh-Hant = "繁體中文（香港）"
+en = "Traditional Chinese (Hong Kong)"
+
+[hk2s.source]
+zh = "繁体中文（香港）"
+zh-Hant = "繁體中文（香港）"
+en = "Traditional Chinese (Hong Kong)"
+
+[hk2s.target]
+zh = "简体中文"
+zh-Hant = "簡體中文"
+en = "Simplified Chinese"
+
+[t2hk.source]
+zh = "繁体中文"
+zh-Hant = "繁體中文"
+en = "Traditional Chinese"
+
+[t2hk.target]
+zh = "繁体中文（香港）"
+zh-Hant = "繁體中文（香港）"
+en = "Traditional Chinese (Hong Kong)"
+
+[hk2t.source]
+zh = "繁体中文（香港）"
+zh-Hant = "繁體中文（香港）"
+en = "Traditional Chinese (Hong Kong)"
+
+[hk2t.target]
+zh = "繁体中文"
+zh-Hant = "繁體中文"
+en = "Traditional Chinese"
+
+[t2jp.source]
+zh = "繁体字"
+zh-Hant = "繁體字"
+en = "Traditional Chinese characters (Kyūjitai)"
+
+[t2jp.target]
+zh = "日文新字体"
+zh-Hant = "日文新字體"
+en = "New Japanese Kanji (Shinjitai)"
+
+[jp2t.source]
+zh = "日文新字体"
+zh-Hant = "日文新字體"
+en = "New Japanese Kanji (Shinjitai)"
+
+[jp2t.target]
+zh = "繁体字"
+zh-Hant = "繁體字"
+en = "Traditional Chinese characters (Kyūjitai)"
