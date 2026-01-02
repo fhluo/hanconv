@@ -6,6 +6,9 @@ includes:
     taskfile: crates/hanconv-cli/Taskfile.yaml
     dir: crates/hanconv-cli
   app:
+    taskfile: crates/hanconv-app/Taskfile.yaml
+    dir: crates/hanconv-app
+  tauri:
     taskfile: app/Taskfile.yaml
     dir: app
   web:
