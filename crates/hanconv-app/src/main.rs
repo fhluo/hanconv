@@ -2,18 +2,16 @@
 extern crate rust_i18n;
 
 mod components;
+mod config;
 mod conversion;
 
 use crate::components::conversion_menu::ConversionMenu;
+use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{div, px, size, Application, Bounds, Entity, Window, WindowBounds, WindowOptions};
 use gpui_component::input::{Input, InputEvent, InputState};
 use gpui_component::{Root, TitleBar};
-use icu_locale::fallback::{LocaleFallbackConfig, LocaleFallbackPriority};
-use icu_locale::{locale, DataLocale, Locale, LocaleFallbacker};
-use rust_i18n::set_locale;
-use serde::{Deserialize, Serialize};
 
 i18n!("locales", fallback = "en");
 
@@ -44,21 +42,18 @@ impl Hanconv {
 
         cx.spawn(async |view, cx| {
             view.update(cx, |view, _| {
-                view.init_locale();
+                view.config.init();
             })
         })
         .detach();
 
         cx.on_release(|view, _| {
-            let config = view.config.clone();
-            if let Err(err) = confy::store("hanconv", None, config) {
-                eprintln!("{err}")
-            }
+            view.config.store();
         })
         .detach();
 
         Hanconv {
-            config: confy::load::<Config>("hanconv", None).unwrap_or_default(),
+            config: Config::load("hanconv"),
             input_editor,
             output_editor,
         }
@@ -101,65 +96,6 @@ impl Render for Hanconv {
                     .child(Input::new(&self.input_editor).flex_1())
                     .child(Input::new(&self.output_editor).flex_1()),
             )
-    }
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-struct Config {
-    locale: Option<Locale>,
-    conversion: Conversion,
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        Config {
-            locale: None,
-            conversion: Conversion::S2T,
-        }
-    }
-}
-
-impl Hanconv {
-    fn init_locale(&mut self) {
-        let mut fallback_iter = LocaleFallbacker::new()
-            .for_config({
-                let mut config = LocaleFallbackConfig::default();
-                config.priority = LocaleFallbackPriority::Language;
-                config
-            })
-            .fallback_for({
-                if let Some(locale) = self.config.locale.clone() {
-                    locale.into()
-                } else {
-                    sys_locale::get_locale()
-                        .unwrap_or_else(|| "en".to_string())
-                        .parse::<Locale>()
-                        .ok()
-                        .unwrap_or_else(|| locale!("en"))
-                        .into()
-                }
-            });
-
-        let locales = available_locales!()
-            .into_iter()
-            .filter_map(|locale| locale.parse::<Locale>().map(DataLocale::from).ok())
-            .collect::<Vec<_>>();
-
-        let locale = loop {
-            let locale = fallback_iter.get();
-            if locale.is_unknown() {
-                break locale!("en");
-            }
-
-            if locales.contains(locale) {
-                break locale.into_locale();
-            }
-
-            fallback_iter.step();
-        };
-
-        set_locale(locale.to_string().as_str());
-        self.config.locale = Some(locale);
     }
 }
 
