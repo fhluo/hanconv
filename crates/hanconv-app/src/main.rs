@@ -171,14 +171,18 @@ impl Render for Hanconv {
                             .dropdown_menu({
                                 let selected_conversion = self.config.conversion.clone();
                                 move |mut menu, _, _| {
-                                    for (i, &conversion) in Conversion::all().iter().enumerate() {
-                                        menu = menu.menu_with_check(
-                                            conversion.title(),
-                                            selected_conversion == conversion,
-                                            Box::new(conversion),
-                                        );
-                                        if i % 2 == 1 && i != Conversion::all().len() - 1 {
+                                    for (i, conversions) in Conversion::all().chunks(2).enumerate()
+                                    {
+                                        if i > 0 {
                                             menu = menu.separator();
+                                        }
+
+                                        for &conversion in conversions {
+                                            menu = menu.menu_with_check(
+                                                conversion.title(),
+                                                selected_conversion == conversion,
+                                                Box::new(conversion),
+                                            );
                                         }
                                     }
 
