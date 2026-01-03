@@ -1,6 +1,9 @@
 version: 3
 
 tasks:
+  dev:
+    cmd: cargo run
+
   run:
     cmd: cargo run --release
 
