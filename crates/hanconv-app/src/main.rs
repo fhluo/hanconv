@@ -1,18 +1,18 @@
 #[macro_use]
 extern crate rust_i18n;
 
+mod components;
+mod conversion;
+
+use crate::components::conversion_menu::ConversionMenu;
+use crate::conversion::Conversion;
 use gpui::prelude::*;
-use gpui::{
-    div, px, size, Action, Application, Bounds, Entity, Window, WindowBounds, WindowOptions,
-};
-use gpui_component::button::Button;
+use gpui::{div, px, size, Application, Bounds, Entity, Window, WindowBounds, WindowOptions};
 use gpui_component::input::{Input, InputEvent, InputState};
-use gpui_component::menu::DropdownMenu;
 use gpui_component::{Root, TitleBar};
 use icu_locale::fallback::{LocaleFallbackConfig, LocaleFallbackPriority};
 use icu_locale::{locale, DataLocale, Locale, LocaleFallbacker};
 use rust_i18n::set_locale;
-use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 i18n!("locales", fallback = "en");
@@ -76,85 +76,6 @@ impl Hanconv {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize, JsonSchema, Action)]
-#[serde(rename_all = "lowercase")]
-enum Conversion {
-    S2T,
-    T2S,
-    S2TW,
-    TW2S,
-    T2TW,
-    TW2T,
-    S2HK,
-    HK2S,
-    T2HK,
-    HK2T,
-    T2JP,
-    JP2T,
-}
-
-impl Conversion {
-    fn name(&self) -> &'static str {
-        match self {
-            Conversion::S2T => "s2t",
-            Conversion::T2S => "t2s",
-            Conversion::S2TW => "s2tw",
-            Conversion::TW2S => "tw2s",
-            Conversion::T2TW => "t2tw",
-            Conversion::TW2T => "tw2t",
-            Conversion::S2HK => "s2hk",
-            Conversion::HK2S => "hk2s",
-            Conversion::T2HK => "t2hk",
-            Conversion::HK2T => "hk2t",
-            Conversion::T2JP => "t2jp",
-            Conversion::JP2T => "jp2t",
-        }
-    }
-
-    fn title(&self) -> String {
-        format!(
-            "{} → {}",
-            t!(format!("{}.source", self.name())),
-            t!(format!("{}.target", self.name()))
-        )
-    }
-
-    fn run(&self, content: impl AsRef<str>) -> String {
-        match self {
-            Conversion::S2T => hanconv::s2t(content),
-            Conversion::T2S => hanconv::t2s(content),
-            Conversion::S2TW => hanconv::s2tw(content),
-            Conversion::TW2S => hanconv::tw2s(content),
-            Conversion::T2TW => hanconv::t2tw(content),
-            Conversion::TW2T => hanconv::tw2t(content),
-            Conversion::S2HK => hanconv::s2hk(content),
-            Conversion::HK2S => hanconv::hk2s(content),
-            Conversion::T2HK => hanconv::t2hk(content),
-            Conversion::HK2T => hanconv::hk2t(content),
-            Conversion::T2JP => hanconv::t2jp(content),
-            Conversion::JP2T => hanconv::jp2t(content),
-        }
-    }
-
-    #[allow(dead_code)]
-    const fn all() -> &'static [Conversion] {
-        &[
-            Conversion::S2T,
-            Conversion::T2S,
-            Conversion::S2TW,
-            Conversion::TW2S,
-            Conversion::T2TW,
-            Conversion::TW2T,
-            Conversion::S2HK,
-            Conversion::HK2S,
-            Conversion::T2HK,
-            Conversion::HK2T,
-            Conversion::T2JP,
-            Conversion::JP2T,
-        ]
-    }
-}
-
 impl Render for Hanconv {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         div()
@@ -166,29 +87,8 @@ impl Render for Hanconv {
             .child(
                 TitleBar::new().child(
                     div().flex().flex_row().child(
-                        Button::new("conversion-menu-button")
-                            .label(t!("conversion"))
-                            .dropdown_menu({
-                                let selected_conversion = self.config.conversion.clone();
-                                move |mut menu, _, _| {
-                                    for (i, conversions) in Conversion::all().chunks(2).enumerate()
-                                    {
-                                        if i > 0 {
-                                            menu = menu.separator();
-                                        }
-
-                                        for &conversion in conversions {
-                                            menu = menu.menu_with_check(
-                                                conversion.title(),
-                                                selected_conversion == conversion,
-                                                Box::new(conversion),
-                                            );
-                                        }
-                                    }
-
-                                    menu
-                                }
-                            }),
+                        ConversionMenu::new("conversion-menu-button", self.config.conversion)
+                            .label(t!("conversion")),
                     ),
                 ),
             )
