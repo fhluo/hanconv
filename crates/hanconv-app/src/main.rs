@@ -137,7 +137,7 @@ impl Conversion {
     }
 
     #[allow(dead_code)]
-    fn all() -> &'static [Conversion] {
+    const fn all() -> &'static [Conversion] {
         &[
             Conversion::S2T,
             Conversion::T2S,
@@ -169,73 +169,20 @@ impl Render for Hanconv {
                         Button::new("conversion-menu-button")
                             .label(t!("conversion"))
                             .dropdown_menu({
-                                let conversion = self.config.conversion.clone();
-                                move |menu, _, _| {
-                                    menu.menu_with_check(
-                                        Conversion::S2T.title(),
-                                        conversion == Conversion::S2T,
-                                        Box::new(Conversion::S2T),
-                                    )
-                                    .menu_with_check(
-                                        Conversion::T2S.title(),
-                                        conversion == Conversion::T2S,
-                                        Box::new(Conversion::T2S),
-                                    )
-                                    .separator()
-                                    .menu_with_check(
-                                        Conversion::S2TW.title(),
-                                        conversion == Conversion::S2TW,
-                                        Box::new(Conversion::S2TW),
-                                    )
-                                    .menu_with_check(
-                                        Conversion::TW2S.title(),
-                                        conversion == Conversion::TW2S,
-                                        Box::new(Conversion::TW2S),
-                                    )
-                                    .separator()
-                                    .menu_with_check(
-                                        Conversion::T2TW.title(),
-                                        conversion == Conversion::T2TW,
-                                        Box::new(Conversion::T2TW),
-                                    )
-                                    .menu_with_check(
-                                        Conversion::TW2T.title(),
-                                        conversion == Conversion::TW2T,
-                                        Box::new(Conversion::TW2T),
-                                    )
-                                    .separator()
-                                    .menu_with_check(
-                                        Conversion::S2HK.title(),
-                                        conversion == Conversion::S2HK,
-                                        Box::new(Conversion::S2HK),
-                                    )
-                                    .menu_with_check(
-                                        Conversion::HK2S.title(),
-                                        conversion == Conversion::HK2S,
-                                        Box::new(Conversion::HK2S),
-                                    )
-                                    .separator()
-                                    .menu_with_check(
-                                        Conversion::T2HK.title(),
-                                        conversion == Conversion::T2HK,
-                                        Box::new(Conversion::T2HK),
-                                    )
-                                    .menu_with_check(
-                                        Conversion::HK2T.title(),
-                                        conversion == Conversion::HK2T,
-                                        Box::new(Conversion::HK2T),
-                                    )
-                                    .separator()
-                                    .menu_with_check(
-                                        Conversion::T2JP.title(),
-                                        conversion == Conversion::T2JP,
-                                        Box::new(Conversion::T2JP),
-                                    )
-                                    .menu_with_check(
-                                        Conversion::JP2T.title(),
-                                        conversion == Conversion::JP2T,
-                                        Box::new(Conversion::JP2T),
-                                    )
+                                let selected_conversion = self.config.conversion.clone();
+                                move |mut menu, _, _| {
+                                    for (i, &conversion) in Conversion::all().iter().enumerate() {
+                                        menu = menu.menu_with_check(
+                                            conversion.title(),
+                                            selected_conversion == conversion,
+                                            Box::new(conversion),
+                                        );
+                                        if i % 2 == 1 && i != Conversion::all().len() - 1 {
+                                            menu = menu.separator();
+                                        }
+                                    }
+
+                                    menu
                                 }
                             }),
                     ),
