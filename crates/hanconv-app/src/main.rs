@@ -10,6 +10,7 @@ use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{div, px, size, Application, Bounds, Entity, Window, WindowBounds, WindowOptions};
+use gpui_component::button::Button;
 use gpui_component::input::{Input, InputEvent, InputState};
 use gpui_component::{Root, TitleBar};
 
@@ -80,12 +81,10 @@ impl Render for Hanconv {
             .flex()
             .flex_col()
             .child(
-                TitleBar::new().child(
-                    div().flex().flex_row().child(
-                        ConversionMenu::new("conversion-menu-button", self.config.conversion)
-                            .label(t!("conversion")),
-                    ),
-                ),
+                TitleBar::new().child(div().flex().flex_row().child(ConversionMenu::new(
+                    Button::new("conversion-menu-button").label(t!("conversion")),
+                    self.config.conversion,
+                ))),
             )
             .child(
                 div()
