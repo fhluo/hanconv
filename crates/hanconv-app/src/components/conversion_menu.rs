@@ -6,15 +6,12 @@ use gpui_component::menu::DropdownMenu;
 #[derive(IntoElement)]
 pub struct ConversionMenu {
     button: Button,
-    checked_conversion: Conversion,
+    checked: Conversion,
 }
 
 impl ConversionMenu {
-    pub fn new(button: Button, checked_conversion: Conversion) -> Self {
-        ConversionMenu {
-            button,
-            checked_conversion,
-        }
+    pub fn new(button: Button, checked: Conversion) -> Self {
+        ConversionMenu { button, checked }
     }
 }
 
@@ -30,7 +27,7 @@ impl RenderOnce for ConversionMenu {
                     for &conversion in conversions {
                         menu = menu.menu_with_check(
                             conversion.title(),
-                            self.checked_conversion == conversion,
+                            self.checked == conversion,
                             Box::new(conversion),
                         );
                     }
