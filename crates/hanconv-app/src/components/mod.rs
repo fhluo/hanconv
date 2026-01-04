@@ -1,1 +1,3 @@
-pub mod conversion_menu;
+mod conversion_selector;
+
+pub use conversion_selector::ConversionSelector;

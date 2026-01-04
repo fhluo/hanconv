@@ -7,7 +7,7 @@ mod components;
 mod config;
 mod conversion;
 
-use crate::components::conversion_menu::ConversionMenu;
+use crate::components::ConversionSelector;
 use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
@@ -83,7 +83,7 @@ impl Render for Hanconv {
             .flex()
             .flex_col()
             .child(
-                TitleBar::new().child(div().flex().flex_row().child(ConversionMenu::new(
+                TitleBar::new().child(div().flex().flex_row().child(ConversionSelector::new(
                     Button::new("conversion-menu-button").label(t!("conversion")),
                     self.config.conversion,
                 ))),

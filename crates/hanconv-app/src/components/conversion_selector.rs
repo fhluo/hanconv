@@ -4,18 +4,18 @@ use gpui_component::button::Button;
 use gpui_component::menu::DropdownMenu;
 
 #[derive(IntoElement)]
-pub struct ConversionMenu {
+pub struct ConversionSelector {
     button: Button,
-    checked: Conversion,
+    selected: Conversion,
 }
 
-impl ConversionMenu {
-    pub fn new(button: Button, checked: Conversion) -> Self {
-        ConversionMenu { button, checked }
+impl ConversionSelector {
+    pub fn new(button: Button, selected: Conversion) -> Self {
+        ConversionSelector { button, selected }
     }
 }
 
-impl RenderOnce for ConversionMenu {
+impl RenderOnce for ConversionSelector {
     fn render(self, _: &mut Window, _: &mut App) -> impl IntoElement {
         self.button.dropdown_menu({
             move |mut menu, _, _| {
@@ -27,7 +27,7 @@ impl RenderOnce for ConversionMenu {
                     for &conversion in conversions {
                         menu = menu.menu_with_check(
                             conversion.title(),
-                            self.checked == conversion,
+                            self.selected == conversion,
                             Box::new(conversion),
                         );
                     }
