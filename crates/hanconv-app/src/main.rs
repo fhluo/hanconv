@@ -7,7 +7,7 @@ mod components;
 mod config;
 mod conversion;
 
-use crate::components::ConversionSelector;
+use crate::components::{ConversionSelector, LanguageSelector};
 use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
@@ -15,6 +15,8 @@ use gpui::{div, px, size, Application, Bounds, Entity, Window, WindowBounds, Win
 use gpui_component::button::Button;
 use gpui_component::input::{Input, InputEvent, InputState};
 use gpui_component::{Root, TitleBar};
+use icu_locale::Locale;
+use rust_i18n::set_locale;
 
 i18n!("locales", fallback = "en");
 
@@ -36,7 +38,7 @@ impl Hanconv {
             |view, _, event, window, cx| match event {
                 InputEvent::Change => {
                     let conversion = view.config.conversion;
-                    view.conv(&conversion, window, cx);
+                    view.run_conversion(&conversion, window, cx);
                 }
                 _ => {}
             },
@@ -62,7 +64,12 @@ impl Hanconv {
         }
     }
 
-    fn conv(&mut self, conversion: &Conversion, window: &mut Window, cx: &mut Context<Self>) {
+    fn run_conversion(
+        &mut self,
+        conversion: &Conversion,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
         self.config.conversion = *conversion;
 
         let content = self.input_editor.read(cx).value();
@@ -72,21 +79,38 @@ impl Hanconv {
             state.set_value(result, window, cx);
         });
     }
+
+    fn change_locale(&mut self, locale: &Locale, _: &mut Window, _: &mut Context<Self>) {
+        set_locale(&locale.to_string());
+        self.config.locale = Some(locale.to_owned())
+    }
 }
 
 impl Render for Hanconv {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         div()
-            .on_action(cx.listener(Self::conv))
+            .on_action(cx.listener(Self::run_conversion))
             .w_full()
             .h_full()
             .flex()
             .flex_col()
             .child(
-                TitleBar::new().child(div().flex().flex_row().child(ConversionSelector::new(
-                    Button::new("conversion-menu-button").label(t!("conversion")),
-                    self.config.conversion,
-                ))),
+                TitleBar::new().child(
+                    div()
+                        .flex()
+                        .flex_row()
+                        .child(ConversionSelector::new(
+                            Button::new("conversion-menu-button").label(t!("conversion")),
+                            self.config.conversion,
+                        ))
+                        .child(
+                            LanguageSelector::new(
+                                Button::new("language-menu-button").label(t!("language")),
+                                self.config.locale.clone(),
+                            )
+                            .on_change(cx.listener(Self::change_locale)),
+                        ),
+                ),
             )
             .child(
                 div()
