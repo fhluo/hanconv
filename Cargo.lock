@@ -3438,6 +3438,7 @@ dependencies = [
  "gpui-component-assets",
  "hanconv 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "icu_locale",
+ "rust-embed",
  "rust-i18n",
  "schemars 1.2.0",
  "serde",

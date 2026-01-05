@@ -3,10 +3,12 @@
 #[macro_use]
 extern crate rust_i18n;
 
+mod assets;
 mod components;
 mod config;
 mod conversion;
 
+use crate::assets::Assets;
 use crate::components::{ConversionSelector, LanguageSelector};
 use crate::config::Config;
 use crate::conversion::Conversion;
@@ -125,7 +127,7 @@ impl Render for Hanconv {
 }
 
 fn main() -> anyhow::Result<()> {
-    let app = Application::new().with_assets(gpui_component_assets::Assets);
+    let app = Application::new().with_assets(Assets);
 
     app.run(move |cx| {
         gpui_component::init(cx);
