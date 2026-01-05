@@ -1,8 +1,21 @@
 use gpui::Action;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use strum::{EnumCount, EnumIter, VariantArray};
 
-#[derive(Debug, Copy, Clone, PartialEq, Serialize, Deserialize, JsonSchema, Action)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    EnumCount,
+    EnumIter,
+    VariantArray,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+    Action,
+)]
 #[serde(rename_all = "lowercase")]
 pub enum Conversion {
     S2T,
@@ -60,23 +73,5 @@ impl Conversion {
             Conversion::T2JP => hanconv::t2jp(content),
             Conversion::JP2T => hanconv::jp2t(content),
         }
-    }
-
-    #[allow(dead_code)]
-    pub const fn all() -> &'static [Conversion] {
-        &[
-            Conversion::S2T,
-            Conversion::T2S,
-            Conversion::S2TW,
-            Conversion::TW2S,
-            Conversion::T2TW,
-            Conversion::TW2T,
-            Conversion::S2HK,
-            Conversion::HK2S,
-            Conversion::T2HK,
-            Conversion::HK2T,
-            Conversion::T2JP,
-            Conversion::JP2T,
-        ]
     }
 }

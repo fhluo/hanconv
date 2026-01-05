@@ -3442,6 +3442,7 @@ dependencies = [
  "rust-i18n",
  "schemars 1.2.0",
  "serde",
+ "strum 0.27.2",
  "sys-locale",
 ]
 
