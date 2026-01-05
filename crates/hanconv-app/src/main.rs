@@ -13,10 +13,13 @@ use crate::components::{ConversionSelector, LanguageSelector};
 use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
-use gpui::{div, px, size, Application, Bounds, Entity, Window, WindowBounds, WindowOptions};
+use gpui::{
+    div, px, size, Application, Bounds, Entity, StyleRefinement, Window, WindowBounds,
+    WindowOptions,
+};
 use gpui_component::button::Button;
 use gpui_component::input::{Input, InputEvent, InputState};
-use gpui_component::{Root, TitleBar};
+use gpui_component::{gray_500, ActiveTheme, Icon, Root, Sizable, StyledExt, TitleBar};
 use icu_locale::Locale;
 use rust_i18n::set_locale;
 
@@ -90,6 +93,34 @@ impl Hanconv {
 
 impl Render for Hanconv {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        let menu_button_style = StyleRefinement::default()
+            .h(gpui_component::TITLE_BAR_HEIGHT)
+            .bg(cx.theme().title_bar)
+            .border_0()
+            .rounded_none();
+
+        let conversion_selector = ConversionSelector::new(
+            Button::new("conversion-button")
+                .label(t!("conversion"))
+                .refine_style(&menu_button_style),
+            self.config.conversion,
+        );
+
+        let language_selector = LanguageSelector::new(
+            Button::new("language-button")
+                .icon(
+                    Icon::empty()
+                        .small()
+                        .path("icons/languages.svg")
+                        .text_color(gray_500()),
+                )
+                .tooltip(t!("language"))
+                .w(gpui_component::TITLE_BAR_HEIGHT)
+                .refine_style(&menu_button_style),
+            self.config.locale.clone(),
+        )
+        .on_change(cx.listener(Self::change_locale));
+
         div()
             .on_action(cx.listener(Self::run_conversion))
             .w_full()
@@ -101,16 +132,15 @@ impl Render for Hanconv {
                     div()
                         .flex()
                         .flex_row()
-                        .child(ConversionSelector::new(
-                            Button::new("conversion-menu-button").label(t!("conversion")),
-                            self.config.conversion,
-                        ))
+                        .flex_1()
+                        .child(conversion_selector)
                         .child(
-                            LanguageSelector::new(
-                                Button::new("language-menu-button").label(t!("language")),
-                                self.config.locale.clone(),
-                            )
-                            .on_change(cx.listener(Self::change_locale)),
+                            div()
+                                .flex()
+                                .flex_row()
+                                .h_full()
+                                .ml_auto()
+                                .child(language_selector),
                         ),
                 ),
             )
