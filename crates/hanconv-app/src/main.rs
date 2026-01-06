@@ -9,25 +9,28 @@ mod config;
 mod conversion;
 
 use crate::assets::Assets;
-use crate::components::{ConversionSelector, LanguageSelector};
+use crate::components::LanguageSelector;
 use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
-    div, px, size, Application, Bounds, Entity, StyleRefinement, Window, WindowBounds,
-    WindowOptions,
+    div, px, size, App, Application, Bounds, Entity, Menu, MenuItem,
+    StyleRefinement, Window, WindowBounds, WindowOptions,
 };
 use gpui_component::button::Button;
 use gpui_component::input::{Input, InputEvent, InputState};
+use gpui_component::menu::AppMenuBar;
 use gpui_component::{gray_500, ActiveTheme, Icon, Root, Sizable, StyledExt, TitleBar};
 use icu_locale::Locale;
 use rust_i18n::set_locale;
+use strum::{EnumCount, VariantArray};
 
 i18n!("locales", fallback = "en");
 
 struct Hanconv {
     config: Config,
 
+    menu_bar: Entity<AppMenuBar>,
     input_editor: Entity<InputState>,
     output_editor: Entity<InputState>,
 }
@@ -37,36 +40,41 @@ impl Hanconv {
         let input_editor = cx.new(|cx| InputState::new(window, cx).multi_line(true));
         let output_editor = cx.new(|cx| InputState::new(window, cx).multi_line(true));
 
-        cx.subscribe_in(
-            &input_editor,
-            window,
-            |view, _, event, window, cx| match event {
-                InputEvent::Change => {
-                    let conversion = view.config.conversion;
-                    view.run_conversion(&conversion, window, cx);
-                }
-                _ => {}
-            },
-        )
-        .detach();
+        cx.subscribe_in(&input_editor, window, Self::on_input_event)
+            .detach();
 
-        cx.spawn(async |view, cx| {
-            view.update(cx, |view, _| {
-                view.config.init();
-            })
-        })
-        .detach();
+        cx.spawn(async |view, cx| view.update(cx, Self::init_config))
+            .detach();
 
-        cx.on_release(|view, _| {
-            view.config.store();
-        })
-        .detach();
+        cx.on_release(Self::store_config).detach();
 
         Hanconv {
             config: Config::load("hanconv"),
             input_editor,
             output_editor,
+            menu_bar: AppMenuBar::new(cx),
         }
+    }
+
+    fn on_input_event(
+        &mut self,
+        _: &Entity<InputState>,
+        event: &InputEvent,
+        window: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        if matches!(event, InputEvent::Change) {
+            self.run_conversion(&self.config.conversion.clone(), window, cx);
+        }
+    }
+
+    fn init_config(&mut self, cx: &mut Context<Self>) {
+        self.config.init();
+        self.update_menu_bar(cx);
+    }
+
+    fn store_config(&mut self, _: &mut App) {
+        self.config.store()
     }
 
     fn run_conversion(
@@ -83,31 +91,49 @@ impl Hanconv {
         self.output_editor.update(cx, |state, cx| {
             state.set_value(result, window, cx);
         });
+
+        self.update_menu_bar(cx);
     }
 
-    fn change_locale(&mut self, locale: &Locale, _: &mut Window, _: &mut Context<Self>) {
+    fn change_locale(&mut self, locale: &Locale, _: &mut Window, cx: &mut Context<Self>) {
         set_locale(&locale.to_string());
-        self.config.locale = Some(locale.to_owned())
+        self.config.locale = Some(locale.to_owned());
+
+        self.update_menu_bar(cx);
+    }
+
+    fn update_menu_bar(&mut self, cx: &mut Context<Self>) {
+        let chunks = Conversion::VARIANTS.chunks(2);
+        let mut items = Vec::with_capacity(Conversion::COUNT + (Conversion::COUNT - 1) / 2);
+
+        for conversions in chunks {
+            items.extend(conversions.iter().cloned().map(|conversion| {
+                MenuItem::action(conversion.title(), conversion)
+                    .checked(self.config.conversion == conversion)
+            }));
+            items.push(MenuItem::Separator);
+        }
+
+        cx.set_menus(vec![Menu {
+            name: t!("conversion").into(),
+            items,
+        }]);
+
+        self.menu_bar.update(cx, |menu_bar, cx| {
+            menu_bar.reload(cx);
+        });
     }
 }
 
 impl Render for Hanconv {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let menu_button_style = StyleRefinement::default()
-            .h(gpui_component::TITLE_BAR_HEIGHT)
             .bg(cx.theme().title_bar)
-            .border_0()
-            .rounded_none();
-
-        let conversion_selector = ConversionSelector::new(
-            Button::new("conversion-button")
-                .label(t!("conversion"))
-                .refine_style(&menu_button_style),
-            self.config.conversion,
-        );
+            .border_0();
 
         let language_selector = LanguageSelector::new(
             Button::new("language-button")
+                .small()
                 .icon(
                     Icon::empty()
                         .small()
@@ -115,7 +141,6 @@ impl Render for Hanconv {
                         .text_color(gray_500()),
                 )
                 .tooltip(t!("language"))
-                .w(gpui_component::TITLE_BAR_HEIGHT)
                 .refine_style(&menu_button_style),
             self.config.locale.clone(),
         )
@@ -128,21 +153,20 @@ impl Render for Hanconv {
             .flex()
             .flex_col()
             .child(
-                TitleBar::new().child(
-                    div()
-                        .flex()
-                        .flex_row()
-                        .flex_1()
-                        .child(conversion_selector)
-                        .child(
+                TitleBar::new()
+                    .items_center()
+                    .child(self.menu_bar.clone())
+                    .child(
+                        div().flex().flex_row().flex_1().child(
                             div()
                                 .flex()
                                 .flex_row()
                                 .h_full()
                                 .ml_auto()
+                                .mr_3()
                                 .child(language_selector),
                         ),
-                ),
+                    ),
             )
             .child(
                 div()
