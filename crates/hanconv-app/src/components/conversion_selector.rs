@@ -20,11 +20,7 @@ impl RenderOnce for ConversionSelector {
     fn render(self, _: &mut Window, _: &mut App) -> impl IntoElement {
         self.button.dropdown_menu({
             move |mut menu, _, _| {
-                for (i, conversions) in Conversion::VARIANTS.chunks(2).enumerate() {
-                    if i > 0 {
-                        menu = menu.separator();
-                    }
-
+                for conversions in Conversion::VARIANTS.chunks(2) {
                     for &conversion in conversions {
                         menu = menu.menu_with_check(
                             conversion.title(),
@@ -32,6 +28,8 @@ impl RenderOnce for ConversionSelector {
                             Box::new(conversion),
                         );
                     }
+
+                    menu = menu.separator();
                 }
 
                 menu
