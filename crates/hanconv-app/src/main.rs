@@ -14,13 +14,13 @@ use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
-    div, px, size, App, Application, Bounds, Entity, Menu, MenuItem,
-    StyleRefinement, Window, WindowBounds, WindowOptions,
+    div, px, size, App, Application, Bounds, Entity, Menu, MenuItem, Window, WindowBounds,
+    WindowOptions,
 };
-use gpui_component::button::Button;
+use gpui_component::button::{Button, ButtonVariants};
 use gpui_component::input::{Input, InputEvent, InputState};
 use gpui_component::menu::AppMenuBar;
-use gpui_component::{gray_500, ActiveTheme, Icon, Root, Sizable, StyledExt, TitleBar};
+use gpui_component::{gray_500, Icon, Root, Sizable, StyledExt, TitleBar};
 use icu_locale::Locale;
 use rust_i18n::set_locale;
 use strum::{EnumCount, VariantArray};
@@ -127,21 +127,17 @@ impl Hanconv {
 
 impl Render for Hanconv {
     fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
-        let menu_button_style = StyleRefinement::default()
-            .bg(cx.theme().title_bar)
-            .border_0();
-
         let language_selector = LanguageSelector::new(
             Button::new("language-button")
                 .small()
+                .ghost()
                 .icon(
                     Icon::empty()
                         .small()
                         .path("icons/languages.svg")
                         .text_color(gray_500()),
                 )
-                .tooltip(t!("language"))
-                .refine_style(&menu_button_style),
+                .tooltip(t!("language")),
             self.config.locale.clone(),
         )
         .on_change(cx.listener(Self::change_locale));
