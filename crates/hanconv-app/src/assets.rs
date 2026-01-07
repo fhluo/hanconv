@@ -1,4 +1,5 @@
 use gpui::{AssetSource, SharedString};
+use gpui_component::IconNamed;
 use rust_embed::RustEmbed;
 use std::borrow::Cow;
 
@@ -22,5 +23,27 @@ impl AssetSource for Assets {
         paths.extend(Self::iter().filter_map(|p| p.starts_with(path).then(|| p.into())));
 
         Ok(paths)
+    }
+}
+
+#[derive(Copy, Clone)]
+pub enum Icons {
+    Clipboard,
+    Languages,
+    Save,
+    Trash,
+    Trash2,
+}
+
+impl IconNamed for Icons {
+    fn path(self) -> SharedString {
+        match self {
+            Icons::Clipboard => "icons/clipboard.svg",
+            Icons::Languages => "icons/languages.svg",
+            Icons::Save => "icons/save.svg",
+            Icons::Trash => "icons/trash.svg",
+            Icons::Trash2 => "icons/trash-2.svg",
+        }
+        .into()
     }
 }

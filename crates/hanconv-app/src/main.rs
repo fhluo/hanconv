@@ -8,7 +8,7 @@ mod components;
 mod config;
 mod conversion;
 
-use crate::assets::Assets;
+use crate::assets::{Assets, Icons};
 use crate::components::LanguageSelector;
 use crate::config::Config;
 use crate::conversion::Conversion;
@@ -131,12 +131,8 @@ impl Render for Hanconv {
             Button::new("language-button")
                 .small()
                 .ghost()
-                .icon(
-                    Icon::empty()
-                        .small()
-                        .path("icons/languages.svg")
-                        .text_color(gray_500()),
-                )
+                .icon(Icons::Languages)
+                .text_color(gray_500())
                 .tooltip(t!("language")),
             self.config.locale.clone(),
         )
