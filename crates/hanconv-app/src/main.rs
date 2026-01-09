@@ -9,13 +9,13 @@ mod config;
 mod conversion;
 
 use crate::assets::{Assets, Icons};
-use crate::components::{LanguageSelector, Toolbar};
+use crate::components::{toolbar, LanguageSelector, Toolbar};
 use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
-    div, px, size, App, Application, Bounds, Entity, Focusable, Menu, MenuItem,
-    MouseButton, Window, WindowBounds, WindowOptions,
+    div, px, size, App, Application, Bounds, ClipboardItem, Entity, Focusable,
+    Menu, MenuItem, MouseButton, Window, WindowBounds, WindowOptions,
 };
 use gpui_component::button::{Button, ButtonVariants};
 use gpui_component::input::{Input, InputEvent, InputState};
@@ -144,6 +144,34 @@ impl Hanconv {
             menu_bar.reload(cx);
         });
     }
+
+    fn clear(&mut self, _: &toolbar::Clear, window: &mut Window, cx: &mut Context<Self>) {
+        self.input_editor.update(cx, |this, cx| {
+            this.set_value("", window, cx);
+        })
+    }
+
+    fn copy_input(&mut self, _: &toolbar::Copy, _: &mut Window, cx: &mut Context<Self>) {
+        cx.write_to_clipboard(ClipboardItem::new_string(
+            self.input_editor.read(cx).value().to_string(),
+        ));
+    }
+
+    fn copy_output(&mut self, _: &toolbar::Copy, _: &mut Window, cx: &mut Context<Self>) {
+        cx.write_to_clipboard(ClipboardItem::new_string(
+            self.output_editor.read(cx).value().to_string(),
+        ))
+    }
+
+    fn paste(&mut self, _: &toolbar::Paste, window: &mut Window, cx: &mut Context<Self>) {
+        if let Some(item) = cx.read_from_clipboard()
+            && let Some(text) = item.text()
+        {
+            self.input_editor.update(cx, |this, cx| {
+                this.insert(text, window, cx);
+            })
+        }
+    }
 }
 
 impl Render for Hanconv {
@@ -195,6 +223,9 @@ impl Render for Hanconv {
                                     this.input_editor.focus_handle(cx).focus(window, cx);
                                 }),
                             )
+                            .on_action(cx.listener(Self::clear))
+                            .on_action(cx.listener(Self::copy_input))
+                            .on_action(cx.listener(Self::paste))
                             .flex_1()
                             .flex()
                             .flex_col()
@@ -223,6 +254,7 @@ impl Render for Hanconv {
                                     this.output_editor.focus_handle(cx).focus(window, cx);
                                 }),
                             )
+                            .on_action(cx.listener(Self::copy_output))
                             .flex_1()
                             .flex()
                             .flex_col()
