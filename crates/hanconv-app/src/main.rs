@@ -51,9 +51,7 @@ impl Hanconv {
         cx.subscribe_in(&input_editor, window, Self::on_input_event)
             .detach();
 
-        cx.spawn(async |view, cx| view.update(cx, Self::init_config))
-            .detach();
-
+        cx.observe_new(Self::init_config).detach();
         cx.on_release(Self::store_config).detach();
 
         Hanconv {
@@ -76,9 +74,13 @@ impl Hanconv {
         }
     }
 
-    fn init_config(&mut self, cx: &mut Context<Self>) {
+    fn init_config(&mut self, window: Option<&mut Window>, cx: &mut Context<Self>) {
         self.config.init();
         self.update_menu_bar(cx);
+
+        if let Some(window) = window {
+            self.update_editors(window, cx);
+        }
     }
 
     fn store_config(&mut self, _: &mut App) {
@@ -103,11 +105,22 @@ impl Hanconv {
         self.update_menu_bar(cx);
     }
 
-    fn change_locale(&mut self, locale: &Locale, _: &mut Window, cx: &mut Context<Self>) {
+    fn change_locale(&mut self, locale: &Locale, window: &mut Window, cx: &mut Context<Self>) {
         set_locale(&locale.to_string());
         self.config.locale = Some(locale.to_owned());
 
         self.update_menu_bar(cx);
+        self.update_editors(window, cx);
+    }
+
+    fn update_editors(&mut self, window: &mut Window, cx: &mut Context<Self>) {
+        self.input_editor.update(cx, |this, cx| {
+            this.set_placeholder(t!("input.placeholder"), window, cx);
+        });
+
+        self.output_editor.update(cx, |this, cx| {
+            this.set_placeholder(t!("output.placeholder"), window, cx);
+        });
     }
 
     fn update_menu_bar(&mut self, cx: &mut Context<Self>) {
