@@ -25,6 +25,16 @@ zh = "语言"
 zh-Hant = "語言"
 en = "Language"
 
+[Source]
+zh = "原文"
+zh-Hant = "原文"
+en = "Source"
+
+[Target]
+zh = "结果"
+zh-Hant = "結果"
+en = "Target"
+
 [input.placeholder]
 zh = "请输入或粘贴要转换的内容..."
 zh-Hant = "請輸入或貼上要轉換的內容..."

@@ -9,7 +9,7 @@ mod config;
 mod conversion;
 
 use crate::assets::{Assets, Icons};
-use crate::components::LanguageSelector;
+use crate::components::{LanguageSelector, Toolbar};
 use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
@@ -20,7 +20,7 @@ use gpui::{
 use gpui_component::button::{Button, ButtonVariants};
 use gpui_component::input::{Input, InputEvent, InputState};
 use gpui_component::menu::AppMenuBar;
-use gpui_component::{gray_500, Icon, Root, Sizable, StyledExt, TitleBar};
+use gpui_component::{gray_500, ActiveTheme, Root, Sizable, TitleBar};
 use icu_locale::Locale;
 use rust_i18n::set_locale;
 use strum::{EnumCount, VariantArray};
@@ -187,8 +187,44 @@ impl Render for Hanconv {
                     .h_full()
                     .flex()
                     .flex_row()
-                    .child(Input::new(&self.input_editor).flex_1())
-                    .child(Input::new(&self.output_editor).flex_1()),
+                    .child(
+                        div()
+                            .flex_1()
+                            .flex()
+                            .flex_col()
+                            .child({
+                                let is_empty = self.input_editor.read(cx).value().is_empty();
+                                Toolbar::new("source", t!("Source"))
+                                    .open(true)
+                                    .save(!is_empty)
+                                    .clear(!is_empty)
+                                    .copy(!is_empty)
+                                    .paste(true)
+                            })
+                            .child(
+                                Input::new(&self.input_editor)
+                                    .flex_1()
+                                    .appearance(false)
+                                    .border_r_1()
+                                    .border_color(cx.theme().border),
+                            ),
+                    )
+                    .child(
+                        div()
+                            .flex_1()
+                            .flex()
+                            .flex_col()
+                            .child({
+                                let is_empty = self.output_editor.read(cx).value().is_empty();
+                                Toolbar::new("target", t!("Target"))
+                                    .open(false)
+                                    .save(!is_empty)
+                                    .clear(false)
+                                    .copy(!is_empty)
+                                    .paste(false)
+                            })
+                            .child(Input::new(&self.output_editor).flex_1().appearance(false)),
+                    ),
             )
     }
 }
