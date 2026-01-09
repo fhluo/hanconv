@@ -14,8 +14,8 @@ use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
-    div, px, size, App, Application, Bounds, Entity, Menu, MenuItem, Window, WindowBounds,
-    WindowOptions,
+    div, px, size, App, Application, Bounds, Entity, Focusable, Menu, MenuItem,
+    MouseButton, Window, WindowBounds, WindowOptions,
 };
 use gpui_component::button::{Button, ButtonVariants};
 use gpui_component::input::{Input, InputEvent, InputState};
@@ -189,6 +189,12 @@ impl Render for Hanconv {
                     .flex_row()
                     .child(
                         div()
+                            .on_mouse_down(
+                                MouseButton::Left,
+                                cx.listener(|this, _, window, cx| {
+                                    this.input_editor.focus_handle(cx).focus(window, cx);
+                                }),
+                            )
                             .flex_1()
                             .flex()
                             .flex_col()
@@ -211,6 +217,12 @@ impl Render for Hanconv {
                     )
                     .child(
                         div()
+                            .on_mouse_down(
+                                MouseButton::Left,
+                                cx.listener(|this, _, window, cx| {
+                                    this.output_editor.focus_handle(cx).focus(window, cx);
+                                }),
+                            )
                             .flex_1()
                             .flex()
                             .flex_col()
