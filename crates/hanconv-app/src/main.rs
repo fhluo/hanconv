@@ -217,11 +217,8 @@ impl Render for Hanconv {
                             .child({
                                 let is_empty = self.output_editor.read(cx).value().is_empty();
                                 Toolbar::new("target", t!("Target"))
-                                    .open(false)
                                     .save(!is_empty)
-                                    .clear(false)
                                     .copy(!is_empty)
-                                    .paste(false)
                             })
                             .child(Input::new(&self.output_editor).flex_1().appearance(false)),
                     ),
