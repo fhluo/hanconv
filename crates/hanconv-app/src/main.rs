@@ -37,8 +37,16 @@ struct Hanconv {
 
 impl Hanconv {
     fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
-        let input_editor = cx.new(|cx| InputState::new(window, cx).multi_line(true));
-        let output_editor = cx.new(|cx| InputState::new(window, cx).multi_line(true));
+        let input_editor = cx.new(|cx| {
+            InputState::new(window, cx)
+                .multi_line(true)
+                .placeholder(t!("input.placeholder"))
+        });
+        let output_editor = cx.new(|cx| {
+            InputState::new(window, cx)
+                .multi_line(true)
+                .placeholder(t!("output.placeholder"))
+        });
 
         cx.subscribe_in(&input_editor, window, Self::on_input_event)
             .detach();

@@ -25,6 +25,16 @@ zh = "语言"
 zh-Hant = "語言"
 en = "Language"
 
+[input.placeholder]
+zh = "请输入或粘贴要转换的内容..."
+zh-Hant = "請輸入或貼上要轉換的內容..."
+en = "Enter text to convert..."
+
+[output.placeholder]
+zh = "转换后的内容将显示在这里..."
+zh-Hant = "轉換後的內容將顯示在這裡..."
+en = "Conversion result will appear here..."
+
 [s2t.source]
 zh = "简体中文"
 zh-Hant = "簡體中文"
