@@ -137,11 +137,13 @@ impl ToolbarItem {
 
 impl RenderOnce for ToolbarItem {
     fn render(self, _: &mut Window, _: &mut App) -> impl IntoElement {
-        Button::new(self.id)
-            .icon(self.icon)
+        let Self { id, icon, action } = self;
+
+        Button::new(id)
+            .icon(icon)
             .text_color(gray_500())
             .small()
             .ghost()
-            .on_click(move |_, _, cx| cx.dispatch_action(self.action.as_ref()))
+            .on_click(move |_, window, cx| window.dispatch_action(action.boxed_clone(), cx))
     }
 }
