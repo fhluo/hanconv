@@ -1,6 +1,8 @@
 use crate::assets::Icons;
 use gpui::prelude::*;
-use gpui::{actions, div, Action, App, ElementId, IntoElement, RenderOnce, Window};
+use gpui::{
+    actions, div, Action, App, ElementId, IntoElement, RenderOnce, StyleRefinement, Window,
+};
 use gpui_component::button::{Button, ButtonVariants};
 use gpui_component::label::Label;
 use gpui_component::{
@@ -127,26 +129,37 @@ impl RenderOnce for Toolbar {
 #[derive(IntoElement)]
 struct ToolbarItem {
     id: ElementId,
+    style: StyleRefinement,
     icon: Icon,
     action: Box<dyn Action>,
     disabled: bool,
     tooltip: Option<String>,
 }
 
+impl Styled for ToolbarItem {
+    fn style(&mut self) -> &mut StyleRefinement {
+        &mut self.style
+    }
+}
+
+impl Disableable for ToolbarItem {
+    fn disabled(mut self, disabled: bool) -> Self {
+        self.disabled = disabled;
+
+        self
+    }
+}
+
 impl ToolbarItem {
     fn new(id: impl Into<ElementId>, icon: impl Into<Icon>, action: impl Action) -> Self {
         ToolbarItem {
             id: id.into(),
+            style: Default::default(),
             icon: icon.into(),
             action: Box::new(action),
             disabled: false,
             tooltip: None,
         }
-    }
-
-    fn disabled(mut self, disabled: bool) -> Self {
-        self.disabled = disabled;
-        self
     }
 
     fn tooltip(mut self, tooltip: impl Into<String>) -> Self {
@@ -160,6 +173,7 @@ impl RenderOnce for ToolbarItem {
     fn render(self, _: &mut Window, cx: &mut App) -> impl IntoElement {
         let Self {
             id,
+            style,
             icon,
             action,
             disabled,
@@ -172,6 +186,7 @@ impl RenderOnce for ToolbarItem {
             .small()
             .ghost()
             .disabled(disabled)
+            .refine_style(&style)
             .when_some(tooltip, |this, tooltip| this.tooltip(tooltip))
             .when(disabled, |this| this.text_color(gray_200()))
             .on_click(move |_, window, cx| window.dispatch_action(action.boxed_clone(), cx))
