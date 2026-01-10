@@ -231,12 +231,16 @@ impl Render for Hanconv {
                             .flex_col()
                             .child({
                                 let is_empty = self.input_editor.read(cx).value().is_empty();
+                                let paste_disabled = cx
+                                    .read_from_clipboard()
+                                    .is_some_and(|item| item.text().is_some());
+
                                 Toolbar::new("source", t!("Source"))
-                                    .open(true)
-                                    .save(!is_empty)
-                                    .clear(!is_empty)
-                                    .copy(!is_empty)
-                                    .paste(true)
+                                    .open(Some(false))
+                                    .save(Some(is_empty))
+                                    .clear(Some(is_empty))
+                                    .copy(Some(is_empty))
+                                    .paste(Some(paste_disabled))
                             })
                             .child(
                                 Input::new(&self.input_editor)
@@ -261,8 +265,8 @@ impl Render for Hanconv {
                             .child({
                                 let is_empty = self.output_editor.read(cx).value().is_empty();
                                 Toolbar::new("target", t!("Target"))
-                                    .save(!is_empty)
-                                    .copy(!is_empty)
+                                    .save(Some(is_empty))
+                                    .copy(Some(is_empty))
                             })
                             .child(Input::new(&self.output_editor).flex_1().appearance(false)),
                     ),
