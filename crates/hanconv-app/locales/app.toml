@@ -45,6 +45,31 @@ zh = "转换后的内容将显示在这里..."
 zh-Hant = "轉換後的內容將顯示在這裡..."
 en = "Conversion result will appear here..."
 
+[tooltip.Open]
+zh = "打开"
+zh-Hant = "開啟"
+en = "Open"
+
+[tooltip.Save]
+zh = "保存"
+zh-Hant = "儲存"
+en = "Save"
+
+[tooltip.Clear]
+zh = "清空"
+zh-Hant = "清除"
+en = "Clear"
+
+[tooltip.Copy]
+zh = "复制"
+zh-Hant = "複製"
+en = "Copy"
+
+[tooltip.Paste]
+zh = "粘贴"
+zh-Hant = "貼上"
+en = "Paste"
+
 [s2t.source]
 zh = "简体中文"
 zh-Hant = "簡體中文"

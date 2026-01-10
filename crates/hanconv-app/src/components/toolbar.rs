@@ -88,30 +88,35 @@ impl RenderOnce for Toolbar {
                                 IconName::FolderOpen,
                                 Open,
                             )
+                            .tooltip(t!("tooltip.Open"))
                             .disabled(disabled),
                         )
                     })
                     .when_some(self.save, |this, disabled| {
                         this.child(
                             ToolbarItem::new(format!("{}-save", self.id), Icons::Save, Save)
+                                .tooltip(t!("tooltip.Save"))
                                 .disabled(disabled),
                         )
                     })
                     .when_some(self.clear, |this, disabled| {
                         this.child(
                             ToolbarItem::new(format!("{}-clear", self.id), Icons::Trash2, Clear)
+                                .tooltip(t!("tooltip.Clear"))
                                 .disabled(disabled),
                         )
                     })
                     .when_some(self.copy, |this, disabled| {
                         this.child(
                             ToolbarItem::new(format!("{}-copy", self.id), IconName::Copy, Copy)
+                                .tooltip(t!("tooltip.Copy"))
                                 .disabled(disabled),
                         )
                     })
                     .when_some(self.paste, |this, disabled| {
                         this.child(
                             ToolbarItem::new(format!("{}-paste", self.id), Icons::Clipboard, Paste)
+                                .tooltip(t!("tooltip.Paste"))
                                 .disabled(disabled),
                         )
                     }),
@@ -125,6 +130,7 @@ struct ToolbarItem {
     icon: Icon,
     action: Box<dyn Action>,
     disabled: bool,
+    tooltip: Option<String>,
 }
 
 impl ToolbarItem {
@@ -134,11 +140,18 @@ impl ToolbarItem {
             icon: icon.into(),
             action: Box::new(action),
             disabled: false,
+            tooltip: None,
         }
     }
 
     fn disabled(mut self, disabled: bool) -> Self {
         self.disabled = disabled;
+        self
+    }
+
+    fn tooltip(mut self, tooltip: impl Into<String>) -> Self {
+        self.tooltip = Some(tooltip.into());
+
         self
     }
 }
@@ -150,6 +163,7 @@ impl RenderOnce for ToolbarItem {
             icon,
             action,
             disabled,
+            tooltip,
         } = self;
 
         Button::new(id)
@@ -158,6 +172,7 @@ impl RenderOnce for ToolbarItem {
             .small()
             .ghost()
             .disabled(disabled)
+            .when_some(tooltip, |this, tooltip| this.tooltip(tooltip))
             .when(disabled, |this| this.text_color(gray_200()))
             .on_click(move |_, window, cx| window.dispatch_action(action.boxed_clone(), cx))
     }
