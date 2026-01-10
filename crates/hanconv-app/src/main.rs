@@ -15,7 +15,7 @@ use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
     div, px, size, App, Application, Bounds, ClipboardItem, Entity, Focusable,
-    Menu, MenuItem, MouseButton, Window, WindowBounds, WindowOptions,
+    Menu, MenuItem, MouseButton, PathPromptOptions, Window, WindowBounds, WindowOptions,
 };
 use gpui_component::button::{Button, ButtonVariants};
 use gpui_component::input::{Input, InputEvent, InputState};
@@ -23,6 +23,8 @@ use gpui_component::menu::AppMenuBar;
 use gpui_component::{gray_500, ActiveTheme, Root, Sizable, TitleBar};
 use icu_locale::Locale;
 use rust_i18n::set_locale;
+use std::fs;
+use std::path::Path;
 use strum::{EnumCount, VariantArray};
 
 i18n!("locales", fallback = "en");
@@ -145,6 +147,59 @@ impl Hanconv {
         });
     }
 
+    fn open(&mut self, _: &toolbar::Open, window: &mut Window, cx: &mut Context<Self>) {
+        let path = cx.prompt_for_paths(PathPromptOptions {
+            files: true,
+            directories: false,
+            multiple: false,
+            prompt: None,
+        });
+
+        let input_editor = self.input_editor.clone();
+
+        cx.spawn_in(window, async move |_, window| {
+            let path = path.await.ok()?.ok()??.into_iter().next()?;
+            let text = fs::read_to_string(path).ok()?;
+
+            window
+                .update(|window, cx| {
+                    input_editor.update(cx, |this, cx| {
+                        this.set_value(text, window, cx);
+                    });
+                })
+                .ok()
+        })
+        .detach();
+    }
+
+    fn save_input(&mut self, _: &toolbar::Save, _: &mut Window, cx: &mut Context<Self>) {
+        let path = cx.prompt_for_new_path(Path::new("."), None);
+
+        cx.spawn(async move |this, cx| {
+            let path = path.await.ok()?.ok()??;
+
+            this.update(cx, |this, cx| {
+                fs::write(path, this.input_editor.read(cx).value().as_ref()).ok()
+            })
+            .ok()?
+        })
+        .detach();
+    }
+
+    fn save_output(&mut self, _: &toolbar::Save, _: &mut Window, cx: &mut Context<Self>) {
+        let path = cx.prompt_for_new_path(Path::new("."), None);
+
+        cx.spawn(async move |this, cx| {
+            let path = path.await.ok()?.ok()??;
+
+            this.update(cx, |this, cx| {
+                fs::write(path, this.output_editor.read(cx).value().as_ref()).ok()
+            })
+            .ok()?
+        })
+        .detach();
+    }
+
     fn clear(&mut self, _: &toolbar::Clear, window: &mut Window, cx: &mut Context<Self>) {
         self.input_editor.update(cx, |this, cx| {
             this.set_value("", window, cx);
@@ -223,6 +278,8 @@ impl Render for Hanconv {
                                     this.input_editor.focus_handle(cx).focus(window, cx);
                                 }),
                             )
+                            .on_action(cx.listener(Self::open))
+                            .on_action(cx.listener(Self::save_input))
                             .on_action(cx.listener(Self::clear))
                             .on_action(cx.listener(Self::copy_input))
                             .on_action(cx.listener(Self::paste))
@@ -258,6 +315,7 @@ impl Render for Hanconv {
                                     this.output_editor.focus_handle(cx).focus(window, cx);
                                 }),
                             )
+                            .on_action(cx.listener(Self::save_output))
                             .on_action(cx.listener(Self::copy_output))
                             .flex_1()
                             .flex()
