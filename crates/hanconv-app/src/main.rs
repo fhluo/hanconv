@@ -231,7 +231,7 @@ impl Render for Hanconv {
                             .flex_col()
                             .child({
                                 let is_empty = self.input_editor.read(cx).value().is_empty();
-                                let paste_disabled = cx
+                                let paste_disabled = !cx
                                     .read_from_clipboard()
                                     .is_some_and(|item| item.text().is_some());
 
