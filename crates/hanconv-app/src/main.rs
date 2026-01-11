@@ -24,7 +24,7 @@ use gpui_component::{gray_500, ActiveTheme, Root, Sizable, TitleBar};
 use icu_locale::Locale;
 use rust_i18n::set_locale;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use strum::{EnumCount, VariantArray};
 
 i18n!("locales", fallback = "en");
@@ -147,6 +147,10 @@ impl Hanconv {
         });
     }
 
+    fn update_last_directory(&mut self, directory: impl AsRef<Path>) {
+        self.config.last_directory = Some(directory.as_ref().to_path_buf());
+    }
+
     fn open(&mut self, _: &toolbar::Open, window: &mut Window, cx: &mut Context<Self>) {
         let path = cx.prompt_for_paths(PathPromptOptions {
             files: true,
@@ -157,8 +161,16 @@ impl Hanconv {
 
         let input_editor = self.input_editor.clone();
 
-        cx.spawn_in(window, async move |_, window| {
+        cx.spawn_in(window, async move |this, window| {
             let path = path.await.ok()?.ok()??.into_iter().next()?;
+
+            this.update_in(window, |this, _, _| {
+                if let Some(path) = path.parent() {
+                    this.update_last_directory(path);
+                }
+            })
+            .ok()?;
+
             let text = fs::read_to_string(path).ok()?;
 
             window
@@ -173,12 +185,23 @@ impl Hanconv {
     }
 
     fn save_input(&mut self, _: &toolbar::Save, _: &mut Window, cx: &mut Context<Self>) {
-        let path = cx.prompt_for_new_path(Path::new("."), None);
+        let path = cx.prompt_for_new_path(
+            self.config
+                .last_directory
+                .clone()
+                .unwrap_or_else(|| PathBuf::from("."))
+                .as_path(),
+            None,
+        );
 
         cx.spawn(async move |this, cx| {
             let path = path.await.ok()?.ok()??;
 
             this.update(cx, |this, cx| {
+                if let Some(path) = path.parent() {
+                    this.update_last_directory(path);
+                }
+
                 fs::write(path, this.input_editor.read(cx).value().as_ref()).ok()
             })
             .ok()?
@@ -187,12 +210,23 @@ impl Hanconv {
     }
 
     fn save_output(&mut self, _: &toolbar::Save, _: &mut Window, cx: &mut Context<Self>) {
-        let path = cx.prompt_for_new_path(Path::new("."), None);
+        let path = cx.prompt_for_new_path(
+            self.config
+                .last_directory
+                .clone()
+                .unwrap_or_else(|| PathBuf::from("."))
+                .as_path(),
+            None,
+        );
 
         cx.spawn(async move |this, cx| {
             let path = path.await.ok()?.ok()??;
 
             this.update(cx, |this, cx| {
+                if let Some(path) = path.parent() {
+                    this.update_last_directory(path);
+                }
+
                 fs::write(path, this.output_editor.read(cx).value().as_ref()).ok()
             })
             .ok()?

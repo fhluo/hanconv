@@ -1,8 +1,11 @@
 use crate::conversion::Conversion;
+use dirs::document_dir;
 use icu_locale::fallback::{LocaleFallbackConfig, LocaleFallbackPriority};
 use icu_locale::{locale, DataLocale, Locale, LocaleFallbacker};
 use rust_i18n::set_locale;
 use serde::{Deserialize, Serialize};
+use std::env::home_dir;
+use std::path::PathBuf;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
@@ -11,6 +14,7 @@ pub struct Config {
 
     pub locale: Option<Locale>,
     pub conversion: Conversion,
+    pub last_directory: Option<PathBuf>,
 }
 
 impl Default for Config {
@@ -19,6 +23,7 @@ impl Default for Config {
             app_name: env!("CARGO_PKG_NAME").to_string(),
             locale: None,
             conversion: Conversion::S2T,
+            last_directory: None,
         }
     }
 }
@@ -42,6 +47,7 @@ impl Config {
 
     pub fn init(&mut self) {
         self.init_locale();
+        self.init_path();
     }
 
     fn init_locale(&mut self) {
@@ -84,5 +90,11 @@ impl Config {
 
         set_locale(locale.to_string().as_str());
         self.locale = Some(locale);
+    }
+
+    fn init_path(&mut self) {
+        if self.last_directory.is_none() {
+            self.last_directory = document_dir().or_else(home_dir)
+        }
     }
 }
