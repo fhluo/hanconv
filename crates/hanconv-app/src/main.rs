@@ -14,8 +14,8 @@ use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
-    div, px, size, App, Application, Bounds, ClipboardItem, Entity, ExternalPaths,
-    Focusable, Menu, MenuItem, MouseButton, PathPromptOptions, Window, WindowBounds, WindowOptions,
+    actions, div, px, size, App, Application, Bounds, ClipboardItem, Entity,
+    ExternalPaths, Focusable, Menu, MenuItem, MouseButton, PathPromptOptions, Window, WindowBounds, WindowOptions,
 };
 use gpui_component::button::{Button, ButtonVariants};
 use gpui_component::description_list::DescriptionList;
@@ -33,6 +33,8 @@ use std::{fs, io};
 use strum::{EnumCount, VariantArray};
 
 i18n!("locales", fallback = "en");
+
+actions!([About]);
 
 struct Hanconv {
     config: Config,
@@ -142,10 +144,16 @@ impl Hanconv {
             items.push(MenuItem::Separator);
         }
 
-        cx.set_menus(vec![Menu {
-            name: t!("conversion").into(),
-            items,
-        }]);
+        cx.set_menus(vec![
+            Menu {
+                name: t!("Conversion").into(),
+                items,
+            },
+            Menu {
+                name: t!("Help").into(),
+                items: vec![MenuItem::action(t!("About"), About)],
+            },
+        ]);
 
         self.menu_bar.update(cx, |menu_bar, cx| {
             menu_bar.reload(cx);
@@ -163,6 +171,7 @@ impl Hanconv {
         err: io::Error,
     ) {
         let path = path.as_ref().to_owned();
+
         window.open_dialog(cx, move |dialog, _, cx| {
             dialog
                 .alert()
@@ -313,6 +322,37 @@ impl Hanconv {
             })
         }
     }
+
+    fn open_about_dialog(&mut self, _: &About, window: &mut Window, cx: &mut Context<Self>) {
+        window.open_dialog(cx, |dialog, _, _| {
+            dialog.alert().title(t!("About").to_string()).child(
+                div().child(
+                    DescriptionList::horizontal()
+                        .columns(1)
+                        .item(t!("about.Name").to_string(), "Hanconv", 1)
+                        .item(
+                            t!("about.Version").to_string(),
+                            env!("CARGO_PKG_VERSION"),
+                            1,
+                        )
+                        .item(
+                            t!("about.Description").to_string(),
+                            t!("about.DescriptionText").to_string(),
+                            1,
+                        )
+                        .item(
+                            t!("about.Repository").to_string(),
+                            Link::new("repository")
+                                .href("https://github.com/fhluo/hanconv")
+                                .child("https://github.com/fhluo/hanconv")
+                                .into_any_element(),
+                            1,
+                        )
+                        .item(t!("about.License").to_string(), "MIT", 1),
+                ),
+            )
+        });
+    }
 }
 
 impl Render for Hanconv {
@@ -332,6 +372,7 @@ impl Render for Hanconv {
 
         div()
             .on_action(cx.listener(Self::run_conversion))
+            .on_action(cx.listener(Self::open_about_dialog))
             .w_full()
             .h_full()
             .flex()

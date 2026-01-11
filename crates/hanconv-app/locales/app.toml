@@ -15,7 +15,7 @@ zh = "English"
 zh-Hant = "English"
 en = "English"
 
-[conversion]
+[Conversion]
 zh = "转换"
 zh-Hant = "轉換"
 en = "Conversion"
@@ -84,6 +84,46 @@ en = "Error"
 zh = "读取文件失败"
 zh-Hant = "讀取檔案失敗"
 en = "Failed to read file"
+
+[Help]
+zh = "帮助"
+zh-Hant = "幫助"
+en = "Help"
+
+[About]
+zh = "关于"
+zh-Hant = "關於"
+en = "About"
+
+[about.Name]
+zh = "名称"
+zh-Hant = "名稱"
+en = "Name"
+
+[about.Version]
+zh = "版本"
+zh-Hant = "版本"
+en = "Version"
+
+[about.Description]
+zh = "描述"
+zh-Hant = "描述"
+en = "Description"
+
+[about.DescriptionText]
+zh = "汉字转换"
+zh-Hant = "漢字轉換"
+en = "Convert between Chinese characters variants."
+
+[about.Repository]
+zh = "仓库"
+zh-Hant = "倉庫"
+en = "Repository"
+
+[about.License]
+zh = "许可协议"
+zh-Hant = "許可協議"
+en = "License"
 
 [s2t.source]
 zh = "简体中文"
