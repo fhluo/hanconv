@@ -14,8 +14,8 @@ use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
-    div, px, size, App, Application, Bounds, ClipboardItem, Entity, Focusable,
-    Menu, MenuItem, MouseButton, PathPromptOptions, Window, WindowBounds, WindowOptions,
+    div, px, size, App, Application, Bounds, ClipboardItem, Entity, ExternalPaths,
+    Focusable, Menu, MenuItem, MouseButton, PathPromptOptions, Window, WindowBounds, WindowOptions,
 };
 use gpui_component::button::{Button, ButtonVariants};
 use gpui_component::input::{Input, InputEvent, InputState};
@@ -312,6 +312,19 @@ impl Render for Hanconv {
                                     this.input_editor.focus_handle(cx).focus(window, cx);
                                 }),
                             )
+                            .on_drop(cx.listener(|this, paths: &ExternalPaths, window, cx| {
+                                if let Some(path) = paths.paths().first()
+                                    && let Ok(text) = fs::read_to_string(path)
+                                {
+                                    if let Some(path) = path.parent() {
+                                        this.update_last_directory(path);
+                                    }
+
+                                    this.input_editor.update(cx, |this, cx| {
+                                        this.set_value(text, window, cx);
+                                    });
+                                }
+                            }))
                             .on_action(cx.listener(Self::open))
                             .on_action(cx.listener(Self::save_input))
                             .on_action(cx.listener(Self::clear))
