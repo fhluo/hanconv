@@ -18,13 +18,18 @@ use gpui::{
     Focusable, Menu, MenuItem, MouseButton, PathPromptOptions, Window, WindowBounds, WindowOptions,
 };
 use gpui_component::button::{Button, ButtonVariants};
+use gpui_component::description_list::DescriptionList;
 use gpui_component::input::{Input, InputEvent, InputState};
+use gpui_component::label::Label;
+use gpui_component::link::Link;
 use gpui_component::menu::AppMenuBar;
-use gpui_component::{gray_500, ActiveTheme, Root, Sizable, TitleBar};
+use gpui_component::{
+    gray_500, ActiveTheme, Icon, IconName, Root, Sizable, StyledExt, TitleBar, WindowExt,
+};
 use icu_locale::Locale;
 use rust_i18n::set_locale;
-use std::fs;
 use std::path::{Path, PathBuf};
+use std::{fs, io};
 use strum::{EnumCount, VariantArray};
 
 i18n!("locales", fallback = "en");
@@ -151,6 +156,50 @@ impl Hanconv {
         self.config.last_directory = Some(directory.as_ref().to_path_buf());
     }
 
+    fn open_io_error_dialog(
+        window: &mut Window,
+        cx: &mut App,
+        path: impl AsRef<Path>,
+        err: io::Error,
+    ) {
+        let path = path.as_ref().to_owned();
+        window.open_dialog(cx, move |dialog, _, cx| {
+            dialog
+                .alert()
+                .title(
+                    div()
+                        .flex()
+                        .flex_row()
+                        .gap_3()
+                        .items_center()
+                        .child(
+                            Icon::new(IconName::CircleX)
+                                .text_color(cx.theme().red)
+                                .size_6(),
+                        )
+                        .child(Label::new(t!("error.read-file")).font_semibold().text_lg()),
+                )
+                .child(
+                    div().child(
+                        DescriptionList::vertical()
+                            .columns(1)
+                            .item(
+                                t!("Path").to_string(),
+                                Link::new("path")
+                                    .child(path.display().to_string())
+                                    .on_click({
+                                        let path = path.clone();
+                                        move |_, _, cx| cx.reveal_path(path.as_path())
+                                    })
+                                    .into_any_element(),
+                                1,
+                            )
+                            .item(t!("Error").to_string(), err.to_string(), 1),
+                    ),
+                )
+        });
+    }
+
     fn open(&mut self, _: &toolbar::Open, window: &mut Window, cx: &mut Context<Self>) {
         let path = cx.prompt_for_paths(PathPromptOptions {
             files: true,
@@ -171,13 +220,16 @@ impl Hanconv {
             })
             .ok()?;
 
-            let text = fs::read_to_string(path).ok()?;
-
             window
-                .update(|window, cx| {
-                    input_editor.update(cx, |this, cx| {
-                        this.set_value(text, window, cx);
-                    });
+                .update(|window, cx| match fs::read_to_string(&path) {
+                    Ok(text) => {
+                        input_editor.update(cx, |this, cx| {
+                            this.set_value(text, window, cx);
+                        });
+                    }
+                    Err(err) => {
+                        Self::open_io_error_dialog(window, cx, path, err);
+                    }
                 })
                 .ok()
         })
@@ -264,7 +316,7 @@ impl Hanconv {
 }
 
 impl Render for Hanconv {
-    fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let language_selector = LanguageSelector::new(
             Button::new("language-button")
                 .small()
@@ -275,6 +327,8 @@ impl Render for Hanconv {
             self.config.locale.clone(),
         )
         .on_change(cx.listener(Self::change_locale));
+
+        let dialog_layer = Root::render_dialog_layer(window, cx);
 
         div()
             .on_action(cx.listener(Self::run_conversion))
@@ -376,6 +430,7 @@ impl Render for Hanconv {
                             .child(Input::new(&self.output_editor).flex_1().appearance(false)),
                     ),
             )
+            .children(dialog_layer)
     }
 }
 

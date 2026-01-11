@@ -70,6 +70,21 @@ zh = "粘贴"
 zh-Hant = "貼上"
 en = "Paste"
 
+[Path]
+zh = "路径"
+zh-Hant = "路徑"
+en = "Path"
+
+[Error]
+zh = "错误"
+zh-Hant = "錯誤"
+en = "Error"
+
+[error.read-file]
+zh = "读取文件失败"
+zh-Hant = "讀取檔案失敗"
+en = "Failed to read file"
+
 [s2t.source]
 zh = "简体中文"
 zh-Hant = "簡體中文"
