@@ -10,15 +10,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 'stable'
-          cache-dependency-path: |
-            go/go.sum
-            tools/go.sum
+      - uses: actions/checkout@v6
 
       - name: Set up Rust
         run: |
@@ -33,9 +25,11 @@ jobs:
       - name: Build
         run: |
           task cli:build
+          task app:build
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             target/release/hanconv.exe
+            target/release/hanconv-app.exe
