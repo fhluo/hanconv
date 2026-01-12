@@ -12,7 +12,7 @@ exclude = ["Taskfile.yaml"]
 
 [dependencies]
 hanconv = "0.5"
-gpui = { git = "https://github.com/zed-industries/zed" }
+gpui = { git = "https://github.com/zed-industries/zed", features = ["windows-manifest"] }
 gpui-component = { git = "https://github.com/longbridge/gpui-component" }
 gpui-component-assets = { git = "https://github.com/longbridge/gpui-component" }
 rust-i18n = "3.1"
@@ -25,3 +25,11 @@ serde = { version = "1.0", features = ["derive"] }
 schemars = { version = "1.2", features = ["derive"] }
 strum = { version = "0.27", features = ["derive"] }
 anyhow = "1.0"
+
+[build-dependencies]
+winresource = "0.1"
+
+[package.metadata.winresource]
+FileDescription = "Hanconv"
+ProductName = "Hanconv"
+LegalCopyright = "Copyright (c) 2022 fhluo"
