@@ -10,10 +10,10 @@ jobs:
   build:
     runs-on: windows-2025
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: "stable"
           cache-dependency-path: |
@@ -30,16 +30,6 @@ jobs:
           winget install --id Task.Task --accept-source-agreements --accept-package-agreements
           "$env:LOCALAPPDATA\Microsoft\WinGet\Links" | Out-File -FilePath "$env:GITHUB_PATH" -Append
 
-      - name: Set up Cargo Binary Install
-        uses: cargo-bins/cargo-binstall@main
-
-      - name: Set up Tauri CLI
-        run: cargo binstall tauri-cli
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-
       - name: Build
         run: |
-          task web:setup
           task build
