@@ -1,5 +1,5 @@
 use gpui::prelude::FluentBuilder;
-use gpui::{App, IntoElement, RenderOnce, Window};
+use gpui::{App, Corner, IntoElement, RenderOnce, Window};
 use gpui_component::button::Button;
 use gpui_component::menu::{DropdownMenu, PopupMenuItem};
 use icu_locale::Locale;
@@ -10,6 +10,7 @@ pub struct LanguageSelector {
     button: Button,
     selected: Option<Locale>,
     on_change: Option<Rc<dyn Fn(&Locale, &mut Window, &mut App) + 'static>>,
+    anchor: Corner,
 }
 
 impl LanguageSelector {
@@ -18,6 +19,7 @@ impl LanguageSelector {
             button,
             selected,
             on_change: None,
+            anchor: Corner::TopRight,
         }
     }
 
@@ -26,29 +28,37 @@ impl LanguageSelector {
 
         self
     }
+
+    pub fn anchor(mut self, anchor: impl Into<Corner>) -> Self {
+        self.anchor = anchor.into();
+
+        self
+    }
 }
 
 impl RenderOnce for LanguageSelector {
     fn render(self, _: &mut Window, _: &mut App) -> impl IntoElement {
-        self.button.dropdown_menu({
-            move |mut menu, _, _| {
-                for (key, locale) in available_locales!()
-                    .into_iter()
-                    .filter_map(|locale| Some((locale, locale.parse::<Locale>().ok()?)))
-                {
-                    menu = menu.item(
-                        PopupMenuItem::new(t!(key))
-                            .checked(self.selected.as_ref() == Some(&locale))
-                            .when_some(self.on_change.clone(), |this, on_change| {
-                                this.on_click(move |_, window, cx| {
-                                    on_change(&locale, window, cx);
-                                })
-                            }),
-                    )
-                }
+        self.button
+            .dropdown_menu({
+                move |mut menu, _, _| {
+                    for (key, locale) in available_locales!()
+                        .into_iter()
+                        .filter_map(|locale| Some((locale, locale.parse::<Locale>().ok()?)))
+                    {
+                        menu = menu.item(
+                            PopupMenuItem::new(t!(key))
+                                .checked(self.selected.as_ref() == Some(&locale))
+                                .when_some(self.on_change.clone(), |this, on_change| {
+                                    this.on_click(move |_, window, cx| {
+                                        on_change(&locale, window, cx);
+                                    })
+                                }),
+                        )
+                    }
 
-                menu
-            }
-        })
+                    menu
+                }
+            })
+            .anchor(self.anchor)
     }
 }
