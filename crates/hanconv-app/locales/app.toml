@@ -244,3 +244,13 @@ en = "New Japanese Kanji (Shinjitai)"
 zh = "繁体字"
 zh-Hant = "繁體字"
 en = "Traditional Chinese characters (Kyūjitai)"
+
+[status.characters]
+zh = "字"
+zh-Hant = "字"
+en = "characters"
+
+[status.result]
+zh = "转换结果："
+zh-Hant = "轉換結果："
+en = "Result: "

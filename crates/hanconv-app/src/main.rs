@@ -31,6 +31,7 @@ use rust_i18n::set_locale;
 use std::path::{Path, PathBuf};
 use std::{fs, io};
 use strum::{EnumCount, VariantArray};
+use unicode_segmentation::UnicodeSegmentation;
 
 i18n!("locales", fallback = "en");
 
@@ -162,6 +163,14 @@ impl Hanconv {
 
     fn update_last_directory(&mut self, directory: impl AsRef<Path>) {
         self.config.last_directory = Some(directory.as_ref().to_path_buf());
+    }
+
+    fn input_graphemes(&mut self, cx: &mut Context<Self>) -> usize {
+        self.input_editor.read(cx).value().graphemes(true).count()
+    }
+
+    fn output_graphemes(&mut self, cx: &mut Context<Self>) -> usize {
+        self.output_editor.read(cx).value().graphemes(true).count()
     }
 
     fn open_io_error_dialog(
@@ -471,7 +480,11 @@ impl Render for Hanconv {
                             .child(Input::new(&self.output_editor).flex_1().appearance(false)),
                     ),
             )
-            .child(StatusBar::new(self.config.conversion))
+            .child(StatusBar::new(
+                self.input_graphemes(cx),
+                self.output_graphemes(cx),
+                self.config.conversion,
+            ))
             .children(dialog_layer)
     }
 }
