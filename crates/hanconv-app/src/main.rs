@@ -9,7 +9,7 @@ mod config;
 mod conversion;
 
 use crate::assets::{Assets, Icons};
-use crate::components::{toolbar, LanguageSelector, Toolbar};
+use crate::components::{toolbar, LanguageSelector, StatusBar, Toolbar};
 use crate::config::Config;
 use crate::conversion::Conversion;
 use gpui::prelude::*;
@@ -471,6 +471,7 @@ impl Render for Hanconv {
                             .child(Input::new(&self.output_editor).flex_1().appearance(false)),
                     ),
             )
+            .child(StatusBar::new(self.config.conversion))
             .children(dialog_layer)
     }
 }
