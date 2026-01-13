@@ -24,7 +24,7 @@ use gpui_component::label::Label;
 use gpui_component::link::Link;
 use gpui_component::menu::AppMenuBar;
 use gpui_component::{
-    gray_500, ActiveTheme, Icon, IconName, Root, Sizable, StyledExt, TitleBar, WindowExt,
+    gray_500, gray_900, ActiveTheme, Icon, IconName, Root, Sizable, StyledExt, TitleBar, WindowExt,
 };
 use icu_locale::Locale;
 use rust_i18n::set_locale;
@@ -35,7 +35,7 @@ use unicode_segmentation::UnicodeSegmentation;
 
 i18n!("locales", fallback = "en");
 
-actions!([About]);
+actions!([About, Repository]);
 
 struct Hanconv {
     config: Config,
@@ -152,7 +152,11 @@ impl Hanconv {
             },
             Menu {
                 name: t!("Help").into(),
-                items: vec![MenuItem::action(t!("About"), About)],
+                items: vec![
+                    MenuItem::action(t!("help.Repository"), Repository),
+                    MenuItem::Separator,
+                    MenuItem::action(t!("About"), About),
+                ],
             },
         ]);
 
@@ -332,33 +336,57 @@ impl Hanconv {
         }
     }
 
+    fn open_repository(&mut self, _: &Repository, _: &mut Window, cx: &mut Context<Self>) {
+        cx.open_url("https://github.com/fhluo/hanconv");
+    }
+
     fn open_about_dialog(&mut self, _: &About, window: &mut Window, cx: &mut Context<Self>) {
-        window.open_dialog(cx, |dialog, _, _| {
+        window.open_dialog(cx, |dialog, _, cx| {
             dialog.alert().title(t!("About").to_string()).child(
-                div().child(
-                    DescriptionList::horizontal()
-                        .columns(1)
-                        .item(t!("about.Name").to_string(), "Hanconv", 1)
-                        .item(
-                            t!("about.Version").to_string(),
-                            env!("CARGO_PKG_VERSION"),
-                            1,
-                        )
-                        .item(
-                            t!("about.Description").to_string(),
-                            t!("about.DescriptionText").to_string(),
-                            1,
-                        )
-                        .item(
-                            t!("about.Repository").to_string(),
-                            Link::new("repository")
-                                .href("https://github.com/fhluo/hanconv")
-                                .child("https://github.com/fhluo/hanconv")
-                                .into_any_element(),
-                            1,
-                        )
-                        .item(t!("about.License").to_string(), "MIT", 1),
-                ),
+                div()
+                    .py_3()
+                    .flex()
+                    .flex_col()
+                    .gap_1()
+                    .items_center()
+                    .child(Label::new("Hanconv").text_lg().font_semibold())
+                    .child(
+                        Label::new(t!("about.Description").to_string())
+                            .text_sm()
+                            .text_color(cx.theme().description_list_label_foreground)
+                            .mt_1()
+                            .mb_3(),
+                    )
+                    .child(
+                        DescriptionList::horizontal()
+                            .bordered(false)
+                            .columns(1)
+                            .xsmall()
+                            .item(
+                                Label::new(t!("about.License"))
+                                    .text_xs()
+                                    .text_color(cx.theme().description_list_label_foreground)
+                                    .into_any_element(),
+                                Label::new("MIT").text_xs().into_any_element(),
+                                1,
+                            )
+                            .item(
+                                Label::new(t!("about.Version"))
+                                    .text_xs()
+                                    .text_color(cx.theme().description_list_label_foreground)
+                                    .into_any_element(),
+                                Label::new(env!("CARGO_PKG_VERSION"))
+                                    .text_xs()
+                                    .into_any_element(),
+                                1,
+                            ),
+                    )
+                    .child(
+                        Label::new("Copyright © 2022 fhluo")
+                            .text_color(gray_900())
+                            .text_xs()
+                            .mt_3(),
+                    ),
             )
         });
     }
@@ -382,6 +410,7 @@ impl Render for Hanconv {
         div()
             .on_action(cx.listener(Self::run_conversion))
             .on_action(cx.listener(Self::open_about_dialog))
+            .on_action(cx.listener(Self::open_repository))
             .w_full()
             .h_full()
             .flex()
