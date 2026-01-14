@@ -279,7 +279,6 @@ impl Hanconv {
             .unwrap_or_else(|| PathBuf::from("."))
     }
 
-
     fn save_input(&mut self, _: &toolbar::Save, _: &mut Window, cx: &mut Context<Self>) {
         let dir = self.last_directory(cx);
         let path = cx.prompt_for_new_path(dir.as_path(), None);
@@ -478,9 +477,9 @@ impl Render for Hanconv {
                             .flex_col()
                             .child({
                                 let is_empty = self.input_editor.read(cx).value().is_empty();
-                                let paste_disabled = !cx
+                                let paste_disabled = cx
                                     .read_from_clipboard()
-                                    .is_some_and(|item| item.text().is_some());
+                                    .is_none_or(|item| item.text().is_none());
 
                                 Toolbar::new("source", t!("Source"))
                                     .open(Some(false))
