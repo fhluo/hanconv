@@ -10,7 +10,7 @@ mod conversion;
 
 use crate::assets::{Assets, Icons};
 use crate::components::{toolbar, LanguageSelector, StatusBar, Toolbar};
-use crate::config::Config;
+use crate::config::{Config, ConfigEvent};
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
@@ -27,7 +27,6 @@ use gpui_component::{
     gray_500, gray_900, ActiveTheme, Icon, IconName, Root, Sizable, StyledExt, TitleBar, WindowExt,
 };
 use icu_locale::Locale;
-use rust_i18n::set_locale;
 use std::path::{Path, PathBuf};
 use std::{fs, io};
 use strum::{EnumCount, VariantArray};
@@ -38,7 +37,7 @@ i18n!("locales", fallback = "en");
 actions!([About, Repository]);
 
 struct Hanconv {
-    config: Config,
+    config: Entity<Config>,
 
     menu_bar: Entity<AppMenuBar>,
     input_editor: Entity<InputState>,
@@ -61,15 +60,40 @@ impl Hanconv {
         cx.subscribe_in(&input_editor, window, Self::on_input_event)
             .detach();
 
-        cx.observe_new(Self::init_config).detach();
-        cx.on_release(Self::store_config).detach();
-
         Hanconv {
-            config: Config::load("hanconv"),
+            config: Self::setup_config(window, cx),
             input_editor,
             output_editor,
             menu_bar: AppMenuBar::new(cx),
         }
+    }
+
+    fn setup_config(window: &mut Window, cx: &mut Context<Self>) -> Entity<Config> {
+        let config = cx.new(|_| Config::load("hanconv"));
+
+        cx.observe_new(|this: &mut Self, _, cx| {
+            this.config.update(cx, |this, cx| {
+                this.init(cx);
+            });
+        })
+        .detach();
+
+        cx.on_release(|this, cx| {
+            this.config.update(cx, |this, _| {
+                this.store();
+            });
+        })
+        .detach();
+
+        cx.subscribe_in(&config, window, |this, _, event, window, cx| {
+            if matches!(event, ConfigEvent::LocaleChange) {
+                this.update_menu_bar(cx);
+                this.update_editors(window, cx);
+            }
+        })
+        .detach();
+
+        config
     }
 
     fn on_input_event(
@@ -80,21 +104,8 @@ impl Hanconv {
         cx: &mut Context<Self>,
     ) {
         if matches!(event, InputEvent::Change) {
-            self.run_conversion(&self.config.conversion.clone(), window, cx);
+            self.run_conversion(&self.config.read(cx).conversion(), window, cx);
         }
-    }
-
-    fn init_config(&mut self, window: Option<&mut Window>, cx: &mut Context<Self>) {
-        self.config.init();
-        self.update_menu_bar(cx);
-
-        if let Some(window) = window {
-            self.update_editors(window, cx);
-        }
-    }
-
-    fn store_config(&mut self, _: &mut App) {
-        self.config.store()
     }
 
     fn run_conversion(
@@ -103,7 +114,9 @@ impl Hanconv {
         window: &mut Window,
         cx: &mut Context<Self>,
     ) {
-        self.config.conversion = *conversion;
+        self.config.update(cx, |this, cx| {
+            this.set_conversion(*conversion, cx);
+        });
 
         let content = self.input_editor.read(cx).value();
         let result = conversion.run(content);
@@ -115,12 +128,10 @@ impl Hanconv {
         self.update_menu_bar(cx);
     }
 
-    fn change_locale(&mut self, locale: &Locale, window: &mut Window, cx: &mut Context<Self>) {
-        set_locale(&locale.to_string());
-        self.config.locale = Some(locale.to_owned());
-
-        self.update_menu_bar(cx);
-        self.update_editors(window, cx);
+    fn change_locale(&mut self, locale: &Locale, _: &mut Window, cx: &mut Context<Self>) {
+        self.config.update(cx, |this, cx| {
+            this.set_locale(locale, cx);
+        });
     }
 
     fn update_editors(&mut self, window: &mut Window, cx: &mut Context<Self>) {
@@ -140,7 +151,7 @@ impl Hanconv {
         for conversions in chunks {
             items.extend(conversions.iter().cloned().map(|conversion| {
                 MenuItem::action(conversion.title(), conversion)
-                    .checked(self.config.conversion == conversion)
+                    .checked(self.config.read(cx).conversion() == conversion)
             }));
             items.push(MenuItem::Separator);
         }
@@ -165,8 +176,10 @@ impl Hanconv {
         });
     }
 
-    fn update_last_directory(&mut self, directory: impl AsRef<Path>) {
-        self.config.last_directory = Some(directory.as_ref().to_path_buf());
+    fn update_last_directory(&mut self, directory: impl AsRef<Path>, cx: &mut Context<Self>) {
+        self.config.update(cx, |this, cx| {
+            this.set_last_directory(directory, cx);
+        });
     }
 
     fn input_graphemes(&mut self, cx: &mut Context<Self>) -> usize {
@@ -235,9 +248,9 @@ impl Hanconv {
         cx.spawn_in(window, async move |this, window| {
             let path = path.await.ok()?.ok()??.into_iter().next()?;
 
-            this.update_in(window, |this, _, _| {
+            this.update_in(window, |this, _, cx| {
                 if let Some(path) = path.parent() {
-                    this.update_last_directory(path);
+                    this.update_last_directory(path, cx);
                 }
             })
             .ok()?;
@@ -258,22 +271,25 @@ impl Hanconv {
         .detach();
     }
 
+    fn last_directory(&mut self, cx: &mut Context<Self>) -> PathBuf {
+        self.config
+            .read(cx)
+            .last_directory()
+            .cloned()
+            .unwrap_or_else(|| PathBuf::from("."))
+    }
+
+
     fn save_input(&mut self, _: &toolbar::Save, _: &mut Window, cx: &mut Context<Self>) {
-        let path = cx.prompt_for_new_path(
-            self.config
-                .last_directory
-                .clone()
-                .unwrap_or_else(|| PathBuf::from("."))
-                .as_path(),
-            None,
-        );
+        let dir = self.last_directory(cx);
+        let path = cx.prompt_for_new_path(dir.as_path(), None);
 
         cx.spawn(async move |this, cx| {
             let path = path.await.ok()?.ok()??;
 
             this.update(cx, |this, cx| {
                 if let Some(path) = path.parent() {
-                    this.update_last_directory(path);
+                    this.update_last_directory(path, cx);
                 }
 
                 fs::write(path, this.input_editor.read(cx).value().as_ref()).ok()
@@ -284,21 +300,15 @@ impl Hanconv {
     }
 
     fn save_output(&mut self, _: &toolbar::Save, _: &mut Window, cx: &mut Context<Self>) {
-        let path = cx.prompt_for_new_path(
-            self.config
-                .last_directory
-                .clone()
-                .unwrap_or_else(|| PathBuf::from("."))
-                .as_path(),
-            None,
-        );
+        let dir = self.last_directory(cx);
+        let path = cx.prompt_for_new_path(dir.as_path(), None);
 
         cx.spawn(async move |this, cx| {
             let path = path.await.ok()?.ok()??;
 
             this.update(cx, |this, cx| {
                 if let Some(path) = path.parent() {
-                    this.update_last_directory(path);
+                    this.update_last_directory(path, cx);
                 }
 
                 fs::write(path, this.output_editor.read(cx).value().as_ref()).ok()
@@ -401,7 +411,7 @@ impl Render for Hanconv {
                 .icon(Icons::Languages)
                 .text_color(gray_500())
                 .tooltip(t!("language")),
-            self.config.locale.clone(),
+            self.config.read(cx).locale().cloned(),
         )
         .on_change(cx.listener(Self::change_locale));
 
@@ -450,7 +460,7 @@ impl Render for Hanconv {
                                     && let Ok(text) = fs::read_to_string(path)
                                 {
                                     if let Some(path) = path.parent() {
-                                        this.update_last_directory(path);
+                                        this.update_last_directory(path, cx);
                                     }
 
                                     this.input_editor.update(cx, |this, cx| {
@@ -512,7 +522,7 @@ impl Render for Hanconv {
             .child(StatusBar::new(
                 self.input_graphemes(cx),
                 self.output_graphemes(cx),
-                self.config.conversion,
+                self.config.read(cx).conversion(),
             ))
             .children(dialog_layer)
     }

@@ -1,20 +1,21 @@
 use crate::conversion::Conversion;
 use dirs::document_dir;
+use gpui::{Context, EventEmitter};
 use icu_locale::fallback::{LocaleFallbackConfig, LocaleFallbackPriority};
 use icu_locale::{locale, DataLocale, Locale, LocaleFallbacker};
 use rust_i18n::set_locale;
 use serde::{Deserialize, Serialize};
 use std::env::home_dir;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
     #[serde(skip)]
     app_name: String,
 
-    pub locale: Option<Locale>,
-    pub conversion: Conversion,
-    pub last_directory: Option<PathBuf>,
+    locale: Option<Locale>,
+    conversion: Conversion,
+    last_directory: Option<PathBuf>,
 }
 
 impl Default for Config {
@@ -45,9 +46,12 @@ impl Config {
         }
     }
 
-    pub fn init(&mut self) {
+    pub fn init(&mut self, cx: &mut Context<Self>) {
         self.init_locale();
+        cx.emit(ConfigEvent::LocaleChange);
+
         self.init_path();
+        cx.emit(ConfigEvent::LastDirectoryChange);
     }
 
     fn init_locale(&mut self) {
@@ -97,4 +101,43 @@ impl Config {
             self.last_directory = document_dir().or_else(home_dir)
         }
     }
+
+    pub fn locale(&self) -> Option<&Locale> {
+        self.locale.as_ref()
+    }
+
+    pub fn set_locale(&mut self, locale: &Locale, cx: &mut Context<Self>) {
+        set_locale(&locale.to_string());
+        self.locale = Some(locale.to_owned());
+
+        cx.emit(ConfigEvent::LocaleChange);
+    }
+
+    pub fn conversion(&self) -> Conversion {
+        self.conversion
+    }
+
+    pub fn set_conversion(&mut self, conversion: Conversion, cx: &mut Context<Self>) {
+        self.conversion = conversion;
+
+        cx.emit(ConfigEvent::ConversionChange);
+    }
+
+    pub fn last_directory(&self) -> Option<&PathBuf> {
+        self.last_directory.as_ref()
+    }
+
+    pub fn set_last_directory(&mut self, path: impl AsRef<Path>, cx: &mut Context<Self>) {
+        self.last_directory = Some(path.as_ref().to_path_buf());
+
+        cx.emit(ConfigEvent::LastDirectoryChange);
+    }
 }
+
+pub enum ConfigEvent {
+    LocaleChange,
+    ConversionChange,
+    LastDirectoryChange,
+}
+
+impl EventEmitter<ConfigEvent> for Config {}
