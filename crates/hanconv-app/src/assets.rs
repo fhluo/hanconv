@@ -31,6 +31,7 @@ pub enum Icons {
     Clipboard,
     Languages,
     Save,
+    #[allow(dead_code)]
     Trash,
     Trash2,
 }

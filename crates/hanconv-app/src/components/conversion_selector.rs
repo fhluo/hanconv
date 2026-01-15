@@ -20,6 +20,7 @@ impl ConversionSelector {
         }
     }
 
+    #[allow(dead_code)]
     pub fn anchor(mut self, anchor: impl Into<Corner>) -> Self {
         self.anchor = anchor.into();
 

@@ -170,7 +170,7 @@ impl ToolbarItem {
 }
 
 impl RenderOnce for ToolbarItem {
-    fn render(self, _: &mut Window, cx: &mut App) -> impl IntoElement {
+    fn render(self, _: &mut Window, _: &mut App) -> impl IntoElement {
         let Self {
             id,
             style,
