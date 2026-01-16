@@ -5,9 +5,8 @@ pub enum RawDictionary {
     STPhrases,
     TSCharacters,
     TSPhrases,
-    TWPhrasesIT,
-    TWPhrasesName,
-    TWPhrasesOther,
+    TWPhrases,
+    TWPhrasesRev,
     TWVariants,
     TWVariantsRevPhrases,
     HKVariants,
@@ -24,9 +23,8 @@ impl RawDictionary {
             STPhrases => include_str!("../data/STPhrases.txt"),
             TSCharacters => include_str!("../data/TSCharacters.txt"),
             TSPhrases => include_str!("../data/TSPhrases.txt"),
-            TWPhrasesIT => include_str!("../data/TWPhrasesIT.txt"),
-            TWPhrasesName => include_str!("../data/TWPhrasesName.txt"),
-            TWPhrasesOther => include_str!("../data/TWPhrasesOther.txt"),
+            TWPhrases => include_str!("../data/TWPhrases.txt"),
+            TWPhrasesRev => include_str!("../data/TWPhrasesRev.txt"),
             TWVariants => include_str!("../data/TWVariants.txt"),
             TWVariantsRevPhrases => include_str!("../data/TWVariantsRevPhrases.txt"),
             HKVariants => include_str!("../data/HKVariants.txt"),
@@ -39,8 +37,15 @@ impl RawDictionary {
         }
     }
 
+    #[inline]
+    pub fn lines(&self) -> impl Iterator<Item = &'static str> + use<> {
+        self.text()
+            .lines()
+            .skip_while(|&line| line.starts_with('#') || line.is_empty())
+    }
+
     pub fn iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
-        self.text().lines().filter_map(|line| {
+        self.lines().filter_map(|line| {
             let mut iter = line.split_whitespace();
 
             if let (Some(key), Some(value)) = (iter.next(), iter.next()) {
@@ -52,8 +57,7 @@ impl RawDictionary {
     }
 
     pub fn inv_iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
-        self.text()
-            .lines()
+        self.lines()
             .filter_map(|line| {
                 let mut iter = line.split_whitespace().peekable();
 
@@ -67,7 +71,7 @@ impl RawDictionary {
     }
 
     pub fn var_iter(&self) -> impl Iterator<Item = (&'static str, Vec<&'static str>)> + use<> {
-        self.text().lines().filter_map(|line| {
+        self.lines().filter_map(|line| {
             let mut iter = line.split_whitespace().peekable();
 
             if let (Some(key), Some(_)) = (iter.next(), iter.peek()) {
@@ -117,8 +121,8 @@ impl Dictionary {
             Dictionary::STPhrases => iter![STPhrases],
             Dictionary::TSCharacters => iter![TSCharacters],
             Dictionary::TSPhrases => iter![TSPhrases],
-            Dictionary::TWPhrases => iter![TWPhrasesIT, TWPhrasesName, TWPhrasesOther],
-            Dictionary::TWPhrasesRev => inv_iter![TWPhrasesIT, TWPhrasesName, TWPhrasesOther],
+            Dictionary::TWPhrases => iter![TWPhrases],
+            Dictionary::TWPhrasesRev => iter![TWPhrasesRev],
             Dictionary::TWVariants => iter![TWVariants],
             Dictionary::TWVariantsRev => inv_iter![TWVariants],
             Dictionary::TWVariantsRevPhrases => iter![TWVariantsRevPhrases],

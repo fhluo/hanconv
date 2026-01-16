@@ -21,14 +21,11 @@ var (
 	//go:embed data/TSPhrases.txt
 	TSPhrasesText TextDictionary
 
-	//go:embed data/TWPhrasesIT.txt
-	TWPhrasesITText TextDictionary
+	//go:embed data/TWPhrases.txt
+	TWPhrasesText TextDictionary
 
-	//go:embed data/TWPhrasesName.txt
-	TWPhrasesNameText TextDictionary
-
-	//go:embed data/TWPhrasesOther.txt
-	TWPhrasesOtherText TextDictionary
+	//go:embed data/TWPhrasesRev.txt
+	TWPhrasesRevText TextDictionary
 
 	//go:embed data/TWVariants.txt
 	TWVariantsText TextDictionary
@@ -61,7 +58,20 @@ type TextDictionaryIterator interface {
 
 func (dict TextDictionary) Parse() iter.Seq[[]string] {
 	return func(yield func([]string) bool) {
-		for line := range strings.Lines(string(dict)) {
+		lines := strings.Lines(string(dict))
+
+		for line := range lines {
+			if strings.HasPrefix(line, "#") || line == "" {
+				continue
+			}
+
+			if !yield(strings.Fields(line)) {
+				return
+			}
+			break
+		}
+
+		for line := range lines {
 			if !yield(strings.Fields(line)) {
 				return
 			}
