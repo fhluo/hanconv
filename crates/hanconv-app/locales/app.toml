@@ -249,3 +249,8 @@ en = "characters"
 zh = "转换结果："
 zh-Hant = "轉換結果："
 en = "Result: "
+
+[Theme]
+zh = "主题"
+zh-Hant = "主題"
+en = "Theme"

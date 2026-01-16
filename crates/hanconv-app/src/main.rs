@@ -14,8 +14,9 @@ use crate::config::{Config, ConfigEvent};
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
-    actions, div, px, size, App, Application, Bounds, ClipboardItem, Entity,
-    ExternalPaths, Focusable, Menu, MenuItem, MouseButton, PathPromptOptions, Window, WindowBounds, WindowOptions,
+    actions, div, px, size, Action, App, Application, Bounds, ClipboardItem,
+    Entity, ExternalPaths, Focusable, Menu, MenuItem, MouseButton, PathPromptOptions,
+    SharedString, Window, WindowBounds, WindowOptions,
 };
 use gpui_component::button::{Button, ButtonVariants};
 use gpui_component::description_list::DescriptionList;
@@ -24,9 +25,12 @@ use gpui_component::label::Label;
 use gpui_component::link::Link;
 use gpui_component::menu::AppMenuBar;
 use gpui_component::{
-    gray_500, gray_900, ActiveTheme, Icon, IconName, Root, Sizable, StyledExt, TitleBar, WindowExt,
+    gray_500, gray_900, ActiveTheme, Icon, IconName, Root, Sizable, StyledExt, ThemeRegistry,
+    TitleBar, WindowExt,
 };
 use icu_locale::Locale;
+use schemars::JsonSchema;
+use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 use std::{fs, io};
 use strum::{EnumCount, VariantArray};
@@ -35,6 +39,9 @@ use unicode_segmentation::UnicodeSegmentation;
 i18n!("locales", fallback = "en");
 
 actions!([About, Repository]);
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema, Action)]
+struct ChangeTheme(pub SharedString);
 
 struct Hanconv {
     config: Entity<Config>,
@@ -69,7 +76,7 @@ impl Hanconv {
     }
 
     fn setup_config(window: &mut Window, cx: &mut Context<Self>) -> Entity<Config> {
-        let config = cx.new(|_| Config::load("hanconv"));
+        let config = cx.new(|_| Config::load("Hanconv"));
 
         cx.observe_new(|this: &mut Self, _, cx| {
             this.config.update(cx, |this, cx| {
@@ -85,11 +92,17 @@ impl Hanconv {
         })
         .detach();
 
-        cx.subscribe_in(&config, window, |this, _, event, window, cx| {
-            if matches!(event, ConfigEvent::LocaleChange) {
+        cx.subscribe_in(&config, window, |this, _, event, window, cx| match event {
+            ConfigEvent::LocaleChange => {
                 this.update_menu_bar(cx);
                 this.update_editors(window, cx);
+                cx.notify();
             }
+            ConfigEvent::ThemeChange => {
+                this.update_menu_bar(cx);
+                cx.refresh_windows();
+            }
+            _ => {}
         })
         .detach();
 
@@ -134,6 +147,17 @@ impl Hanconv {
         });
     }
 
+    fn change_theme(
+        &mut self,
+        ChangeTheme(theme): &ChangeTheme,
+        _: &mut Window,
+        cx: &mut Context<Self>,
+    ) {
+        self.config.update(cx, |this, cx| {
+            this.set_theme(theme, cx);
+        });
+    }
+
     fn update_editors(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         self.input_editor.update(cx, |this, cx| {
             this.set_placeholder(t!("input.placeholder"), window, cx);
@@ -146,20 +170,35 @@ impl Hanconv {
 
     fn update_menu_bar(&mut self, cx: &mut Context<Self>) {
         let chunks = Conversion::VARIANTS.chunks(2);
-        let mut items = Vec::with_capacity(Conversion::COUNT + (Conversion::COUNT - 1) / 2);
+        let mut conversion_menu_items =
+            Vec::with_capacity(Conversion::COUNT + (Conversion::COUNT - 1) / 2);
 
         for conversions in chunks {
-            items.extend(conversions.iter().cloned().map(|conversion| {
+            conversion_menu_items.extend(conversions.iter().cloned().map(|conversion| {
                 MenuItem::action(conversion.title(), conversion)
                     .checked(self.config.read(cx).conversion() == conversion)
             }));
-            items.push(MenuItem::Separator);
+            conversion_menu_items.push(MenuItem::Separator);
         }
+
+        let theme_menu_items = ThemeRegistry::global(cx)
+            .sorted_themes()
+            .into_iter()
+            .map(|theme_config| theme_config.name.clone())
+            .map(|theme_name| {
+                MenuItem::action(theme_name.clone(), ChangeTheme(theme_name.clone()))
+                    .checked(self.config.read(cx).theme() == Some(&theme_name))
+            })
+            .collect::<Vec<_>>();
 
         cx.set_menus(vec![
             Menu {
                 name: t!("Conversion").into(),
-                items,
+                items: conversion_menu_items,
+            },
+            Menu {
+                name: t!("Theme").into(),
+                items: theme_menu_items,
             },
             Menu {
                 name: t!("Help").into(),
@@ -418,6 +457,7 @@ impl Render for Hanconv {
 
         div()
             .on_action(cx.listener(Self::run_conversion))
+            .on_action(cx.listener(Self::change_theme))
             .on_action(cx.listener(Self::open_about_dialog))
             .on_action(cx.listener(Self::open_repository))
             .w_full()
