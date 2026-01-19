@@ -1,5 +1,5 @@
 use gpui::prelude::FluentBuilder;
-use gpui::{App, Corner, IntoElement, RenderOnce, Window};
+use gpui::{App, Corner, FocusHandle, IntoElement, RenderOnce, Window};
 use gpui_component::button::Button;
 use gpui_component::menu::{DropdownMenu, PopupMenuItem};
 use icu_locale::Locale;
@@ -11,6 +11,7 @@ pub struct LanguageSelector {
     selected: Option<Locale>,
     on_change: Option<Rc<dyn Fn(&Locale, &mut Window, &mut App) + 'static>>,
     anchor: Corner,
+    action_context: Option<FocusHandle>,
 }
 
 impl LanguageSelector {
@@ -20,6 +21,7 @@ impl LanguageSelector {
             selected,
             on_change: None,
             anchor: Corner::TopRight,
+            action_context: None,
         }
     }
 
@@ -35,6 +37,12 @@ impl LanguageSelector {
 
         self
     }
+
+    pub fn action_context(mut self, handle: FocusHandle) -> Self {
+        self.action_context = Some(handle);
+
+        self
+    }
 }
 
 impl RenderOnce for LanguageSelector {
@@ -42,6 +50,10 @@ impl RenderOnce for LanguageSelector {
         self.button
             .dropdown_menu({
                 move |mut menu, _, _| {
+                    if let Some(action_context) = self.action_context.clone() {
+                        menu = menu.action_context(action_context);
+                    }
+
                     for (key, locale) in available_locales!()
                         .into_iter()
                         .filter_map(|locale| Some((locale, locale.parse::<Locale>().ok()?)))

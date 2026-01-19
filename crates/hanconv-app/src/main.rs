@@ -15,8 +15,8 @@ use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
     actions, div, px, size, Action, App, Application, Bounds, ClipboardItem,
-    Entity, ExternalPaths, Focusable, Menu, MenuItem, MouseButton, PathPromptOptions,
-    SharedString, Window, WindowBounds, WindowOptions,
+    Entity, ExternalPaths, FocusHandle, Focusable, Menu, MenuItem, MouseButton,
+    PathPromptOptions, SharedString, Window, WindowBounds, WindowOptions,
 };
 use gpui_component::button::{Button, ButtonVariants};
 use gpui_component::description_list::DescriptionList;
@@ -66,6 +66,8 @@ impl Hanconv {
 
         cx.subscribe_in(&input_editor, window, Self::on_input_event)
             .detach();
+
+        input_editor.update(cx, |this, cx| this.focus(window, cx));
 
         Hanconv {
             config: Self::setup_config(window, cx),
@@ -451,7 +453,8 @@ impl Render for Hanconv {
                 .tooltip(t!("language")),
             self.config.read(cx).locale().cloned(),
         )
-        .on_change(cx.listener(Self::change_locale));
+        .on_change(cx.listener(Self::change_locale))
+        .action_context(self.input_editor.focus_handle(cx));
 
         let dialog_layer = Root::render_dialog_layer(window, cx);
 
@@ -558,11 +561,14 @@ impl Render for Hanconv {
                             .child(Input::new(&self.output_editor).flex_1().appearance(false)),
                     ),
             )
-            .child(StatusBar::new(
-                self.input_graphemes(cx),
-                self.output_graphemes(cx),
-                self.config.read(cx).conversion(),
-            ))
+            .child(
+                StatusBar::new(
+                    self.input_graphemes(cx),
+                    self.output_graphemes(cx),
+                    self.config.read(cx).conversion(),
+                )
+                .action_context(self.input_editor.focus_handle(cx)),
+            )
             .children(dialog_layer)
     }
 }
