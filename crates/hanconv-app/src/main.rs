@@ -174,7 +174,7 @@ impl Hanconv {
         });
     }
 
-    fn update_menu_bar(&mut self, cx: &mut Context<Self>) {
+    fn conversion_menu(&self, cx: &App) -> Menu {
         let chunks = Conversion::VARIANTS.chunks(2);
         let mut conversion_menu_items =
             Vec::with_capacity(Conversion::COUNT + (Conversion::COUNT - 1) / 2);
@@ -187,6 +187,13 @@ impl Hanconv {
             conversion_menu_items.push(MenuItem::Separator);
         }
 
+        Menu {
+            name: t!("Conversion").into(),
+            items: conversion_menu_items,
+        }
+    }
+
+    fn theme_menu(&self, cx: &App) -> Menu {
         let theme_menu_items = ThemeRegistry::global(cx)
             .sorted_themes()
             .into_iter()
@@ -197,23 +204,28 @@ impl Hanconv {
             })
             .collect::<Vec<_>>();
 
+        Menu {
+            name: t!("Theme").into(),
+            items: theme_menu_items,
+        }
+    }
+
+    fn help_menu() -> Menu {
+        Menu {
+            name: t!("Help").into(),
+            items: vec![
+                MenuItem::action(t!("help.Repository"), Repository),
+                MenuItem::Separator,
+                MenuItem::action(t!("About"), About),
+            ],
+        }
+    }
+
+    fn update_menu_bar(&mut self, cx: &mut Context<Self>) {
         cx.set_menus(vec![
-            Menu {
-                name: t!("Conversion").into(),
-                items: conversion_menu_items,
-            },
-            Menu {
-                name: t!("Theme").into(),
-                items: theme_menu_items,
-            },
-            Menu {
-                name: t!("Help").into(),
-                items: vec![
-                    MenuItem::action(t!("help.Repository"), Repository),
-                    MenuItem::Separator,
-                    MenuItem::action(t!("About"), About),
-                ],
-            },
+            self.conversion_menu(cx),
+            self.theme_menu(cx),
+            Self::help_menu(),
         ]);
 
         self.menu_bar.update(cx, |menu_bar, cx| {
