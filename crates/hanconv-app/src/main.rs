@@ -67,7 +67,11 @@ impl Hanconv {
         cx.subscribe_in(&input_editor, window, Self::on_input_event)
             .detach();
 
-        input_editor.update(cx, |this, cx| this.focus(window, cx));
+        cx.on_focus_lost(window, |this, window, cx| {
+            this.input_editor
+                .update(cx, |this, cx| this.focus(window, cx));
+        })
+        .detach();
 
         Hanconv {
             config: Self::setup_config(window, cx),
@@ -447,7 +451,8 @@ impl Render for Hanconv {
                             .on_mouse_down(
                                 MouseButton::Left,
                                 cx.listener(|this, _, window, cx| {
-                                    this.input_editor.focus_handle(cx).focus(window, cx);
+                                    this.input_editor
+                                        .update(cx, |this, cx| this.focus(window, cx));
                                 }),
                             )
                             .on_drop(cx.listener(|this, paths: &ExternalPaths, window, cx| {
@@ -497,7 +502,8 @@ impl Render for Hanconv {
                             .on_mouse_down(
                                 MouseButton::Left,
                                 cx.listener(|this, _, window, cx| {
-                                    this.output_editor.focus_handle(cx).focus(window, cx);
+                                    this.output_editor
+                                        .update(cx, |this, cx| this.focus(window, cx));
                                 }),
                             )
                             .on_action(cx.listener(Self::save_output))
