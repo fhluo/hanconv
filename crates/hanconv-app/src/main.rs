@@ -9,30 +9,26 @@ mod config;
 mod conversion;
 
 use crate::assets::{Assets, Icons};
-use crate::components::{open_about_dialog, toolbar, LanguageSelector, StatusBar, Toolbar};
+use crate::components::{
+    open_about_dialog, open_io_error_dialog, toolbar, LanguageSelector, StatusBar, Toolbar,
+};
 use crate::config::{Config, ConfigEvent};
 use crate::conversion::Conversion;
 use gpui::prelude::*;
 use gpui::{
     actions, div, px, size, Action, App, Application, Bounds, ClipboardItem,
-    Entity, ExternalPaths, FocusHandle, Focusable, Menu, MenuItem, MouseButton,
-    PathPromptOptions, SharedString, Window, WindowBounds, WindowOptions,
+    Entity, ExternalPaths, Focusable, Menu, MenuItem, MouseButton, PathPromptOptions,
+    SharedString, Window, WindowBounds, WindowOptions,
 };
 use gpui_component::button::{Button, ButtonVariants};
-use gpui_component::description_list::DescriptionList;
 use gpui_component::input::{Input, InputEvent, InputState};
-use gpui_component::label::Label;
-use gpui_component::link::Link;
 use gpui_component::menu::AppMenuBar;
-use gpui_component::{
-    gray_500, gray_900, ActiveTheme, Icon, IconName, Root, Sizable, StyledExt, ThemeRegistry,
-    TitleBar, WindowExt,
-};
+use gpui_component::{gray_500, ActiveTheme, Root, Sizable, ThemeRegistry, TitleBar};
 use icu_locale::Locale;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
+use std::fs;
 use std::path::{Path, PathBuf};
-use std::{fs, io};
 use strum::{EnumCount, VariantArray};
 use unicode_segmentation::UnicodeSegmentation;
 
@@ -251,45 +247,9 @@ impl Hanconv {
         window: &mut Window,
         cx: &mut App,
         path: impl AsRef<Path>,
-        err: io::Error,
+        err_message: impl Into<String>,
     ) {
-        let path = path.as_ref().to_owned();
-
-        window.open_dialog(cx, move |dialog, _, cx| {
-            dialog
-                .alert()
-                .title(
-                    div()
-                        .flex()
-                        .flex_row()
-                        .gap_3()
-                        .items_center()
-                        .child(
-                            Icon::new(IconName::CircleX)
-                                .text_color(cx.theme().red)
-                                .size_6(),
-                        )
-                        .child(Label::new(t!("error.read-file")).font_semibold().text_lg()),
-                )
-                .child(
-                    div().child(
-                        DescriptionList::vertical()
-                            .columns(1)
-                            .item(
-                                t!("Path").to_string(),
-                                Link::new("path")
-                                    .child(path.display().to_string())
-                                    .on_click({
-                                        let path = path.clone();
-                                        move |_, _, cx| cx.reveal_path(path.as_path())
-                                    })
-                                    .into_any_element(),
-                                1,
-                            )
-                            .item(t!("Error").to_string(), err.to_string(), 1),
-                    ),
-                )
-        });
+        open_io_error_dialog(path.as_ref(), err_message, window, cx);
     }
 
     fn open(&mut self, _: &toolbar::Open, window: &mut Window, cx: &mut Context<Self>) {
@@ -320,7 +280,7 @@ impl Hanconv {
                         });
                     }
                     Err(err) => {
-                        Self::open_io_error_dialog(window, cx, path, err);
+                        Self::open_io_error_dialog(window, cx, path, err.to_string());
                     }
                 })
                 .ok()
