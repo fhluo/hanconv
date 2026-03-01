@@ -1,5 +1,5 @@
-use crate::Dictionary::*;
 use crate::trie::Trie;
+use crate::Dictionary::*;
 use std::sync::LazyLock;
 
 pub enum Converters {
@@ -115,18 +115,17 @@ impl Converter {
     }
 
     pub fn convert(&self, s: impl AsRef<str>) -> String {
-        match self.0.split_first() {
-            None => s.as_ref().to_string(),
-            Some((first, rest)) => {
-                let mut s = first.convert(s);
+        let Some((first, rest)) = self.0.split_first() else {
+            return s.as_ref().to_string();
+        };
 
-                for trie in rest {
-                    s = trie.convert(&s);
-                }
+        let mut s = first.convert(s);
 
-                s
-            }
+        for trie in rest {
+            s = trie.convert(&s);
         }
+
+        s
     }
 }
 

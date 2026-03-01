@@ -148,13 +148,15 @@ impl Conversion {
     fn handle_texts(self) -> Result<(), Box<dyn Error>> {
         let converter = self.converter.unwrap_or_else(|| T2S.new_converter());
 
-        if let Some(ref texts) = self.texts {
-            let mut writer = BufWriter::new(io::stdout());
-            for text in texts {
-                write!(writer, "{}", converter.convert(text))?;
-            }
-            writer.flush()?;
+        let Some(ref texts) = self.texts else {
+            return Ok(());
+        };
+
+        let mut writer = BufWriter::new(io::stdout());
+        for text in texts {
+            write!(writer, "{}", converter.convert(text))?;
         }
+        writer.flush()?;
 
         Ok(())
     }
