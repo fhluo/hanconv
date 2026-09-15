@@ -1,7 +1,7 @@
-use gpui::prelude::FluentBuilder;
-use gpui::{App, Corner, FocusHandle, IntoElement, RenderOnce, Window};
-use gpui_component::button::Button;
-use gpui_component::menu::{DropdownMenu, PopupMenuItem};
+use gpui_kit::component::button::Button;
+use gpui_kit::component::menu::{DropdownMenu, PopupMenuItem};
+use gpui_kit::prelude::FluentBuilder;
+use gpui_kit::{Anchor, App, FocusHandle, IntoElement, RenderOnce, Window};
 use icu_locale::Locale;
 use std::rc::Rc;
 
@@ -10,7 +10,7 @@ pub struct LanguageSelector {
     button: Button,
     selected: Option<Locale>,
     on_change: Option<Rc<dyn Fn(&Locale, &mut Window, &mut App) + 'static>>,
-    anchor: Corner,
+    anchor: Anchor,
     action_context: Option<FocusHandle>,
 }
 
@@ -20,7 +20,7 @@ impl LanguageSelector {
             button,
             selected,
             on_change: None,
-            anchor: Corner::TopRight,
+            anchor: Anchor::TopRight,
             action_context: None,
         }
     }
@@ -32,7 +32,7 @@ impl LanguageSelector {
     }
 
     #[allow(dead_code)]
-    pub fn anchor(mut self, anchor: impl Into<Corner>) -> Self {
+    pub fn anchor(mut self, anchor: impl Into<Anchor>) -> Self {
         self.anchor = anchor.into();
 
         self

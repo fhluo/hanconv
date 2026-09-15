@@ -1,14 +1,14 @@
 use crate::conversion::Conversion;
-use gpui::{App, Corner, FocusHandle, IntoElement, RenderOnce, Window};
-use gpui_component::button::Button;
-use gpui_component::menu::DropdownMenu;
+use gpui_kit::component::button::Button;
+use gpui_kit::component::menu::DropdownMenu;
+use gpui_kit::{Anchor, App, FocusHandle, IntoElement, RenderOnce, Window};
 use strum::VariantArray;
 
 #[derive(IntoElement)]
 pub struct ConversionSelector {
     button: Button,
     selected: Conversion,
-    anchor: Corner,
+    anchor: Anchor,
     action_context: Option<FocusHandle>,
 }
 
@@ -17,13 +17,13 @@ impl ConversionSelector {
         ConversionSelector {
             button,
             selected,
-            anchor: Corner::BottomRight,
+            anchor: Anchor::BottomRight,
             action_context: None,
         }
     }
 
     #[allow(dead_code)]
-    pub fn anchor(mut self, anchor: impl Into<Corner>) -> Self {
+    pub fn anchor(mut self, anchor: impl Into<Anchor>) -> Self {
         self.anchor = anchor.into();
 
         self

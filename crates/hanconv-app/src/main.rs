@@ -14,16 +14,11 @@ use crate::components::{
 };
 use crate::config::{Config, ConfigEvent};
 use crate::conversion::Conversion;
-use gpui::prelude::*;
-use gpui::{
-    actions, div, px, size, Action, App, Application, Bounds, ClipboardItem,
-    Entity, ExternalPaths, Focusable, Menu, MenuItem, MouseButton, PathPromptOptions,
-    SharedString, Window, WindowBounds, WindowOptions,
-};
-use gpui_component::button::{Button, ButtonVariants};
-use gpui_component::input::{Input, InputEvent, InputState};
-use gpui_component::menu::AppMenuBar;
-use gpui_component::{gray_500, ActiveTheme, Root, Sizable, ThemeRegistry, TitleBar};
+use gpui_kit::component::button::{Button, ButtonVariants};
+use gpui_kit::component::input::{InputEvent, Textarea, TextareaState};
+use gpui_kit::component::menu::AppMenuBar;
+use gpui_kit::component::{ActiveTheme, Root, Sizable, ThemeRegistry, TitleBar, gray_500};
+use gpui_kit::*;
 use icu_locale::Locale;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -43,21 +38,17 @@ struct Hanconv {
     config: Entity<Config>,
 
     menu_bar: Entity<AppMenuBar>,
-    input_editor: Entity<InputState>,
-    output_editor: Entity<InputState>,
+    input_editor: Entity<TextareaState>,
+    output_editor: Entity<TextareaState>,
 }
 
 impl Hanconv {
     fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
         let input_editor = cx.new(|cx| {
-            InputState::new(window, cx)
-                .multi_line(true)
-                .placeholder(t!("input.placeholder"))
+            TextareaState::new(window, cx).placeholder(t!("input.placeholder"))
         });
         let output_editor = cx.new(|cx| {
-            InputState::new(window, cx)
-                .multi_line(true)
-                .placeholder(t!("output.placeholder"))
+            TextareaState::new(window, cx).placeholder(t!("output.placeholder"))
         });
 
         cx.subscribe_in(&input_editor, window, Self::on_input_event)
@@ -113,7 +104,7 @@ impl Hanconv {
 
     fn on_input_event(
         &mut self,
-        _: &Entity<InputState>,
+        _: &Entity<TextareaState>,
         event: &InputEvent,
         window: &mut Window,
         cx: &mut Context<Self>,
@@ -186,6 +177,7 @@ impl Hanconv {
         Menu {
             name: t!("Conversion").into(),
             items: conversion_menu_items,
+            disabled: false,
         }
     }
 
@@ -203,6 +195,7 @@ impl Hanconv {
         Menu {
             name: t!("Theme").into(),
             items: theme_menu_items,
+            disabled: false,
         }
     }
 
@@ -214,6 +207,7 @@ impl Hanconv {
                 MenuItem::Separator,
                 MenuItem::action(t!("About"), About),
             ],
+            disabled: false,
         }
     }
 
@@ -462,7 +456,7 @@ impl Render for Hanconv {
                                     .paste(Some(paste_disabled))
                             })
                             .child(
-                                Input::new(&self.input_editor)
+                                Textarea::new(&self.input_editor)
                                     .flex_1()
                                     .appearance(false)
                                     .border_r_1()
@@ -489,7 +483,11 @@ impl Render for Hanconv {
                                     .save(Some(is_empty))
                                     .copy(Some(is_empty))
                             })
-                            .child(Input::new(&self.output_editor).flex_1().appearance(false)),
+                            .child(
+                                Textarea::new(&self.output_editor)
+                                    .flex_1()
+                                    .appearance(false),
+                            ),
                     ),
             )
             .child(
@@ -505,10 +503,10 @@ impl Render for Hanconv {
 }
 
 fn main() -> anyhow::Result<()> {
-    let app = Application::new().with_assets(Assets);
+    let app = gpui_kit::application().with_assets(Assets);
 
     app.run(move |cx| {
-        gpui_component::init(cx);
+        gpui_kit::init(cx);
 
         let bounds = Bounds::centered(None, size(px(800.), px(600.)), cx);
 

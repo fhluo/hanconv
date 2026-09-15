@@ -1,7 +1,7 @@
-use gpui::{div, prelude::*, App, IntoElement, ParentElement, RenderOnce, Window};
-use gpui_component::description_list::DescriptionList;
-use gpui_component::label::Label;
-use gpui_component::{gray_900, ActiveTheme, Sizable, StyledExt, WindowExt};
+use gpui_kit::component::description_list::DescriptionList;
+use gpui_kit::component::label::Label;
+use gpui_kit::component::{ActiveTheme, Sizable, StyledExt, WindowExt, gray_900};
+use gpui_kit::{div, prelude::*, App, IntoElement, ParentElement, RenderOnce, Window};
 
 #[derive(IntoElement)]
 pub struct About;
@@ -56,7 +56,7 @@ impl RenderOnce for About {
 }
 
 pub fn open_about_dialog(window: &mut Window, cx: &mut App) {
-    window.open_dialog(cx, |dialog, _, _| {
-        dialog.alert().title(t!("About").to_string()).child(About)
+    window.open_alert_dialog(cx, |alert, _, _| {
+        alert.title(t!("About").to_string()).child(About)
     });
 }

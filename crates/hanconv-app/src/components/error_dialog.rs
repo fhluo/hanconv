@@ -1,8 +1,8 @@
-use gpui::{div, prelude::*, App, IntoElement, RenderOnce, SharedString, Window};
-use gpui_component::description_list::DescriptionList;
-use gpui_component::label::Label;
-use gpui_component::link::Link;
-use gpui_component::{ActiveTheme, Icon, IconName, Sizable, StyledExt, WindowExt};
+use gpui_kit::component::description_list::DescriptionList;
+use gpui_kit::component::label::Label;
+use gpui_kit::component::link::Link;
+use gpui_kit::component::{ActiveTheme, Icon, IconName, StyledExt, WindowExt};
+use gpui_kit::{div, prelude::*, App, IntoElement, RenderOnce, SharedString, Window};
 use std::path::PathBuf;
 
 #[derive(IntoElement)]
@@ -65,9 +65,8 @@ pub fn open_io_error_dialog(
         message: err_message.into(),
     };
 
-    window.open_dialog(cx, move |dialog, _, _| {
-        dialog
-            .alert()
+    window.open_alert_dialog(cx, move |alert, _, _| {
+        alert
             .title(Title(t!("error.read-file").into()))
             .child(err.clone())
     });

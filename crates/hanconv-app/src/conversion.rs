@@ -1,4 +1,4 @@
-use gpui::Action;
+use gpui_kit::Action;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use strum::{EnumCount, EnumIter, VariantArray};

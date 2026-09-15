@@ -1,9 +1,9 @@
 use crate::components::ConversionSelector;
 use crate::conversion::Conversion;
-use gpui::prelude::*;
-use gpui::{div, App, FocusHandle, IntoElement, RenderOnce, Window};
-use gpui_component::button::{Button, ButtonVariants};
-use gpui_component::{gray_600, ActiveTheme, Sizable};
+use gpui_kit::component::button::{Button, ButtonVariants};
+use gpui_kit::component::{ActiveTheme, Sizable, gray_600};
+use gpui_kit::prelude::*;
+use gpui_kit::{div, App, FocusHandle, IntoElement, RenderOnce, Window};
 
 #[derive(IntoElement)]
 pub struct StatusBar {

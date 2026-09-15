@@ -1,12 +1,12 @@
 use crate::assets::Icons;
-use gpui::prelude::*;
-use gpui::{
-    actions, div, Action, App, ElementId, IntoElement, RenderOnce, StyleRefinement, Window,
+use gpui_kit::component::button::{Button, ButtonVariants};
+use gpui_kit::component::label::Label;
+use gpui_kit::component::{
+    ActiveTheme, Disableable, Icon, IconName, Sizable, StyledExt, gray_200, gray_400, gray_500,
 };
-use gpui_component::button::{Button, ButtonVariants};
-use gpui_component::label::Label;
-use gpui_component::{
-    gray_200, gray_400, gray_500, ActiveTheme, Disableable, Icon, IconName, Sizable, StyledExt,
+use gpui_kit::prelude::*;
+use gpui_kit::{
+    actions, div, Action, App, ElementId, IntoElement, RenderOnce, StyleRefinement, Window,
 };
 
 actions!([Open, Save, Clear, Copy, Paste]);
