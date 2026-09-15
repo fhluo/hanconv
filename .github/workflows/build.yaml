@@ -16,11 +16,18 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: nu {0}
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
+
+      - name: Set up Nushell
+        uses: hustcer/setup-nu@v3
 
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v2
@@ -30,7 +37,7 @@ jobs:
       - name: Set up Task
         run: |
           winget install --id Task.Task --accept-source-agreements --accept-package-agreements
-          "$env:LOCALAPPDATA\Microsoft\WinGet\Links" | Out-File -FilePath "$env:GITHUB_PATH" -Append
+          $env.LOCALAPPDATA | path join Microsoft WinGet Links | save -a $env.GITHUB_PATH
 
       - name: Build
         run: |
