@@ -22,7 +22,6 @@ jobs:
           go-version: "stable"
           cache-dependency-path: |
             go/go.sum
-            tools/go.sum
 
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v2
