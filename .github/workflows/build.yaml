@@ -21,9 +21,9 @@ jobs:
             tools/go.sum
 
       - name: Set up Rust
-        run: |
-          rustup default stable
-          rustup update
+        uses: actions-rust-lang/setup-rust-toolchain@v2
+        with:
+          rustflags: ""
 
       - name: Set up Task
         run: |
