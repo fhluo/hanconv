@@ -1,0 +1,15 @@
+set shell := ["nu", "-c"]
+set script-interpreter := ["nu"]
+set indentation := "  "
+set default-list := true
+
+build:
+  go build -o ./bin/ ./cmd/...
+
+[working-directory: 'cmd/hanconv']
+install:
+  go install
+
+update:
+  go get -u all
+  go mod tidy

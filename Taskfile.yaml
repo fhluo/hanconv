@@ -14,9 +14,6 @@ includes:
   web:
     taskfile: web/Taskfile.yaml
     dir: web
-  go:
-    taskfile: go/Taskfile.yaml
-    dir: go
 
 tasks:
   setup:
@@ -26,7 +23,6 @@ tasks:
 
   build:
     deps:
-      - task: go:build
       - task: cli:build
       - task: app:build
 
@@ -40,7 +36,6 @@ tasks:
 
   update:
     deps:
-      - task: go:update
       - task: web:update
     cmds:
       - cargo update

@@ -1,4 +1,5 @@
 mod dict
+mod go
 
 set shell := ["nu", "-c"]
 set script-interpreter := ["nu"]
