@@ -13,7 +13,7 @@ exclude = ["justfile"]
 [dependencies]
 hanconv = "0.5"
 gpui-kit = "0.6"
-rust-i18n = "3.1"
+rust-i18n = "4.2"
 sys-locale = "0.3"
 icu_locale = { version = "2.1", features = ["compiled_data", "serde"] }
 confy = { version = "2.0" }
