@@ -1,12 +1,11 @@
 mod dict
 mod go
-mod web
+mod tauri
 
 mod app 'crates/hanconv-app/justfile'
 mod cli 'crates/hanconv-cli/justfile'
 mod lib 'crates/hanconv/justfile'
 
-mod tauri 'app/justfile'
 mod wasm 'bindings/wasm/justfile'
 
 set shell := ["nu", "-c"]

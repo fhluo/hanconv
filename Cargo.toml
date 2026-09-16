@@ -1,12 +1,12 @@
 [workspace]
 resolver = "3"
 members = [
-    "app",
     "bindings/py",
     "bindings/wasm",
     "crates/hanconv",
     "crates/hanconv-app",
     "crates/hanconv-cli",
+    "tauri/app",
 ]
 
 [workspace.dependencies]
