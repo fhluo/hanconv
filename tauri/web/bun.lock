@@ -1,17 +1,18 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "hanconv-web",
       "dependencies": {
         "@lucide/svelte": "^0.562.0",
-        "@tauri-apps/api": "^2.9.1",
-        "@tauri-apps/plugin-clipboard-manager": "^2.3.2",
-        "@tauri-apps/plugin-dialog": "^2.6.0",
-        "@tauri-apps/plugin-fs": "^2.4.5",
-        "@tauri-apps/plugin-opener": "^2.5.3",
-        "@tauri-apps/plugin-process": "^2.3.1",
-        "@tauri-apps/plugin-store": "^2.4.2",
+        "@tauri-apps/api": "^3.0.0-alpha.0",
+        "@tauri-apps/plugin-clipboard-manager": "^3.0.0-alpha.0",
+        "@tauri-apps/plugin-dialog": "^3.0.0-alpha.0",
+        "@tauri-apps/plugin-fs": "^3.0.0-alpha.0",
+        "@tauri-apps/plugin-opener": "^3.0.0-alpha.0",
+        "@tauri-apps/plugin-process": "^3.0.0-alpha.0",
+        "@tauri-apps/plugin-store": "^3.0.0-alpha.0",
         "bits-ui": "^2.15.4",
       },
       "devDependencies": {
@@ -211,19 +212,19 @@
 
     "@tailwindcss/vite": ["@tailwindcss/vite@4.1.18", "", { "dependencies": { "@tailwindcss/node": "4.1.18", "@tailwindcss/oxide": "4.1.18", "tailwindcss": "4.1.18" }, "peerDependencies": { "vite": "^5.2.0 || ^6 || ^7" } }, "sha512-jVA+/UpKL1vRLg6Hkao5jldawNmRo7mQYrZtNHMIVpLfLhDml5nMRUo/8MwoX2vNXvnaXNNMedrMfMugAVX1nA=="],
 
-    "@tauri-apps/api": ["@tauri-apps/api@2.9.1", "", {}, "sha512-IGlhP6EivjXHepbBic618GOmiWe4URJiIeZFlB7x3czM0yDHHYviH1Xvoiv4FefdkQtn6v7TuwWCRfOGdnVUGw=="],
+    "@tauri-apps/api": ["@tauri-apps/api@3.0.0-alpha.0", "", {}, "sha512-uyZ7uHZz1qYlj4zi7d8WC1cBdI6WLAVJjPALeKkMCBdzpMMF5sf0iY3BX52ziC4zpEOnUNoi5ctRz0GWvvExOg=="],
 
-    "@tauri-apps/plugin-clipboard-manager": ["@tauri-apps/plugin-clipboard-manager@2.3.2", "", { "dependencies": { "@tauri-apps/api": "^2.8.0" } }, "sha512-CUlb5Hqi2oZbcZf4VUyUH53XWPPdtpw43EUpCza5HWZJwxEoDowFzNUDt1tRUXA8Uq+XPn17Ysfptip33sG4eQ=="],
+    "@tauri-apps/plugin-clipboard-manager": ["@tauri-apps/plugin-clipboard-manager@3.0.0-alpha.0", "", { "dependencies": { "@tauri-apps/api": "^2.11.0" } }, "sha512-doH+SBkHXvNKAfInPIFKtAZrmmZRHOA5yf4lFeu74PRbMB7tfH/qNhfepi3C7HRBsmfyWUht/UqfrwMWKfLTKw=="],
 
-    "@tauri-apps/plugin-dialog": ["@tauri-apps/plugin-dialog@2.6.0", "", { "dependencies": { "@tauri-apps/api": "^2.8.0" } }, "sha512-q4Uq3eY87TdcYzXACiYSPhmpBA76shgmQswGkSVio4C82Sz2W4iehe9TnKYwbq7weHiL88Yw19XZm7v28+Micg=="],
+    "@tauri-apps/plugin-dialog": ["@tauri-apps/plugin-dialog@3.0.0-alpha.0", "", { "dependencies": { "@tauri-apps/api": "^2.11.0" } }, "sha512-ZnHHbwYlB/1nJqs0gZdi7eHumo3mArCSakx/7T1pqEIkqmXV4PHC+dSZLzsc20+A/HNgIQqa2uR/+yaXKWDzbw=="],
 
-    "@tauri-apps/plugin-fs": ["@tauri-apps/plugin-fs@2.4.5", "", { "dependencies": { "@tauri-apps/api": "^2.8.0" } }, "sha512-dVxWWGE6VrOxC7/jlhyE+ON/Cc2REJlM35R3PJX3UvFw2XwYhLGQVAIyrehenDdKjotipjYEVc4YjOl3qq90fA=="],
+    "@tauri-apps/plugin-fs": ["@tauri-apps/plugin-fs@3.0.0-alpha.0", "", { "dependencies": { "@tauri-apps/api": "^2.11.0" } }, "sha512-PlpcBFbWNZZrOvd0pUJbdTGaDFXuFVtW5tmF2D2w7mf/KwRI0w7jzrR1b7Sy6fs0lOR5zI/sXQHdt7ExKoEMcQ=="],
 
-    "@tauri-apps/plugin-opener": ["@tauri-apps/plugin-opener@2.5.3", "", { "dependencies": { "@tauri-apps/api": "^2.8.0" } }, "sha512-CCcUltXMOfUEArbf3db3kCE7Ggy1ExBEBl51Ko2ODJ6GDYHRp1nSNlQm5uNCFY5k7/ufaK5Ib3Du/Zir19IYQQ=="],
+    "@tauri-apps/plugin-opener": ["@tauri-apps/plugin-opener@3.0.0-alpha.0", "", { "dependencies": { "@tauri-apps/api": "^2.11.0" } }, "sha512-jbAAtkBlJCRIujSN+oGioSSb7E+r2f4w+VNFcakwf6ZsaX1JXVawRZJmNQ/h2/tvHpMO7s6neX56HrlWc7Cnjg=="],
 
-    "@tauri-apps/plugin-process": ["@tauri-apps/plugin-process@2.3.1", "", { "dependencies": { "@tauri-apps/api": "^2.8.0" } }, "sha512-nCa4fGVaDL/B9ai03VyPOjfAHRHSBz5v6F/ObsB73r/dA3MHHhZtldaDMIc0V/pnUw9ehzr2iEG+XkSEyC0JJA=="],
+    "@tauri-apps/plugin-process": ["@tauri-apps/plugin-process@3.0.0-alpha.0", "", { "dependencies": { "@tauri-apps/api": "^2.11.0" } }, "sha512-/9T6GhmNQINxckGq/OLEFDKYkHSDlIDMFhcIqJa7BO1kEblJCVo54O9TaVpKg6wLj/5bTaONIqGic7P+xGhJXA=="],
 
-    "@tauri-apps/plugin-store": ["@tauri-apps/plugin-store@2.4.2", "", { "dependencies": { "@tauri-apps/api": "^2.8.0" } }, "sha512-0ClHS50Oq9HEvLPhNzTNFxbWVOqoAp3dRvtewQBeqfIQ0z5m3JRnOISIn2ZVPCrQC0MyGyhTS9DWhHjpigQE7A=="],
+    "@tauri-apps/plugin-store": ["@tauri-apps/plugin-store@3.0.0-alpha.0", "", { "dependencies": { "@tauri-apps/api": "^2.11.0" } }, "sha512-bD38OCqCKFCIV5c+/65xBkwKM2Qi1zBthHh0PUTHmCLPZ1r/GUa6XKxUApYP+zR/+8BHh75yaM1FuR/PyKUqKw=="],
 
     "@tsconfig/svelte": ["@tsconfig/svelte@5.0.6", "", {}, "sha512-yGxYL0I9eETH1/DR9qVJey4DAsCdeau4a9wYPKuXfEhm8lFO8wg+LLYJjIpAm6Fw7HSlhepPhYPDop75485yWQ=="],
 
@@ -437,7 +438,17 @@
 
     "@tailwindcss/oxide-wasm32-wasi/tslib": ["tslib@2.8.1", "", { "bundled": true }, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
 
-    "@tauri-apps/plugin-process/@tauri-apps/api": ["@tauri-apps/api@2.9.0", "", {}, "sha512-qD5tMjh7utwBk9/5PrTA/aGr3i5QaJ/Mlt7p8NilQ45WgbifUNPyKWsA63iQ8YfQq6R8ajMapU+/Q8nMcPRLNw=="],
+    "@tauri-apps/plugin-clipboard-manager/@tauri-apps/api": ["@tauri-apps/api@2.11.1", "", {}, "sha512-M2FPuYND2m+wh5hfW9ZpSdxMPdEJovPBWwoHJmwUpysTYNHaOkVFN419m/K0LIgjb/7KU2vBgsUepJWugQCvAA=="],
+
+    "@tauri-apps/plugin-dialog/@tauri-apps/api": ["@tauri-apps/api@2.11.1", "", {}, "sha512-M2FPuYND2m+wh5hfW9ZpSdxMPdEJovPBWwoHJmwUpysTYNHaOkVFN419m/K0LIgjb/7KU2vBgsUepJWugQCvAA=="],
+
+    "@tauri-apps/plugin-fs/@tauri-apps/api": ["@tauri-apps/api@2.11.1", "", {}, "sha512-M2FPuYND2m+wh5hfW9ZpSdxMPdEJovPBWwoHJmwUpysTYNHaOkVFN419m/K0LIgjb/7KU2vBgsUepJWugQCvAA=="],
+
+    "@tauri-apps/plugin-opener/@tauri-apps/api": ["@tauri-apps/api@2.11.1", "", {}, "sha512-M2FPuYND2m+wh5hfW9ZpSdxMPdEJovPBWwoHJmwUpysTYNHaOkVFN419m/K0LIgjb/7KU2vBgsUepJWugQCvAA=="],
+
+    "@tauri-apps/plugin-process/@tauri-apps/api": ["@tauri-apps/api@2.11.1", "", {}, "sha512-M2FPuYND2m+wh5hfW9ZpSdxMPdEJovPBWwoHJmwUpysTYNHaOkVFN419m/K0LIgjb/7KU2vBgsUepJWugQCvAA=="],
+
+    "@tauri-apps/plugin-store/@tauri-apps/api": ["@tauri-apps/api@2.11.1", "", {}, "sha512-M2FPuYND2m+wh5hfW9ZpSdxMPdEJovPBWwoHJmwUpysTYNHaOkVFN419m/K0LIgjb/7KU2vBgsUepJWugQCvAA=="],
 
     "@vscode/emmet-helper/vscode-uri": ["vscode-uri@2.1.2", "", {}, "sha512-8TEXQxlldWAuIODdukIb+TR5s+9Ds40eSJrw+1iDDA9IFORPjMELarNQE3myz5XIkWWpdprmJjm1/SxMlWOC8A=="],
 

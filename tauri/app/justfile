@@ -5,7 +5,7 @@ set default-list := true
 set fallback
 
 setup:
-  cargo install tauri-cli
+  cargo install tauri-cli --version 3.0.0-alpha.1
 
 build:
   cargo tauri build

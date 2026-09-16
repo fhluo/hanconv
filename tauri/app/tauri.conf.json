@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.tauri.app/config/2",
+  "$schema": "https://schema.tauri.app/config/3.0.0-alpha.1",
   "productName": "hanconv",
   "version": "0.4.2",
   "identifier": "hanconv",
