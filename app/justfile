@@ -1,0 +1,20 @@
+set shell := ["nu", "-c"]
+set script-interpreter := ["nu"]
+set indentation := "  "
+set default-list := true
+set fallback
+
+setup:
+  cargo install tauri-cli
+
+build:
+  cargo tauri build
+
+debug:
+  cargo tauri build --debug
+
+dev:
+  cargo tauri dev
+
+icon:
+  cargo tauri icon

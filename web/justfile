@@ -1,0 +1,20 @@
+set shell := ["nu", "-c"]
+set script-interpreter := ["nu"]
+set indentation := "  "
+set default-list := true
+set fallback
+
+setup:
+  bun install
+
+build:
+  bun run build
+
+dev:
+  bun run dev
+
+update:
+  bun update
+
+format:
+  bun format

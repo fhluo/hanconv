@@ -4,9 +4,9 @@
   "version": "0.4.2",
   "identifier": "hanconv",
   "build": {
-    "beforeDevCommand": "task web:dev",
+    "beforeDevCommand": "just web dev",
     "devUrl": "http://localhost:1420",
-    "beforeBuildCommand": "task web:build",
+    "beforeBuildCommand": "just web build",
     "frontendDist": "../web/dist"
   },
   "app": {
