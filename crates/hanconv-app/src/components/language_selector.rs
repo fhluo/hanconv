@@ -54,12 +54,13 @@ impl RenderOnce for LanguageSelector {
                         menu = menu.action_context(action_context);
                     }
 
-                    for (key, locale) in available_locales!()
-                        .into_iter()
-                        .filter_map(|locale| Some((locale, locale.parse::<Locale>().ok()?)))
-                    {
+                    for key in available_locales!() {
+                        let Ok(locale) = key.parse::<Locale>() else {
+                            continue;
+                        };
+
                         menu = menu.item(
-                            PopupMenuItem::new(t!(key))
+                            PopupMenuItem::new(t!(key.as_ref()))
                                 .checked(self.selected.as_ref() == Some(&locale))
                                 .when_some(self.on_change.clone(), |this, on_change| {
                                     this.on_click(move |_, window, cx| {
