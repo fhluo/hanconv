@@ -8,7 +8,7 @@ categories = ["text-processing", "command-line-utilities"]
 keywords = ["chinese", "simplified-chinese", "traditional-chinese"]
 repository = "https://github.com/fhluo/hanconv"
 license = "MIT"
-exclude = ["Taskfile.yaml"]
+exclude = ["justfile"]
 
 [dependencies]
 ahash = "0.8"

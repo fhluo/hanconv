@@ -8,7 +8,7 @@ categories = ["text-processing", "gui"]
 keywords = ["chinese", "simplified-chinese", "traditional-chinese"]
 repository = "https://github.com/fhluo/hanconv"
 license = "MIT"
-exclude = ["Taskfile.yaml"]
+exclude = ["justfile"]
 
 [dependencies]
 hanconv = "0.5"

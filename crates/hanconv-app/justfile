@@ -1,0 +1,23 @@
+set shell := ["nu", "-c"]
+set script-interpreter := ["nu"]
+set indentation := "  "
+set default-list := true
+set fallback
+
+dev:
+  cargo run
+
+run:
+  cargo run --release
+
+build:
+  cargo build --release
+
+package:
+  cargo package
+
+publish:
+  cargo publish
+
+install:
+  cargo install --path .

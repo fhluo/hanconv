@@ -1,8 +1,0 @@
-version: 3
-
-tasks:
-  package:
-    cmd: cargo package
-
-  publish:
-    cmd: cargo publish

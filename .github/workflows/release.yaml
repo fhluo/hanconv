@@ -24,15 +24,13 @@ jobs:
         with:
           rustflags: ""
 
-      - name: Set up Task
-        run: |
-          winget install --id Task.Task --accept-source-agreements --accept-package-agreements
-          $env.LOCALAPPDATA | path join Microsoft WinGet Links | save -a $env:GITHUB_PATH
+      - name: Set up Just
+        uses: extractions/setup-just@v4
 
       - name: Build
         run: |
-          task cli:build
-          task app:build
+          just cli build
+          just app build
 
       - name: Release
         uses: softprops/action-gh-release@v3
