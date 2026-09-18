@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"iter"
 	"strings"
+	"unicode"
 )
 
 type TextDictionary string
@@ -49,81 +50,122 @@ var (
 	JPVariantsText TextDictionary
 )
 
-type TextDictionaryIterator interface {
-	Parse() iter.Seq[[]string]
-	Iter() iter.Seq2[string, string]
-	InvIter() iter.Seq2[string, string]
-	VarIter() iter.Seq2[string, []string]
+type Variants string
+
+func (v Variants) String() string { return string(v) }
+
+func (v Variants) Iter() iter.Seq[string] {
+	return strings.FieldsSeq(string(v))
 }
 
-func (dict TextDictionary) Parse() iter.Seq[[]string] {
-	return func(yield func([]string) bool) {
-		lines := strings.Lines(string(dict))
+type TextDictionaryIterator interface {
+	Iter() iter.Seq2[string, string]
+	InvIter() iter.Seq2[string, string]
+	VarIter() iter.Seq2[string, Variants]
+}
 
-		for line := range lines {
+func (dict TextDictionary) iter(yield func(string, string) bool) {
+	var (
+		header = true
+		fields [2]string
+		i      int
+	)
+
+	for line := range strings.Lines(string(dict)) {
+		if header {
 			if strings.HasPrefix(line, "#") || line == "" {
 				continue
 			}
-
-			if !yield(strings.Fields(line)) {
-				return
-			}
-			break
+			header = false
 		}
 
-		for line := range lines {
-			if !yield(strings.Fields(line)) {
+		i = 0
+		for field := range strings.FieldsSeq(line) {
+			if i < len(fields) {
+				fields[i] = field
+			} else {
+				break
+			}
+			i++
+		}
+
+		if i < 2 {
+			continue
+		}
+
+		if !yield(fields[0], fields[1]) {
+			return
+		}
+	}
+}
+
+func (dict TextDictionary) invIter(yield func(string, string) bool) {
+	var (
+		header = true
+		key    string
+		hasKey bool
+	)
+
+	for line := range strings.Lines(string(dict)) {
+		if header {
+			if strings.HasPrefix(line, "#") || line == "" {
+				continue
+			}
+			header = false
+		}
+
+		hasKey = false
+		for field := range strings.FieldsSeq(line) {
+			if !hasKey {
+				key, hasKey = field, true
+				continue
+			}
+
+			if !yield(field, key) {
 				return
 			}
+		}
+	}
+}
+
+func (dict TextDictionary) varIter(yield func(string, Variants) bool) {
+	header := true
+
+	for line := range strings.Lines(string(dict)) {
+		if header {
+			if strings.HasPrefix(line, "#") || line == "" {
+				continue
+			}
+			header = false
+		}
+
+		s := strings.TrimLeftFunc(line, unicode.IsSpace)
+		j := strings.IndexFunc(s, unicode.IsSpace)
+		if j == -1 || !strings.ContainsFunc(s[j:], func(r rune) bool {
+			return !unicode.IsSpace(r)
+		}) {
+			continue
+		}
+
+		if !yield(s[:j], Variants(s[j:])) {
+			return
 		}
 	}
 }
 
 func (dict TextDictionary) Iter() iter.Seq2[string, string] {
-	return func(yield func(string, string) bool) {
-		for items := range dict.Parse() {
-			if len(items) >= 2 && !yield(items[0], items[1]) {
-				return
-			}
-		}
-	}
+	return dict.iter
 }
 
 func (dict TextDictionary) InvIter() iter.Seq2[string, string] {
-	return func(yield func(string, string) bool) {
-		for items := range dict.Parse() {
-			if len(items) < 2 {
-				continue
-			}
-
-			for _, item := range items[1:] {
-				if !yield(item, items[0]) {
-					return
-				}
-			}
-		}
-	}
+	return dict.invIter
 }
 
-func (dict TextDictionary) VarIter() iter.Seq2[string, []string] {
-	return func(yield func(string, []string) bool) {
-		for items := range dict.Parse() {
-			if len(items) >= 2 && !yield(items[0], items[1:]) {
-				return
-			}
-		}
-	}
+func (dict TextDictionary) VarIter() iter.Seq2[string, Variants] {
+	return dict.varIter
 }
 
 type TextDictionaries []TextDictionary
-
-func (dictionaries TextDictionaries) Parse() iter.Seq[[]string] {
-	return func(yield func([]string) bool) {
-		for _, dictionary := range dictionaries {
-			dictionary.Parse()(yield)
-		}
-	}
-}
 
 func (dictionaries TextDictionaries) Iter() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
@@ -141,8 +183,8 @@ func (dictionaries TextDictionaries) InvIter() iter.Seq2[string, string] {
 	}
 }
 
-func (dictionaries TextDictionaries) VarIter() iter.Seq2[string, []string] {
-	return func(yield func(string, []string) bool) {
+func (dictionaries TextDictionaries) VarIter() iter.Seq2[string, Variants] {
+	return func(yield func(string, Variants) bool) {
 		for _, dictionary := range dictionaries {
 			dictionary.VarIter()(yield)
 		}
