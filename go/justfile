@@ -8,6 +8,10 @@ build:
   go build -o ./bin/ ./cmd/...
 
 [working-directory: 'cmd/hanconv']
+run:
+  go run .
+
+[working-directory: 'cmd/hanconv']
 install:
   go install
 
