@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -119,13 +120,13 @@ func formatHelp(programName string, conversion string, conversions []Conversion)
 
 	// Usage
 	buffer.WriteString("Usage:\n")
-	_, _ = fmt.Fprintf(buffer, "  %v %v -i <path> -o <path>\n\n", programName, conversion)
+	_, _ = fmt.Fprintf(buffer, "  %s %s -i <path> -o <path>\n\n", programName, conversion)
 
 	// Conversions
 	if len(conversions) > 0 {
 		buffer.WriteString("Conversions:\n")
 		for _, conversion := range conversions {
-			_, _ = fmt.Fprintf(buffer, "  %-5v  %v\n", conversion.Name, conversion.Description)
+			_, _ = fmt.Fprintf(buffer, "  %-5s  %s\n", conversion.Name, conversion.Description)
 		}
 		buffer.WriteString("\n")
 	}
@@ -147,6 +148,22 @@ var subcommandHelp = sync.OnceValue(func() string {
 	return formatHelp(programName(), os.Args[1], nil)
 })
 
+const (
+	ExitOk = iota
+	ExitError
+	ExitUsage
+)
+
+func fatal(err error) {
+	_, _ = fmt.Fprintf(os.Stderr, "%s: %v\n", programName(), err)
+	os.Exit(ExitError)
+}
+
+func fatalUsage(err error) {
+	_, _ = fmt.Fprintf(os.Stderr, "%s: %v\n", programName(), err)
+	os.Exit(ExitUsage)
+}
+
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println(help())
@@ -160,14 +177,12 @@ func main() {
 
 	conversion, err := parseConversion(os.Args[1])
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Failed to parse conversion: %v\n", err)
-		os.Exit(2)
+		fatalUsage(err)
 	}
 
 	options, err := parseOptions(os.Args[2:])
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Failed to parse options: %v\n", err)
-		os.Exit(2)
+		fatalUsage(err)
 	}
 	if options.help {
 		fmt.Println(subcommandHelp())
@@ -175,8 +190,7 @@ func main() {
 	}
 
 	if err := convert(options.inputPath, options.outputPath, conversion.Convert); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Conversion `%v` failed: %v\n", os.Args[1], err)
-		os.Exit(1)
+		fatal(err)
 	}
 }
 
@@ -190,10 +204,7 @@ func parseConversion(arg string) (Conversion, error) {
 }
 
 type Options struct {
-	help   bool
-	input  bool
-	output bool
-
+	help       bool
 	inputPath  string
 	outputPath string
 }
@@ -205,20 +216,16 @@ func parseOptions(args []string) (options Options, err error) {
 			options.help = true
 			return
 		case "-i", "--input":
-			options.input = true
-
-			if i+1 >= len(args) {
-				err = fmt.Errorf("no input file specified")
+			if i+1 >= len(args) || args[i+1] == "" {
+				err = fmt.Errorf("flag %s requires a path", args[i])
 				return
 			}
 
 			options.inputPath = args[i+1]
 			i++
 		case "-o", "--output":
-			options.output = true
-
-			if i+1 >= len(args) {
-				err = fmt.Errorf("no output file specified")
+			if i+1 >= len(args) || args[i+1] == "" {
+				err = fmt.Errorf("flag %s requires a path", args[i])
 				return
 			}
 
@@ -226,13 +233,21 @@ func parseOptions(args []string) (options Options, err error) {
 			i++
 		default:
 			if path, ok := strings.CutPrefix(args[i], "--input="); ok {
-				options.input = true
+				if path == "" {
+					err = fmt.Errorf("flag --input requires a path")
+					return
+				}
+
 				options.inputPath = path
 				continue
 			}
 
 			if path, ok := strings.CutPrefix(args[i], "--output="); ok {
-				options.output = true
+				if path == "" {
+					err = fmt.Errorf("flag --output requires a path")
+					return
+				}
+
 				options.outputPath = path
 				continue
 			}
@@ -240,15 +255,6 @@ func parseOptions(args []string) (options Options, err error) {
 			err = fmt.Errorf("unknown flag %q", args[i])
 			return
 		}
-	}
-
-	if options.input && options.inputPath == "" {
-		err = fmt.Errorf("no input file specified")
-		return
-	}
-	if options.output && options.outputPath == "" {
-		err = fmt.Errorf("no output file specified")
-		return
 	}
 
 	return
@@ -263,35 +269,33 @@ func convert(inputPath string, outputPath string, f func(s string) string) (err 
 	if inputPath != "" {
 		input, err = os.Open(inputPath)
 		if err != nil {
-			return fmt.Errorf("error opening input file: %w", err)
+			return fmt.Errorf("open input file: %w", err)
 		}
 		defer func() {
-			if err := input.Close(); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "Error closing input file: %v\n", err)
-			}
+			_ = input.Close()
 		}()
 	}
 
 	if outputPath != "" {
 		output, err = os.Create(outputPath)
 		if err != nil {
-			return fmt.Errorf("error opening output file: %w", err)
+			return fmt.Errorf("open output file: %w", err)
 		}
 		defer func() {
-			if err := output.Close(); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "Error closing output file: %v\n", err)
+			if closeErr := output.Close(); closeErr != nil {
+				err = errors.Join(err, fmt.Errorf("close output file: %w", closeErr))
 			}
 		}()
 	}
 
 	data, err := io.ReadAll(input)
 	if err != nil {
-		return fmt.Errorf("error reading input file: %w", err)
+		return fmt.Errorf("read input file: %w", err)
 	}
 
 	_, err = output.WriteString(f(unsafe.String(unsafe.SliceData(data), len(data))))
 	if err != nil {
-		return fmt.Errorf("error writing output file: %w", err)
+		return fmt.Errorf("write output file: %w", err)
 	}
 
 	return nil
