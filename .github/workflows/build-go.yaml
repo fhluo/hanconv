@@ -3,6 +3,7 @@ name: Build Go
 on:
   push:
     branches: [ "main" ]
+    tags: [ "go/v*.*.*" ]
     paths:
       - 'go/**'
       - '.github/workflows/build-go.yaml'
