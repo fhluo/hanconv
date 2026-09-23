@@ -159,8 +159,12 @@ func fatal(err error) {
 	os.Exit(ExitError)
 }
 
-func fatalUsage(err error) {
-	_, _ = fmt.Fprintf(os.Stderr, "%s: %v\n", programName(), err)
+func fatalUsage(err error, hint string) {
+	if hint != "" {
+		_, _ = fmt.Fprintf(os.Stderr, "%s: %v; %s\n", programName(), err, hint)
+	} else {
+		_, _ = fmt.Fprintf(os.Stderr, "%s: %v\n", programName(), err)
+	}
 	os.Exit(ExitUsage)
 }
 
@@ -177,12 +181,12 @@ func main() {
 
 	conversion, err := parseConversion(os.Args[1])
 	if err != nil {
-		fatalUsage(err)
+		fatalUsage(err, fmt.Sprintf("run `%s -h` to list conversions", programName()))
 	}
 
 	options, err := parseOptions(os.Args[2:])
 	if err != nil {
-		fatalUsage(err)
+		fatalUsage(err, fmt.Sprintf("run `%s %s -h` for usage", programName(), os.Args[1]))
 	}
 	if options.help {
 		fmt.Println(subcommandHelp())
