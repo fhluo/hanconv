@@ -120,7 +120,7 @@ func formatHelp(programName string, conversion string, conversions []Conversion)
 
 	// Usage
 	buffer.WriteString("Usage:\n")
-	_, _ = fmt.Fprintf(buffer, "  %s %s -i <path> -o <path>\n\n", programName, conversion)
+	_, _ = fmt.Fprintf(buffer, "  %s %s [-i <path>] [-o <path>]\n\n", programName, conversion)
 
 	// Conversions
 	if len(conversions) > 0 {
