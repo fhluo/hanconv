@@ -54,17 +54,17 @@ type Variants string
 
 func (v Variants) String() string { return string(v) }
 
-func (v Variants) Iter() iter.Seq[string] {
+func (v Variants) All() iter.Seq[string] {
 	return strings.FieldsSeq(string(v))
 }
 
 type TextDictionaryIterator interface {
-	Iter() iter.Seq2[string, string]
-	InvIter() iter.Seq2[string, string]
-	VarIter() iter.Seq2[string, Variants]
+	All() iter.Seq2[string, string]
+	AllInverse() iter.Seq2[string, string]
+	AllVariants() iter.Seq2[string, Variants]
 }
 
-func (dict TextDictionary) iter(yield func(string, string) bool) {
+func (dict TextDictionary) all(yield func(string, string) bool) {
 	var (
 		header = true
 		fields [2]string
@@ -99,7 +99,7 @@ func (dict TextDictionary) iter(yield func(string, string) bool) {
 	}
 }
 
-func (dict TextDictionary) invIter(yield func(string, string) bool) {
+func (dict TextDictionary) allInverse(yield func(string, string) bool) {
 	var (
 		header = true
 		key    string
@@ -128,7 +128,7 @@ func (dict TextDictionary) invIter(yield func(string, string) bool) {
 	}
 }
 
-func (dict TextDictionary) varIter(yield func(string, Variants) bool) {
+func (dict TextDictionary) allVariants(yield func(string, Variants) bool) {
 	header := true
 
 	for line := range strings.Lines(string(dict)) {
@@ -153,40 +153,40 @@ func (dict TextDictionary) varIter(yield func(string, Variants) bool) {
 	}
 }
 
-func (dict TextDictionary) Iter() iter.Seq2[string, string] {
-	return dict.iter
+func (dict TextDictionary) All() iter.Seq2[string, string] {
+	return dict.all
 }
 
-func (dict TextDictionary) InvIter() iter.Seq2[string, string] {
-	return dict.invIter
+func (dict TextDictionary) AllInverse() iter.Seq2[string, string] {
+	return dict.allInverse
 }
 
-func (dict TextDictionary) VarIter() iter.Seq2[string, Variants] {
-	return dict.varIter
+func (dict TextDictionary) AllVariants() iter.Seq2[string, Variants] {
+	return dict.allVariants
 }
 
 type TextDictionaries []TextDictionary
 
-func (dictionaries TextDictionaries) Iter() iter.Seq2[string, string] {
+func (dictionaries TextDictionaries) All() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
 		for _, dictionary := range dictionaries {
-			dictionary.Iter()(yield)
+			dictionary.All()(yield)
 		}
 	}
 }
 
-func (dictionaries TextDictionaries) InvIter() iter.Seq2[string, string] {
+func (dictionaries TextDictionaries) AllInverse() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
 		for _, dictionary := range dictionaries {
-			dictionary.InvIter()(yield)
+			dictionary.AllInverse()(yield)
 		}
 	}
 }
 
-func (dictionaries TextDictionaries) VarIter() iter.Seq2[string, Variants] {
+func (dictionaries TextDictionaries) AllVariants() iter.Seq2[string, Variants] {
 	return func(yield func(string, Variants) bool) {
 		for _, dictionary := range dictionaries {
-			dictionary.VarIter()(yield)
+			dictionary.AllVariants()(yield)
 		}
 	}
 }

@@ -7,11 +7,11 @@ import (
 type Dictionary func() iter.Seq2[string, string]
 
 func NewDictionary(dictionaries ...TextDictionary) Dictionary {
-	return TextDictionaries(dictionaries).Iter
+	return TextDictionaries(dictionaries).All
 }
 
 func NewInvDictionary(dictionaries ...TextDictionary) Dictionary {
-	return TextDictionaries(dictionaries).InvIter
+	return TextDictionaries(dictionaries).AllInverse
 }
 
 var (
