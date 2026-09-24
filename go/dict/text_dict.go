@@ -170,7 +170,7 @@ type TextDictionaries []TextDictionary
 func (dictionaries TextDictionaries) All() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
 		for _, dictionary := range dictionaries {
-			dictionary.All()(yield)
+			dictionary.all(yield)
 		}
 	}
 }
@@ -178,7 +178,7 @@ func (dictionaries TextDictionaries) All() iter.Seq2[string, string] {
 func (dictionaries TextDictionaries) AllInverse() iter.Seq2[string, string] {
 	return func(yield func(string, string) bool) {
 		for _, dictionary := range dictionaries {
-			dictionary.AllInverse()(yield)
+			dictionary.allInverse(yield)
 		}
 	}
 }
@@ -186,7 +186,7 @@ func (dictionaries TextDictionaries) AllInverse() iter.Seq2[string, string] {
 func (dictionaries TextDictionaries) AllVariants() iter.Seq2[string, Variants] {
 	return func(yield func(string, Variants) bool) {
 		for _, dictionary := range dictionaries {
-			dictionary.AllVariants()(yield)
+			dictionary.allVariants(yield)
 		}
 	}
 }
