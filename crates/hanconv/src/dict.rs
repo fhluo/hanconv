@@ -1,4 +1,5 @@
 use RawDictionary::*;
+use std::iter::once;
 
 pub enum RawDictionary {
     STCharacters,
@@ -59,10 +60,10 @@ impl RawDictionary {
     pub fn inv_iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
         self.lines()
             .filter_map(|line| {
-                let mut iter = line.split_whitespace().peekable();
+                let mut iter = line.split_whitespace();
 
-                if let (Some(key), Some(_)) = (iter.next(), iter.peek()) {
-                    Some(iter.map(move |value| (value, key)))
+                if let (Some(key), Some(value)) = (iter.next(), iter.next()) {
+                    Some(once((value, key)).chain(iter.map(move |value| (value, key))))
                 } else {
                     None
                 }
