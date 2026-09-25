@@ -62,7 +62,7 @@ impl RawDictionary {
                 let mut iter = line.split_whitespace().peekable();
 
                 if let (Some(key), Some(_)) = (iter.next(), iter.peek()) {
-                    Some(iter.map(|value| (value, key)).collect::<Vec<_>>())
+                    Some(iter.map(move |value| (value, key)))
                 } else {
                     None
                 }
