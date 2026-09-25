@@ -49,11 +49,7 @@ impl RawDictionary {
         self.lines().filter_map(|line| {
             let mut iter = line.split_whitespace();
 
-            if let (Some(key), Some(value)) = (iter.next(), iter.next()) {
-                Some((key, value))
-            } else {
-                None
-            }
+            Some((iter.next()?, iter.next()?))
         })
     }
 
@@ -61,12 +57,9 @@ impl RawDictionary {
         self.lines()
             .filter_map(|line| {
                 let mut iter = line.split_whitespace();
+                let key = iter.next()?;
 
-                if let (Some(key), Some(value)) = (iter.next(), iter.next()) {
-                    Some(once((value, key)).chain(iter.map(move |value| (value, key))))
-                } else {
-                    None
-                }
+                Some(once((iter.next()?, key)).chain(iter.map(move |value| (value, key))))
             })
             .flatten()
     }
@@ -75,11 +68,10 @@ impl RawDictionary {
         self.lines().filter_map(|line| {
             let mut iter = line.split_whitespace();
 
-            if let (Some(key), Some(value)) = (iter.next(), iter.next()) {
-                Some((key, once(value).chain(iter).collect::<Vec<_>>()))
-            } else {
-                None
-            }
+            Some((
+                iter.next()?,
+                once(iter.next()?).chain(iter).collect::<Vec<_>>(),
+            ))
         })
     }
 }
