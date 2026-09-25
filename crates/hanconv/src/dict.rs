@@ -53,7 +53,7 @@ impl RawDictionary {
         })
     }
 
-    pub fn inv_iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
+    pub fn iter_inverse(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
         self.lines()
             .filter_map(|line| {
                 let mut iter = line.split_whitespace();
@@ -64,7 +64,7 @@ impl RawDictionary {
             .flatten()
     }
 
-    pub fn var_iter(
+    pub fn iter_variants(
         &self,
     ) -> impl Iterator<
         Item = (
@@ -105,9 +105,9 @@ macro_rules! iter {
     };
 }
 
-macro_rules! inv_iter {
+macro_rules! iter_inverse {
     [$a:expr $(,$b:expr)*] => {
-        Box::new($a.inv_iter()$(.chain($b.inv_iter()))*)
+        Box::new($a.iter_inverse()$(.chain($b.iter_inverse()))*)
     };
 }
 
@@ -121,15 +121,15 @@ impl Dictionary {
             Dictionary::TWPhrases => iter![TWPhrases],
             Dictionary::TWPhrasesRev => iter![TWPhrasesRev],
             Dictionary::TWVariants => iter![TWVariants],
-            Dictionary::TWVariantsRev => inv_iter![TWVariants],
+            Dictionary::TWVariantsRev => iter_inverse![TWVariants],
             Dictionary::TWVariantsRevPhrases => iter![TWVariantsRevPhrases],
             Dictionary::HKVariants => iter![HKVariants],
-            Dictionary::HKVariantsRev => inv_iter![HKVariants],
+            Dictionary::HKVariantsRev => iter_inverse![HKVariants],
             Dictionary::HKVariantsRevPhrases => iter![HKVariantsRevPhrases],
             Dictionary::JPShinjitaiCharacters => iter![JPShinjitaiCharacters],
             Dictionary::JPShinjitaiPhrases => iter![JPShinjitaiPhrases],
             Dictionary::JPVariants => iter![JPVariants],
-            Dictionary::JPVariantsRev => inv_iter![JPVariants],
+            Dictionary::JPVariantsRev => iter_inverse![JPVariants],
         }
     }
 }
