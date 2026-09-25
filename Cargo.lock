@@ -3883,15 +3883,15 @@ dependencies = [
 [[package]]
 name = "hanconv"
 version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "10117a03dfaab60dd6eb9861e9ec281af3b92e1b1afd066c5fe6f36333ef8b5e"
 dependencies = [
  "ahash",
 ]
 
 [[package]]
 name = "hanconv"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "10117a03dfaab60dd6eb9861e9ec281af3b92e1b1afd066c5fe6f36333ef8b5e"
+version = "0.5.1"
 dependencies = [
  "ahash",
 ]
@@ -3904,7 +3904,7 @@ dependencies = [
  "confy",
  "dirs 7.0.0",
  "gpui-kit",
- "hanconv 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hanconv 0.5.0",
  "icu_locale",
  "rust-embed",
  "rust-i18n",
@@ -3918,11 +3918,11 @@ dependencies = [
 
 [[package]]
 name = "hanconv-cli"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "clap",
  "encoding_rs",
- "hanconv 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hanconv 0.5.0",
  "rayon",
 ]
 
@@ -3930,7 +3930,7 @@ dependencies = [
 name = "hanconv-py"
 version = "0.3.0"
 dependencies = [
- "hanconv 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hanconv 0.5.0",
  "pyo3",
 ]
 
@@ -3940,7 +3940,7 @@ version = "0.4.2"
 dependencies = [
  "charset-normalizer-rs",
  "encoding_rs",
- "hanconv 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hanconv 0.5.0",
  "serde",
  "serde_json",
  "tauri",
@@ -3961,7 +3961,7 @@ name = "hanconv-wasm"
 version = "0.3.0"
 dependencies = [
  "getrandom 0.2.17",
- "hanconv 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "hanconv 0.5.0",
  "wasm-bindgen",
 ]
 
