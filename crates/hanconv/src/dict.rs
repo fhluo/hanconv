@@ -73,10 +73,10 @@ impl RawDictionary {
 
     pub fn var_iter(&self) -> impl Iterator<Item = (&'static str, Vec<&'static str>)> + use<> {
         self.lines().filter_map(|line| {
-            let mut iter = line.split_whitespace().peekable();
+            let mut iter = line.split_whitespace();
 
-            if let (Some(key), Some(_)) = (iter.next(), iter.peek()) {
-                Some((key, iter.collect::<Vec<_>>()))
+            if let (Some(key), Some(value)) = (iter.next(), iter.next()) {
+                Some((key, once(value).chain(iter).collect::<Vec<_>>()))
             } else {
                 None
             }
