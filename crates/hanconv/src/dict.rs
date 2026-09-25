@@ -64,14 +64,14 @@ impl RawDictionary {
             .flatten()
     }
 
-    pub fn var_iter(&self) -> impl Iterator<Item = (&'static str, Vec<&'static str>)> + use<> {
+    pub fn var_iter(
+        &self,
+    ) -> impl Iterator<Item = (&'static str, impl Iterator<Item = &'static str> + use<>)> + use<>
+    {
         self.lines().filter_map(|line| {
             let mut iter = line.split_whitespace();
 
-            Some((
-                iter.next()?,
-                once(iter.next()?).chain(iter).collect::<Vec<_>>(),
-            ))
+            Some((iter.next()?, once(iter.next()?).chain(iter)))
         })
     }
 }
