@@ -16,6 +16,6 @@ path = "src/main.rs"
 
 [dependencies]
 hanconv = "0.5"
-clap = { version = "4.5", features = ["derive"] }
+clap = { version = "4.6", features = ["derive"] }
 encoding_rs = "0.8"
-rayon = "1.11"
+rayon = "1.12"
