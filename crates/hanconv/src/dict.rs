@@ -1,6 +1,7 @@
 use RawDictionary::*;
 use std::iter::once;
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum RawDictionary {
     STCharacters,
     STPhrases,
@@ -80,6 +81,7 @@ impl RawDictionary {
     }
 }
 
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Dictionary {
     STCharacters,
     STPhrases,
