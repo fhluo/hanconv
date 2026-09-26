@@ -9,6 +9,6 @@ pub use conv::{
 };
 pub use dict::{
     Dictionary::{self, *},
-    RawDictionary,
+    TextDictionary,
 };
 pub use trie::{Node, Trie};
