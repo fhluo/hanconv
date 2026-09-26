@@ -43,6 +43,7 @@ impl TextDictionary {
             .skip_while(|&line| line.starts_with('#') || line.is_empty())
     }
 
+    #[inline]
     pub fn iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
         self.lines().filter_map(|line| {
             let mut iter = line.split_whitespace();
@@ -51,6 +52,7 @@ impl TextDictionary {
         })
     }
 
+    #[inline]
     pub fn iter_inverse(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
         self.lines()
             .filter_map(|line| {
@@ -62,6 +64,7 @@ impl TextDictionary {
             .flatten()
     }
 
+    #[inline]
     pub fn iter_variants(
         &self,
     ) -> impl Iterator<
