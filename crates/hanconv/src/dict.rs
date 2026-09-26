@@ -27,6 +27,7 @@ impl TextDictionary {
     pub const JPVariants: Self = Self(include_str!("../data/JPVariants.txt"));
 }
 
+// build.rs rejects dictionaries that contain non-ASCII whitespace.
 impl TextDictionary {
     pub const fn new(text: &'static str) -> Self {
         Self(text)
@@ -46,7 +47,7 @@ impl TextDictionary {
     #[inline]
     pub fn iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
         self.lines().filter_map(|line| {
-            let mut iter = line.split_whitespace();
+            let mut iter = line.split_ascii_whitespace();
 
             Some((iter.next()?, iter.next()?))
         })
@@ -56,7 +57,7 @@ impl TextDictionary {
     pub fn iter_inverse(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
         self.lines()
             .filter_map(|line| {
-                let mut iter = line.split_whitespace();
+                let mut iter = line.split_ascii_whitespace();
                 let key = iter.next()?;
 
                 Some(once((iter.next()?, key)).chain(iter.map(move |value| (value, key))))
@@ -74,7 +75,7 @@ impl TextDictionary {
         ),
     > + use<> {
         self.lines().filter_map(|line| {
-            let mut iter = line.split_whitespace();
+            let mut iter = line.split_ascii_whitespace();
 
             Some((iter.next()?, once(iter.next()?).chain(iter)))
         })
