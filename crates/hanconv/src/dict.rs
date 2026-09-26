@@ -101,37 +101,64 @@ pub enum Dictionary {
     JPVariantsRev,
 }
 
-macro_rules! iter {
-    [$a:ident $(,$b:ident)*] => {
-        Box::new(TextDictionary::$a.iter()$(.chain(TextDictionary::$b.iter()))*)
-    };
-}
-
-macro_rules! iter_inverse {
-    [$a:ident $(,$b:ident)*] => {
-        Box::new(TextDictionary::$a.iter_inverse()$(.chain(TextDictionary::$b.iter_inverse()))*)
-    };
-}
-
 impl Dictionary {
-    pub fn iter(&self) -> Box<dyn Iterator<Item = (&'static str, &'static str)>> {
+    /// Returns the text dictionary and whether it is iterated in the inverse direction.
+    const fn source(&self) -> (TextDictionary, bool) {
         match self {
-            Dictionary::STCharacters => iter![STCharacters],
-            Dictionary::STPhrases => iter![STPhrases],
-            Dictionary::TSCharacters => iter![TSCharacters],
-            Dictionary::TSPhrases => iter![TSPhrases],
-            Dictionary::TWPhrases => iter![TWPhrases],
-            Dictionary::TWPhrasesRev => iter![TWPhrasesRev],
-            Dictionary::TWVariants => iter![TWVariants],
-            Dictionary::TWVariantsRev => iter_inverse![TWVariants],
-            Dictionary::TWVariantsRevPhrases => iter![TWVariantsRevPhrases],
-            Dictionary::HKVariants => iter![HKVariants],
-            Dictionary::HKVariantsRev => iter_inverse![HKVariants],
-            Dictionary::HKVariantsRevPhrases => iter![HKVariantsRevPhrases],
-            Dictionary::JPShinjitaiCharacters => iter![JPShinjitaiCharacters],
-            Dictionary::JPShinjitaiPhrases => iter![JPShinjitaiPhrases],
-            Dictionary::JPVariants => iter![JPVariants],
-            Dictionary::JPVariantsRev => iter_inverse![JPVariants],
+            Dictionary::STCharacters => (TextDictionary::STCharacters, false),
+            Dictionary::STPhrases => (TextDictionary::STPhrases, false),
+            Dictionary::TSCharacters => (TextDictionary::TSCharacters, false),
+            Dictionary::TSPhrases => (TextDictionary::TSPhrases, false),
+            Dictionary::TWPhrases => (TextDictionary::TWPhrases, false),
+            Dictionary::TWPhrasesRev => (TextDictionary::TWPhrasesRev, false),
+            Dictionary::TWVariants => (TextDictionary::TWVariants, false),
+            Dictionary::TWVariantsRev => (TextDictionary::TWVariants, true),
+            Dictionary::TWVariantsRevPhrases => (TextDictionary::TWVariantsRevPhrases, false),
+            Dictionary::HKVariants => (TextDictionary::HKVariants, false),
+            Dictionary::HKVariantsRev => (TextDictionary::HKVariants, true),
+            Dictionary::HKVariantsRevPhrases => (TextDictionary::HKVariantsRevPhrases, false),
+            Dictionary::JPShinjitaiCharacters => (TextDictionary::JPShinjitaiCharacters, false),
+            Dictionary::JPShinjitaiPhrases => (TextDictionary::JPShinjitaiPhrases, false),
+            Dictionary::JPVariants => (TextDictionary::JPVariants, false),
+            Dictionary::JPVariantsRev => (TextDictionary::JPVariants, true),
+        }
+    }
+
+    pub fn iter(&self) -> impl Iterator<Item = (&'static str, &'static str)> + use<> {
+        let (dict, inverse) = self.source();
+
+        if inverse {
+            Either::Inverse(dict.iter_inverse())
+        } else {
+            Either::Forward(dict.iter())
+        }
+    }
+}
+
+/// The iterator returned by [`Dictionary::iter`].
+enum Either<F, I> {
+    Forward(F),
+    Inverse(I),
+}
+
+impl<F, I> Iterator for Either<F, I>
+where
+    F: Iterator,
+    I: Iterator<Item = F::Item>,
+{
+    type Item = F::Item;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self {
+            Either::Forward(iter) => iter.next(),
+            Either::Inverse(iter) => iter.next(),
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        match self {
+            Either::Forward(iter) => iter.size_hint(),
+            Either::Inverse(iter) => iter.size_hint(),
         }
     }
 }
