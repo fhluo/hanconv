@@ -20,7 +20,7 @@ var (
 	TSCharacters          = NewDictionary(TSCharactersText)
 	TSPhrases             = NewDictionary(TSPhrasesText)
 	TWPhrases             = NewDictionary(TWPhrasesText)
-	TWPhrasesRev          = NewInvDictionary(TWPhrasesRevText)
+	TWPhrasesRev          = NewDictionary(TWPhrasesRevText)
 	TWVariants            = NewDictionary(TWVariantsText)
 	TWVariantsRev         = NewInvDictionary(TWVariantsText)
 	TWVariantsRevPhrases  = NewDictionary(TWVariantsRevPhrasesText)
