@@ -15,7 +15,7 @@ name = "hanconv"
 path = "src/main.rs"
 
 [dependencies]
-hanconv = "0.5"
+hanconv = { workspace = true }
 clap = { version = "4.6", features = ["derive"] }
 encoding_rs = "0.8"
 rayon = "1.12"

@@ -11,7 +11,7 @@ license = "MIT"
 exclude = ["justfile"]
 
 [dependencies]
-hanconv = "0.5"
+hanconv = { workspace = true }
 gpui-kit = "0.6"
 rust-i18n = "4.2"
 sys-locale = "0.3"
