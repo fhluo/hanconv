@@ -10,7 +10,7 @@ mod conversion;
 
 use crate::assets::{Assets, Icons};
 use crate::components::{
-    open_about_dialog, open_io_error_dialog, toolbar, LanguageSelector, StatusBar, Toolbar,
+    LanguageSelector, StatusBar, Toolbar, open_about_dialog, open_io_error_dialog, toolbar,
 };
 use crate::config::{Config, ConfigEvent};
 use crate::conversion::Conversion;
@@ -44,12 +44,10 @@ struct Hanconv {
 
 impl Hanconv {
     fn new(window: &mut Window, cx: &mut Context<Self>) -> Self {
-        let input_editor = cx.new(|cx| {
-            TextareaState::new(window, cx).placeholder(t!("input.placeholder"))
-        });
-        let output_editor = cx.new(|cx| {
-            TextareaState::new(window, cx).placeholder(t!("output.placeholder"))
-        });
+        let input_editor =
+            cx.new(|cx| TextareaState::new(window, cx).placeholder(t!("input.placeholder")));
+        let output_editor =
+            cx.new(|cx| TextareaState::new(window, cx).placeholder(t!("output.placeholder")));
 
         cx.subscribe_in(&input_editor, window, Self::on_input_event)
             .detach();
@@ -366,7 +364,7 @@ impl Hanconv {
 }
 
 impl Render for Hanconv {
-    fn render(&mut self, window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    fn render(&mut self, _window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
         let language_selector = LanguageSelector::new(
             Button::new("language-button")
                 .small()
@@ -378,8 +376,6 @@ impl Render for Hanconv {
         )
         .on_change(cx.listener(Self::change_locale))
         .action_context(self.input_editor.focus_handle(cx));
-
-        let dialog_layer = Root::render_dialog_layer(window, cx);
 
         div()
             .on_action(cx.listener(Self::run_conversion))
@@ -498,7 +494,6 @@ impl Render for Hanconv {
                 )
                 .action_context(self.input_editor.focus_handle(cx)),
             )
-            .children(dialog_layer)
     }
 }
 
