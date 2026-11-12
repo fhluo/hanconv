@@ -12,7 +12,7 @@ exclude = ["justfile"]
 
 [dependencies]
 hanconv = { workspace = true }
-gpui-kit = "0.7"
+gpui-kit = "0.9"
 rust-i18n = "4.2"
 sys-locale = "0.3"
 icu_locale = { version = "2.1", features = ["compiled_data", "serde"] }
