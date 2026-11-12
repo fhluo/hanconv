@@ -1,5 +1,1 @@
-set working-directory := 'app'
-
-import 'app/justfile'
-
 mod web

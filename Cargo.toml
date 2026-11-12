@@ -6,7 +6,6 @@ members = [
     "crates/hanconv",
     "crates/hanconv-app",
     "crates/hanconv-cli",
-    "tauri/app",
 ]
 
 [workspace.dependencies]
