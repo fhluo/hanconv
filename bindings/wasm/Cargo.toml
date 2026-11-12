@@ -10,4 +10,4 @@ crate-type = ["cdylib"]
 [dependencies]
 hanconv = { workspace = true }
 wasm-bindgen = "0.2"
-getrandom = { version = "0.2", features = ["js"] }
+getrandom = { version = "0.3", features = ["wasm_js"] }
