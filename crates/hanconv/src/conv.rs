@@ -5,6 +5,7 @@ use std::fmt::{Display, Formatter};
 use std::sync::LazyLock;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub enum Conversion {
     /// Simplified Chinese to Traditional Chinese
     ///
