@@ -3,6 +3,7 @@ use crate::trie::Trie;
 use Conversion::*;
 use std::sync::LazyLock;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum Conversion {
     /// Simplified Chinese to Traditional Chinese
     ///
