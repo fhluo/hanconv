@@ -1,7 +1,7 @@
-use ahash::AHashMap;
+use crate::map::Map;
 
 pub struct Node<T> {
-    children: Option<AHashMap<char, Node<T>>>,
+    children: Option<Map<char, Node<T>>>,
     value: Option<T>,
 }
 
@@ -14,11 +14,11 @@ impl<T> Default for Node<T> {
     }
 }
 
-impl<T> From<Node<T>> for AHashMap<String, T> {
+impl<T> From<Node<T>> for Map<String, T> {
     fn from(node: Node<T>) -> Self {
-        let mut map = AHashMap::new();
+        let mut map = Map::default();
 
-        fn build<T>(map: &mut AHashMap<String, T>, node: Node<T>, key: &mut String) {
+        fn build<T>(map: &mut Map<String, T>, node: Node<T>, key: &mut String) {
             if let Some(value) = node.value {
                 map.insert(key.clone(), value);
             }
@@ -157,14 +157,14 @@ impl<T: AsRef<str>> Trie<T> {
     }
 }
 
-impl<T> From<Trie<T>> for AHashMap<String, T> {
+impl<T> From<Trie<T>> for Map<String, T> {
     fn from(trie: Trie<T>) -> Self {
         trie.root.into()
     }
 }
 
-impl<K: AsRef<str>, V> From<AHashMap<K, V>> for Trie<V> {
-    fn from(map: AHashMap<K, V>) -> Self {
+impl<K: AsRef<str>, V> From<Map<K, V>> for Trie<V> {
+    fn from(map: Map<K, V>) -> Self {
         let mut trie = Trie::default();
 
         for (key, value) in map {

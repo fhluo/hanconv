@@ -10,5 +10,9 @@ repository = "https://github.com/fhluo/hanconv"
 license = "MIT"
 exclude = ["justfile"]
 
+[features]
+default = ["ahash"]
+ahash = ["dep:ahash"]
+
 [dependencies]
-ahash = "0.8"
+ahash = { version = "0.8", optional = true }

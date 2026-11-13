@@ -1,5 +1,6 @@
 mod conv;
 mod dict;
+mod map;
 mod trie;
 
 pub use conv::{
