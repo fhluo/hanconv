@@ -7,6 +7,10 @@ edition = "2024"
 name = "hanconv"
 crate-type = ["cdylib"]
 
+[features]
+default = ["ahash"]
+ahash = ["hanconv/ahash"]
+
 [dependencies]
-hanconv = { workspace = true }
+hanconv = { workspace = true, default-features = false }
 pyo3 = { version = "0.30", features = ["extension-module"] }
