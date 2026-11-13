@@ -4,6 +4,14 @@ Hanconv converts between Chinese characters variants base on [OpenCC](https://gi
 and conversion rules. It provides efficient conversion between Simplified Chinese and Traditional Chinese both as a
 command-line tool and as a library for integration into other projects.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Command-Line Interface](#command-line-interface)
+  - [As a Library](#as-a-library)
+- [Conversions](#conversions)
+
 ## Installation
 
 ```shell

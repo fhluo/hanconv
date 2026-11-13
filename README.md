@@ -19,11 +19,20 @@ Convert between Chinese characters variants.
 
 </div>
 
-## Introduction
-
 Hanconv converts between Chinese characters variants base on [OpenCC](https://github.com/BYVoid/OpenCC)'s dictionaries
 and conversion rules. It provides efficient conversion between Simplified Chinese and Traditional Chinese both as a
 command-line tool and as a library for integration into other projects.
+
+## Table of Contents
+
+- [Installation](#installation)
+  - [Using Cargo](#using-cargo)
+  - [Using Go](#using-go)
+- [Usage](#usage)
+  - [Command-Line Interface](#command-line-interface)
+  - [Rust](#rust)
+  - [Go](#go)
+- [Conversions](#conversions)
 
 ## Installation
 
