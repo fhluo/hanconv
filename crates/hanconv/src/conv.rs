@@ -2,7 +2,7 @@ use crate::trie::Trie;
 use crate::Dictionary::*;
 use std::sync::LazyLock;
 
-pub enum Converters {
+pub enum Conversion {
     /// Simplified Chinese to Traditional Chinese
     ///
     /// 简体中文 → 繁体中文
@@ -82,27 +82,27 @@ static T2JP_VARIANTS_DICT: LazyLock<Trie<&'static str>> = LazyLock::new(|| trie!
 static JP2T_DICT: LazyLock<Trie<&'static str>> =
     LazyLock::new(|| trie![JPShinjitaiPhrases, JPShinjitaiCharacters, JPVariantsRev]);
 
-impl Converters {
-    pub fn new_converter(&self) -> Converter {
+impl Conversion {
+    pub fn converter(&self) -> Converter {
         Converter::new(self.dictionaries())
     }
 
     pub fn dictionaries(&self) -> Vec<&'static Trie<&'static str>> {
         match self {
-            Converters::S2T => vec![&*S2T_DICT],
-            Converters::S2TW => vec![&*S2T_DICT, &*T2TW_VARIANTS_DICT],
-            Converters::S2TWP => vec![&*S2T_DICT, &*T2TW_PHRASES_DICT, &*T2TW_VARIANTS_DICT],
-            Converters::T2S => vec![&*T2S_DICT],
-            Converters::T2TW => vec![&*T2TW_VARIANTS_DICT],
-            Converters::TW2S => vec![&*TW2T_VARIANTS_DICT, &*T2S_DICT],
-            Converters::TW2SP => vec![&*TW2T_PHRASES_VARIANTS_DICT, &*T2S_DICT],
-            Converters::TW2T => vec![&*TW2T_VARIANTS_DICT],
-            Converters::S2HK => vec![&*S2T_DICT, &*T2HK_VARIANTS_DICT],
-            Converters::HK2S => vec![&*HK2T_VARIANTS_DICT, &*T2S_DICT],
-            Converters::HK2T => vec![&*HK2T_VARIANTS_DICT],
-            Converters::T2HK => vec![&*T2HK_VARIANTS_DICT],
-            Converters::T2JP => vec![&*T2JP_VARIANTS_DICT],
-            Converters::JP2T => vec![&*JP2T_DICT],
+            Conversion::S2T => vec![&*S2T_DICT],
+            Conversion::S2TW => vec![&*S2T_DICT, &*T2TW_VARIANTS_DICT],
+            Conversion::S2TWP => vec![&*S2T_DICT, &*T2TW_PHRASES_DICT, &*T2TW_VARIANTS_DICT],
+            Conversion::T2S => vec![&*T2S_DICT],
+            Conversion::T2TW => vec![&*T2TW_VARIANTS_DICT],
+            Conversion::TW2S => vec![&*TW2T_VARIANTS_DICT, &*T2S_DICT],
+            Conversion::TW2SP => vec![&*TW2T_PHRASES_VARIANTS_DICT, &*T2S_DICT],
+            Conversion::TW2T => vec![&*TW2T_VARIANTS_DICT],
+            Conversion::S2HK => vec![&*S2T_DICT, &*T2HK_VARIANTS_DICT],
+            Conversion::HK2S => vec![&*HK2T_VARIANTS_DICT, &*T2S_DICT],
+            Conversion::HK2T => vec![&*HK2T_VARIANTS_DICT],
+            Conversion::T2HK => vec![&*T2HK_VARIANTS_DICT],
+            Conversion::T2JP => vec![&*T2JP_VARIANTS_DICT],
+            Conversion::JP2T => vec![&*JP2T_DICT],
         }
     }
 }
@@ -133,7 +133,7 @@ impl Converter {
 ///
 /// 简体中文 → 繁体中文
 pub fn s2t(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::S2T.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::S2T.converter());
     CONVERTER.convert(s)
 }
 
@@ -141,7 +141,7 @@ pub fn s2t(s: impl AsRef<str>) -> String {
 ///
 /// 繁体中文 → 简体中文
 pub fn t2s(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::T2S.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::T2S.converter());
     CONVERTER.convert(s)
 }
 
@@ -149,7 +149,7 @@ pub fn t2s(s: impl AsRef<str>) -> String {
 ///
 /// 简体中文 → 繁体中文（台湾）
 pub fn s2tw(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::S2TW.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::S2TW.converter());
     CONVERTER.convert(s)
 }
 
@@ -157,7 +157,7 @@ pub fn s2tw(s: impl AsRef<str>) -> String {
 ///
 /// 繁体中文（台湾）→ 简体中文
 pub fn tw2s(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::TW2S.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::TW2S.converter());
     CONVERTER.convert(s)
 }
 
@@ -165,7 +165,7 @@ pub fn tw2s(s: impl AsRef<str>) -> String {
 ///
 /// 简体中文 → 繁体中文（台湾），转换为台湾常用词
 pub fn s2twp(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::S2TWP.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::S2TWP.converter());
     CONVERTER.convert(s)
 }
 
@@ -173,7 +173,7 @@ pub fn s2twp(s: impl AsRef<str>) -> String {
 ///
 /// 繁体中文（台湾）→ 简体中文，转换为中国大陆常用词
 pub fn tw2sp(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::TW2SP.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::TW2SP.converter());
     CONVERTER.convert(s)
 }
 
@@ -181,7 +181,7 @@ pub fn tw2sp(s: impl AsRef<str>) -> String {
 ///
 /// 繁体中文 → 繁体中文（台湾）
 pub fn t2tw(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::T2TW.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::T2TW.converter());
     CONVERTER.convert(s)
 }
 
@@ -189,7 +189,7 @@ pub fn t2tw(s: impl AsRef<str>) -> String {
 ///
 /// 繁体中文（台湾）→ 繁体中文
 pub fn tw2t(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::TW2T.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::TW2T.converter());
     CONVERTER.convert(s)
 }
 
@@ -197,7 +197,7 @@ pub fn tw2t(s: impl AsRef<str>) -> String {
 ///
 /// 简体中文 → 繁体中文（香港）
 pub fn s2hk(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::S2HK.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::S2HK.converter());
     CONVERTER.convert(s)
 }
 
@@ -205,7 +205,7 @@ pub fn s2hk(s: impl AsRef<str>) -> String {
 ///
 /// 繁体中文（香港）→ 简体中文
 pub fn hk2s(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::HK2S.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::HK2S.converter());
     CONVERTER.convert(s)
 }
 
@@ -213,7 +213,7 @@ pub fn hk2s(s: impl AsRef<str>) -> String {
 ///
 /// 繁体中文 → 繁体中文（香港）
 pub fn t2hk(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::T2HK.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::T2HK.converter());
     CONVERTER.convert(s)
 }
 
@@ -221,7 +221,7 @@ pub fn t2hk(s: impl AsRef<str>) -> String {
 ///
 /// 繁体中文（香港）→ 繁体中文
 pub fn hk2t(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::HK2T.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::HK2T.converter());
     CONVERTER.convert(s)
 }
 
@@ -229,7 +229,7 @@ pub fn hk2t(s: impl AsRef<str>) -> String {
 ///
 /// 繁体字 → 日文新字体
 pub fn t2jp(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::T2JP.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::T2JP.converter());
     CONVERTER.convert(s)
 }
 
@@ -237,6 +237,6 @@ pub fn t2jp(s: impl AsRef<str>) -> String {
 ///
 /// 日文新字体 → 繁体字
 pub fn jp2t(s: impl AsRef<str>) -> String {
-    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Converters::JP2T.new_converter());
+    static CONVERTER: LazyLock<Converter> = LazyLock::new(|| Conversion::JP2T.converter());
     CONVERTER.convert(s)
 }

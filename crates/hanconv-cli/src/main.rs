@@ -1,6 +1,6 @@
 use clap::{Args, Parser, Subcommand};
 use encoding_rs::{Encoding, UTF_8};
-use hanconv::{Converter, Converters::*};
+use hanconv::{Converter, Conversion::*};
 use rayon::prelude::*;
 use std::borrow::Cow;
 use std::error::Error;
@@ -85,20 +85,20 @@ enum Commands {
 impl Commands {
     fn run(self) -> Result<(), Box<dyn Error>> {
         match self {
-            Commands::S2T(conversion) => conversion.run(S2T.new_converter()),
-            Commands::T2S(conversion) => conversion.run(T2S.new_converter()),
-            Commands::S2TW(conversion) => conversion.run(S2TW.new_converter()),
-            Commands::TW2S(conversion) => conversion.run(TW2S.new_converter()),
-            Commands::S2TWP(conversion) => conversion.run(S2TWP.new_converter()),
-            Commands::TW2SP(conversion) => conversion.run(TW2SP.new_converter()),
-            Commands::T2TW(conversion) => conversion.run(T2TW.new_converter()),
-            Commands::TW2T(conversion) => conversion.run(TW2T.new_converter()),
-            Commands::S2HK(conversion) => conversion.run(S2HK.new_converter()),
-            Commands::HK2S(conversion) => conversion.run(HK2S.new_converter()),
-            Commands::T2HK(conversion) => conversion.run(T2HK.new_converter()),
-            Commands::HK2T(conversion) => conversion.run(HK2T.new_converter()),
-            Commands::T2JP(conversion) => conversion.run(T2JP.new_converter()),
-            Commands::JP2T(conversion) => conversion.run(JP2T.new_converter()),
+            Commands::S2T(conversion) => conversion.run(S2T.converter()),
+            Commands::T2S(conversion) => conversion.run(T2S.converter()),
+            Commands::S2TW(conversion) => conversion.run(S2TW.converter()),
+            Commands::TW2S(conversion) => conversion.run(TW2S.converter()),
+            Commands::S2TWP(conversion) => conversion.run(S2TWP.converter()),
+            Commands::TW2SP(conversion) => conversion.run(TW2SP.converter()),
+            Commands::T2TW(conversion) => conversion.run(T2TW.converter()),
+            Commands::TW2T(conversion) => conversion.run(TW2T.converter()),
+            Commands::S2HK(conversion) => conversion.run(S2HK.converter()),
+            Commands::HK2S(conversion) => conversion.run(HK2S.converter()),
+            Commands::T2HK(conversion) => conversion.run(T2HK.converter()),
+            Commands::HK2T(conversion) => conversion.run(HK2T.converter()),
+            Commands::T2JP(conversion) => conversion.run(T2JP.converter()),
+            Commands::JP2T(conversion) => conversion.run(JP2T.converter()),
         }
     }
 }
@@ -146,7 +146,7 @@ struct Conversion {
 
 impl Conversion {
     fn handle_texts(self) -> Result<(), Box<dyn Error>> {
-        let converter = self.converter.unwrap_or_else(|| T2S.new_converter());
+        let converter = self.converter.unwrap_or_else(|| T2S.converter());
 
         let Some(ref texts) = self.texts else {
             return Ok(());
