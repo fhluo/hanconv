@@ -5,7 +5,7 @@
 Convert between Chinese characters variants.
 <br><br>
 <a href="https://crates.io/crates/hanconv">
-<img src="https://shieldcn.dev/group/crates/hanconv+crates/d/hanconv.svg?variant=branded&size=xs&mode=light" alt="Hanconv crate version and downloads on crates.io"></a>
+<img src="https://shieldcn.dev/group/crates/hanconv+crates/d/hanconv+github/license/fhluo/hanconv.svg?variant=branded&size=xs&mode=light" alt="Hanconv crate version and downloads on crates.io"></a>
 
 <samp>
 

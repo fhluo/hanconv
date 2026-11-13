@@ -5,7 +5,7 @@
 汉字转换
 <br><br>
 <a href="https://crates.io/crates/hanconv">
-<img src="https://shieldcn.dev/group/crates/hanconv+crates/d/hanconv.svg?variant=branded&size=xs&mode=light" alt="Hanconv 在 crates.io 上的版本与下载量"></a>
+<img src="https://shieldcn.dev/group/crates/hanconv+crates/d/hanconv+github/license/fhluo/hanconv.svg?variant=branded&size=xs&mode=light" alt="Hanconv 在 crates.io 上的版本与下载量"></a>
 
 <samp>
 
