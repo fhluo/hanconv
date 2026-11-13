@@ -89,6 +89,11 @@ static JP2T_DICT: LazyLock<Trie<&'static str>> =
     LazyLock::new(|| trie![JPShinjitaiPhrases, JPShinjitaiCharacters, JPVariantsRev]);
 
 impl Conversion {
+    /// All supported conversions.
+    pub const ALL: &'static [Self] = &[
+        S2T, T2S, S2TW, TW2S, S2TWP, TW2SP, T2TW, TW2T, S2HK, HK2S, T2HK, HK2T, T2JP, JP2T,
+    ];
+
     /// Returns the conversion name.
     pub const fn name(self) -> &'static str {
         match self {
