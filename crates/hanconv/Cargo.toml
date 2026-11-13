@@ -13,6 +13,8 @@ exclude = ["justfile"]
 [features]
 default = ["ahash"]
 ahash = ["dep:ahash"]
+serde = ["dep:serde"]
 
 [dependencies]
 ahash = { version = "0.8", optional = true }
+serde = { version = "1.0", features = ["derive"], optional = true }

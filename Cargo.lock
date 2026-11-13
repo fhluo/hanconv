@@ -2778,6 +2778,7 @@ name = "hanconv"
 version = "0.5.1"
 dependencies = [
  "ahash",
+ "serde",
 ]
 
 [[package]]
