@@ -2,7 +2,7 @@
 name = "hanconv-app"
 version = "0.5.0"
 edition = "2024"
-rust-version = "1.99"
+rust-version = "1.100"
 description = "Convert between Chinese characters variants."
 categories = ["text-processing", "gui"]
 keywords = ["chinese", "simplified-chinese", "traditional-chinese"]
