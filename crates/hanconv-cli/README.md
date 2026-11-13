@@ -6,21 +6,17 @@ command-line tool and as a library for integration into other projects.
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Command-Line Interface](#command-line-interface)
-  - [As a Library](#as-a-library)
+- [Command-Line Tool](#command-line-tool)
+- [Rust Library](#rust-library)
 - [Conversions](#conversions)
 
-## Installation
+## Command-Line Tool
 
 ```shell
 cargo install hanconv-cli
 ```
 
-## Usage
-
-### Command-Line Interface
+Basic usage:
 
 - **Display the help message:**
 
@@ -62,7 +58,7 @@ cargo install hanconv-cli
     hanconv t2s -i input.txt -o output.txt --input-encoding GBK --output-encoding UTF-8
     ```
 
-### As a Library
+## Rust Library
 
 1. Add `hanconv` as a dependency in your `Cargo.toml`.
 
