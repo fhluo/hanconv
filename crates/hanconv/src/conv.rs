@@ -114,6 +114,26 @@ impl Conversion {
         }
     }
 
+    /// Converts the input using this conversion.
+    pub fn convert(self, s: impl AsRef<str>) -> String {
+        match self {
+            S2T => s2t(s),
+            T2S => t2s(s),
+            S2TW => s2tw(s),
+            TW2S => tw2s(s),
+            S2TWP => s2twp(s),
+            TW2SP => tw2sp(s),
+            T2TW => t2tw(s),
+            TW2T => tw2t(s),
+            S2HK => s2hk(s),
+            HK2S => hk2s(s),
+            T2HK => t2hk(s),
+            HK2T => hk2t(s),
+            T2JP => t2jp(s),
+            JP2T => jp2t(s),
+        }
+    }
+
     pub fn converter(&self) -> Converter {
         Converter::new(self.dictionaries())
     }
