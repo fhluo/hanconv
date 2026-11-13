@@ -1,6 +1,7 @@
 use crate::Dictionary::*;
 use crate::trie::Trie;
 use Conversion::*;
+use std::fmt::{Display, Formatter};
 use std::sync::LazyLock;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -85,6 +86,26 @@ static JP2T_DICT: LazyLock<Trie<&'static str>> =
     LazyLock::new(|| trie![JPShinjitaiPhrases, JPShinjitaiCharacters, JPVariantsRev]);
 
 impl Conversion {
+    /// Returns the conversion name.
+    pub const fn name(self) -> &'static str {
+        match self {
+            S2T => "s2t",
+            T2S => "t2s",
+            S2TW => "s2tw",
+            TW2S => "tw2s",
+            S2TWP => "s2twp",
+            TW2SP => "tw2sp",
+            T2TW => "t2tw",
+            TW2T => "tw2t",
+            S2HK => "s2hk",
+            HK2S => "hk2s",
+            T2HK => "t2hk",
+            HK2T => "hk2t",
+            T2JP => "t2jp",
+            JP2T => "jp2t",
+        }
+    }
+
     pub fn converter(&self) -> Converter {
         Converter::new(self.dictionaries())
     }
@@ -106,6 +127,12 @@ impl Conversion {
             T2JP => vec![&*T2JP_VARIANTS_DICT],
             JP2T => vec![&*JP2T_DICT],
         }
+    }
+}
+
+impl Display for Conversion {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.name())
     }
 }
 
