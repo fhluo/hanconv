@@ -19,32 +19,26 @@ Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转�
 
 ## 目录
 
-- [安装](#安装)
-  - [使用 Cargo](#使用-cargo)
-  - [使用 Go](#使用-go)
-- [用法](#用法)
-  - [命令行界面](#命令行界面)
-  - [Rust](#rust)
-  - [Go](#go)
+- [命令行工具](#命令行工具)
+- [Rust 库](#rust-库)
+- [Go 包](#go-包)
 - [转换类型](#转换类型)
 
-## 安装
+## 命令行工具
 
-### 使用 Cargo
+使用 Cargo 安装命令行工具：
 
 ```shell
 cargo install hanconv-cli
 ```
 
-### 使用 Go
+或者使用 Go 安装：
 
 ```shell
 go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 ```
 
-## 用法
-
-### 命令行界面
+常用示例：
 
 - **查看帮助信息：**
 
@@ -86,7 +80,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     hanconv t2s -i input.txt -o output.txt --input-encoding GBK --output-encoding UTF-8
     ```
 
-### Rust
+## Rust 库
 
 1. **添加依赖**：
 
@@ -122,7 +116,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     - `t2jp`: 繁体字 → 日文新字体
     - `jp2t`: 日文新字体 → 繁体字
 
-### Go
+## Go 包
 
 1. **获取模块**：
 

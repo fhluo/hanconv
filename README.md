@@ -21,32 +21,26 @@ command-line tool and as a library for integration into other projects.
 
 ## Table of Contents
 
-- [Installation](#installation)
-  - [Using Cargo](#using-cargo)
-  - [Using Go](#using-go)
-- [Usage](#usage)
-  - [Command-Line Interface](#command-line-interface)
-  - [Rust](#rust)
-  - [Go](#go)
+- [Command-Line Tool](#command-line-tool)
+- [Rust Library](#rust-library)
+- [Go Package](#go-package)
 - [Conversions](#conversions)
 
-## Installation
+## Command-Line Tool
 
-### Using Cargo
+Install the command-line tool with Cargo:
 
 ```shell
 cargo install hanconv-cli
 ```
 
-### Using Go
+Or install it with Go:
 
 ```shell
 go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 ```
 
-## Usage
-
-### Command-Line Interface
+Basic usage:
 
 - **Display the help message:**
 
@@ -88,7 +82,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     hanconv t2s -i input.txt -o output.txt --input-encoding GBK --output-encoding UTF-8
     ```
 
-### Rust
+## Rust Library
 
 1. Add `hanconv` as a dependency in your `Cargo.toml`.
 
@@ -122,7 +116,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     - `t2jp`: Traditional Chinese characters (Kyūjitai) → New Japanese Kanji (Shinjitai)
     - `jp2t`: New Japanese Kanji (Shinjitai) → Traditional Chinese characters (Kyūjitai)
 
-### Go
+## Go Package
 
 1. Add hanconv to your Go project:
 
