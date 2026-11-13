@@ -5,11 +5,11 @@
 Convert between Chinese characters variants.
 <br><br>
 <a href="https://github.com/fhluo/hanconv/actions/workflows/build.yaml">
-<img src="https://github.com/fhluo/hanconv/actions/workflows/build.yaml/badge.svg" alt="build workflow"></a>
+<img src="https://shieldcn.dev/github/ci/fhluo/hanconv.svg?workflow=build.yaml&label=build&variant=secondary&size=xs&mode=light" alt="Build Workflow"></a>
 <a href="https://crates.io/crates/hanconv">
-<img src="https://img.shields.io/crates/v/hanconv" alt="version"></a>
-<a href="https://pkg.go.dev/github.com/fhluo/hanconv/go">
-<img src="https://img.shields.io/github/v/tag/fhluo/hanconv?filter=go%2F*&label=pkg"></a>
+<img src="https://shieldcn.dev/crates/hanconv.svg?variant=branded&size=xs&mode=light" alt="Crate Version"></a>
+<a href="https://crates.io/crates/hanconv">
+<img src="https://shieldcn.dev/crates/d/hanconv.svg?variant=secondary&size=xs&mode=light" alt="Crate Downloads"></a>
 
 <samp>
 
