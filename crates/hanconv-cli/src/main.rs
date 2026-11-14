@@ -1,6 +1,6 @@
 use clap::{Args, Parser, Subcommand};
 use encoding_rs::{Encoding, UTF_8};
-use hanconv::{Converter, Conversion::*};
+use hanconv::{Conversion::*, Converter};
 use rayon::prelude::*;
 use std::borrow::Cow;
 use std::error::Error;

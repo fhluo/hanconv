@@ -1,7 +1,7 @@
 use gpui_kit::component::description_list::DescriptionList;
 use gpui_kit::component::label::Label;
 use gpui_kit::component::{ActiveTheme, Sizable, StyledExt, WindowExt, gray_900};
-use gpui_kit::{div, prelude::*, App, IntoElement, ParentElement, RenderOnce, Window};
+use gpui_kit::{App, IntoElement, ParentElement, RenderOnce, Window, div, prelude::*};
 
 #[derive(IntoElement)]
 pub struct About;

@@ -5,7 +5,7 @@ use dirs::{config_local_dir, document_dir};
 use gpui_kit::component::{Theme, ThemeRegistry};
 use gpui_kit::{Context, EventEmitter, SharedString};
 use icu_locale::fallback::{LocaleFallbackConfig, LocaleFallbackPriority};
-use icu_locale::{locale, DataLocale, Locale, LocaleFallbacker};
+use icu_locale::{DataLocale, Locale, LocaleFallbacker, locale};
 use rust_i18n::set_locale;
 use serde::{Deserialize, Serialize};
 use std::env::home_dir;

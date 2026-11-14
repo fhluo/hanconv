@@ -3,7 +3,7 @@ use crate::conversion::Conversion;
 use gpui_kit::component::button::{Button, ButtonVariants};
 use gpui_kit::component::{ActiveTheme, Sizable, gray_600};
 use gpui_kit::prelude::*;
-use gpui_kit::{div, App, FocusHandle, IntoElement, RenderOnce, Window};
+use gpui_kit::{App, FocusHandle, IntoElement, RenderOnce, Window, div};
 
 #[derive(IntoElement)]
 pub struct StatusBar {
@@ -22,10 +22,10 @@ impl StatusBar {
             action_context: None,
         }
     }
-    
+
     pub fn action_context(mut self, handle: FocusHandle) -> Self {
         self.action_context = Some(handle);
-        
+
         self
     }
 }
@@ -41,7 +41,7 @@ impl RenderOnce for StatusBar {
                 .text_color(gray_600()),
             self.conversion,
         );
-        
+
         if let Some(action_context) = self.action_context {
             conversion_selector = conversion_selector.action_context(action_context);
         }

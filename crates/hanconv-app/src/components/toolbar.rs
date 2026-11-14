@@ -6,7 +6,7 @@ use gpui_kit::component::{
 };
 use gpui_kit::prelude::*;
 use gpui_kit::{
-    actions, div, Action, App, ElementId, IntoElement, RenderOnce, StyleRefinement, Window,
+    Action, App, ElementId, IntoElement, RenderOnce, StyleRefinement, Window, actions, div,
 };
 
 actions!([Open, Save, Clear, Copy, Paste]);

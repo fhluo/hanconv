@@ -2,7 +2,7 @@ use gpui_kit::component::description_list::DescriptionList;
 use gpui_kit::component::label::Label;
 use gpui_kit::component::link::Link;
 use gpui_kit::component::{ActiveTheme, Icon, IconName, StyledExt, WindowExt};
-use gpui_kit::{div, prelude::*, App, IntoElement, RenderOnce, SharedString, Window};
+use gpui_kit::{App, IntoElement, RenderOnce, SharedString, Window, div, prelude::*};
 use std::path::PathBuf;
 
 #[derive(IntoElement)]

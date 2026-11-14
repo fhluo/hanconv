@@ -24,9 +24,8 @@ mod map;
 mod trie;
 
 pub use conv::{
-    Converter,
     Conversion::{self, *},
-    hk2s, hk2t, jp2t, s2hk, s2t, s2tw, s2twp, t2hk, t2jp, t2s, t2tw, tw2s, tw2sp, tw2t,
+    Converter, hk2s, hk2t, jp2t, s2hk, s2t, s2tw, s2twp, t2hk, t2jp, t2s, t2tw, tw2s, tw2sp, tw2t,
 };
 pub use dict::{
     Dictionary::{self, *},
