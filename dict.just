@@ -4,15 +4,17 @@ set indentation := "  "
 set default-list := true
 
 [script]
-update:
+[arg("ref", long, help="Git reference")]
+update ref="":
   let dirs = [ crates/hanconv/data go/dict/data ]
   mkdir ...$dirs
 
-  let files = (
-    http get https://api.github.com/repos/byvoid/opencc/contents/data/dictionary
-    | where name ends-with .txt
-    | select name download_url
-  )
+  mut url = 'https://api.github.com/repos/byvoid/opencc/contents/data/dictionary'
+  if ('{{ref}}' | is-not-empty) {
+    $url = $url | url parse | update params { ref: '{{ref}}' } | url join
+  }
+
+  let files = http get $url | where name ends-with .txt | select name download_url
   let total = $files | length
 
   for item in ($files | enumerate) {
