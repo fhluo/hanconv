@@ -1,3 +1,23 @@
+//! # Hanconv
+//!
+//! Convert between Chinese characters variants.
+//!
+//! ## Getting Started
+//!
+//! Add `hanconv` as a dependency in your `Cargo.toml`:
+//!
+//! ```toml
+//! [dependencies]
+//! hanconv = "0.5"
+//! ```
+//!
+//! ## Example
+//!
+//! ```rust
+//! let result = hanconv::s2t("简繁转换");
+//! assert_eq!(result, "簡繁轉換");
+//! ```
+
 mod conv;
 mod dict;
 mod map;
