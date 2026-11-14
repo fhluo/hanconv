@@ -96,7 +96,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     ```rust
     fn main() {
         let result = hanconv::s2t("简繁转换");
-        println!("{}", result);
+        assert_eq!(result, "簡繁轉換");
     }
     ```
 

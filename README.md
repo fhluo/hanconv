@@ -96,7 +96,7 @@ Basic usage:
     ```rust
     fn main() {
         let result = hanconv::s2t("简繁转换");
-        println!("{}", result);
+        assert_eq!(result, "簡繁轉換");
     }
     ```
 
