@@ -9,4 +9,4 @@ members = [
 ]
 
 [workspace.dependencies]
-hanconv = { version = "0.5", path = "crates/hanconv" }
+hanconv = { version = "0.6", path = "crates/hanconv" }

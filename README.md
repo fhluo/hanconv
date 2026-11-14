@@ -88,7 +88,7 @@ Basic usage:
 
     ```toml
     [dependencies]
-    hanconv = "0.5"
+    hanconv = "0.6"
     ```
 
 2. Use the provided conversion functions in your project.

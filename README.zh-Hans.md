@@ -88,7 +88,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
     ```toml
     [dependencies]
-    hanconv = "0.5"
+    hanconv = "0.6"
     ```
 
 2. **调用转换函数**：
