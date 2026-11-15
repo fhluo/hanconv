@@ -24,6 +24,7 @@ command-line tool and as a library for integration into other projects.
 - [Command-Line Tool](#command-line-tool)
 - [Rust Library](#rust-library)
 - [Go Package](#go-package)
+- [Python Package](#python-package)
 - [Conversions](#conversions)
 
 ## Command-Line Tool
@@ -133,6 +134,29 @@ Basic usage:
         result := hanconv.S2T("简繁转换")
         fmt.Println(result)
     }
+    ```
+
+## Python Package
+
+1. Install the Python bindings from PyPI:
+
+    ```shell
+    pip install hanconv
+    ```
+
+    Or with uv:
+
+    ```shell
+    uv add hanconv
+    ```
+
+2. Import and use the conversion functions in your project:
+
+    ```python
+    import hanconv
+
+    result = hanconv.s2t("简繁转换")
+    assert result == "簡繁轉換"
     ```
 
 ## Conversions

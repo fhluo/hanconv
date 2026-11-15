@@ -22,6 +22,7 @@ Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转�
 - [命令行工具](#命令行工具)
 - [Rust 库](#rust-库)
 - [Go 包](#go-包)
+- [Python 包](#python-包)
 - [转换类型](#转换类型)
 
 ## 命令行工具
@@ -133,6 +134,29 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
         result := hanconv.S2T("简繁转换")
         fmt.Println(result)
     }
+    ```
+
+## Python 包
+
+1. **安装 Python 绑定**：
+
+    ```shell
+    pip install hanconv
+    ```
+
+    或者使用 uv：
+
+    ```shell
+    uv add hanconv
+    ```
+
+2. **导入并使用转换函数**：
+
+    ```python
+    import hanconv
+
+    result = hanconv.s2t("简繁转换")
+    assert result == "簡繁轉換"
     ```
 
 ## 转换类型
