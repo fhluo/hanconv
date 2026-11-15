@@ -6,6 +6,7 @@ mod app 'crates/hanconv-app/justfile'
 mod cli 'crates/hanconv-cli/justfile'
 mod lib 'crates/hanconv/justfile'
 
+mod py 'bindings/py/justfile'
 mod wasm 'bindings/wasm/justfile'
 
 set shell := ["nu", "-c"]

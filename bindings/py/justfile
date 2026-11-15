@@ -1,0 +1,13 @@
+set shell := ["nu", "-c"]
+set script-interpreter := ["nu"]
+set indentation := "  "
+set default-list := true
+set fallback
+
+test:
+  uv run pytest
+
+build *args:
+  maturin build --sdist {{args}}
+
+release: (build "--release")
