@@ -31,4 +31,4 @@ winresource = "0.1"
 [package.metadata.winresource]
 FileDescription = "Hanconv"
 ProductName = "Hanconv"
-LegalCopyright = "Copyright © 2022 fhluo"
+LegalCopyright = "Copyright © 2022-2026 fhluo"
