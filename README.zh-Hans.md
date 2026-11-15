@@ -15,7 +15,7 @@
 
 </div>
 
-Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转换规则的汉字简繁转换工具。它提供了命令行工具，并支持作为库集成到 Rust 和 Go 项目中，用于在不同汉字变体之间进行转换。
+Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转换规则的汉字简繁转换工具。它提供了命令行工具，并支持作为库集成到 Rust、Go 和 Python 项目中，用于在不同汉字变体之间进行转换。
 
 ## 目录
 

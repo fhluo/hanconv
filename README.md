@@ -17,7 +17,7 @@ Convert between Chinese character variants.
 
 Hanconv converts between Chinese character variants based on [OpenCC](https://github.com/BYVoid/OpenCC)'s dictionaries
 and conversion rules. It provides efficient conversion between Simplified Chinese and Traditional Chinese both as a
-command-line tool and as a library for integration into other projects.
+command-line tool and as a library for integration into Rust, Go, and Python projects.
 
 ## Table of Contents
 
