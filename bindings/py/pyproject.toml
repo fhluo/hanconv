@@ -2,6 +2,8 @@
 name = "hanconv"
 description = "Convert between Chinese characters variants."
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
     { name = "fhluo", email = "20843637+fhluo@users.noreply.github.com" }
 ]
