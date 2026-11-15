@@ -1,6 +1,6 @@
 [project]
 name = "hanconv"
-description = "Convert between Chinese characters variants."
+description = "Convert between Chinese character variants."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]

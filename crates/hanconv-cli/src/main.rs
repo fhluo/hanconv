@@ -139,7 +139,7 @@ struct Conversion {
     /// [default: UTF-8]
     #[arg(long, value_name = "ENCODING")]
     output_encoding: Option<String>,
-    /// Text to convert directly from command line
+    /// Text to convert directly from the command line
     #[arg(value_name = "TEXT", exclusive = true)]
     texts: Option<Vec<String>>,
 }

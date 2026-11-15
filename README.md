@@ -2,7 +2,7 @@
 
 # Hanconv
 
-Convert between Chinese characters variants.
+Convert between Chinese character variants.
 <br><br>
 <a href="https://crates.io/crates/hanconv">
 <img src="https://shieldcn.dev/group/crates/hanconv+crates/d/hanconv+github/license/fhluo/hanconv.svg?variant=branded&size=xs&mode=light" alt="Hanconv crate version and downloads on crates.io"></a>
@@ -15,7 +15,7 @@ Convert between Chinese characters variants.
 
 </div>
 
-Hanconv converts between Chinese characters variants base on [OpenCC](https://github.com/BYVoid/OpenCC)'s dictionaries
+Hanconv converts between Chinese character variants based on [OpenCC](https://github.com/BYVoid/OpenCC)'s dictionaries
 and conversion rules. It provides efficient conversion between Simplified Chinese and Traditional Chinese both as a
 command-line tool and as a library for integration into other projects.
 
@@ -61,7 +61,7 @@ Basic usage:
     hanconv t2s -i input.txt -o output.txt
     ```
 
-- **Convert text directly from command line:**
+- **Convert text directly from the command line:**
 
     ```shell
     hanconv s2t "简繁转换"

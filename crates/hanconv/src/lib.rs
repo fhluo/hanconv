@@ -1,6 +1,6 @@
 //! # Hanconv
 //!
-//! Convert between Chinese characters variants.
+//! Convert between Chinese character variants.
 //!
 //! ## Getting Started
 //!

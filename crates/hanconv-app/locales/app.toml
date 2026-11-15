@@ -108,7 +108,7 @@ en = "Version"
 [about.Description]
 zh = "汉字转换"
 zh-Hant = "漢字轉換"
-en = "Convert between Chinese characters variants."
+en = "Convert between Chinese character variants."
 
 [help.Repository]
 zh = "仓库"
