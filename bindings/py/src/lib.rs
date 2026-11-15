@@ -1,73 +1,73 @@
 use pyo3::prelude::*;
 
 #[pyfunction]
-fn s2t(s: &str) -> PyResult<String> {
-    Ok(::hanconv::s2t(s))
+fn s2t(s: &str) -> String {
+    ::hanconv::s2t(s)
 }
 
 #[pyfunction]
-fn t2s(s: &str) -> PyResult<String> {
-    Ok(::hanconv::t2s(s))
+fn t2s(s: &str) -> String {
+    ::hanconv::t2s(s)
 }
 
 #[pyfunction]
-fn s2tw(s: &str) -> PyResult<String> {
-    Ok(::hanconv::s2tw(s))
+fn s2tw(s: &str) -> String {
+    ::hanconv::s2tw(s)
 }
 
 #[pyfunction]
-fn tw2s(s: &str) -> PyResult<String> {
-    Ok(::hanconv::tw2s(s))
+fn tw2s(s: &str) -> String {
+    ::hanconv::tw2s(s)
 }
 
 #[pyfunction]
-fn s2twp(s: &str) -> PyResult<String> {
-    Ok(::hanconv::s2twp(s))
+fn s2twp(s: &str) -> String {
+    ::hanconv::s2twp(s)
 }
 
 #[pyfunction]
-fn tw2sp(s: &str) -> PyResult<String> {
-    Ok(::hanconv::tw2sp(s))
+fn tw2sp(s: &str) -> String {
+    ::hanconv::tw2sp(s)
 }
 
 #[pyfunction]
-fn t2tw(s: &str) -> PyResult<String> {
-    Ok(::hanconv::t2tw(s))
+fn t2tw(s: &str) -> String {
+    ::hanconv::t2tw(s)
 }
 
 #[pyfunction]
-fn tw2t(s: &str) -> PyResult<String> {
-    Ok(::hanconv::tw2t(s))
+fn tw2t(s: &str) -> String {
+    ::hanconv::tw2t(s)
 }
 
 #[pyfunction]
-fn s2hk(s: &str) -> PyResult<String> {
-    Ok(::hanconv::s2hk(s))
+fn s2hk(s: &str) -> String {
+    ::hanconv::s2hk(s)
 }
 
 #[pyfunction]
-fn hk2s(s: &str) -> PyResult<String> {
-    Ok(::hanconv::hk2s(s))
+fn hk2s(s: &str) -> String {
+    ::hanconv::hk2s(s)
 }
 
 #[pyfunction]
-fn t2hk(s: &str) -> PyResult<String> {
-    Ok(::hanconv::t2hk(s))
+fn t2hk(s: &str) -> String {
+    ::hanconv::t2hk(s)
 }
 
 #[pyfunction]
-fn hk2t(s: &str) -> PyResult<String> {
-    Ok(::hanconv::hk2t(s))
+fn hk2t(s: &str) -> String {
+    ::hanconv::hk2t(s)
 }
 
 #[pyfunction]
-fn t2jp(s: &str) -> PyResult<String> {
-    Ok(::hanconv::t2jp(s))
+fn t2jp(s: &str) -> String {
+    ::hanconv::t2jp(s)
 }
 
 #[pyfunction]
-fn jp2t(s: &str) -> PyResult<String> {
-    Ok(::hanconv::jp2t(s))
+fn jp2t(s: &str) -> String {
+    ::hanconv::jp2t(s)
 }
 
 #[pymodule]
