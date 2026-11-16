@@ -67,6 +67,7 @@ jobs:
       - name: Set up Rust
         uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
+          build-warnings: ""
           rustflags: ""
 
       - name: Set up Python
