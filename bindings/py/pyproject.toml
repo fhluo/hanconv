@@ -8,13 +8,28 @@ authors = [
     { name = "fhluo", email = "20843637+fhluo@users.noreply.github.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+keywords = ["chinese", "simplified-chinese", "traditional-chinese"]
 classifiers = [
-    "Programming Language :: Rust",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Programming Language :: Python :: Implementation :: CPython",
-    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Rust",
+    "Typing :: Typed",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Text Processing :: Linguistic",
 ]
+dependencies = []
 dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/fhluo/hanconv"
+Repository = "https://github.com/fhluo/hanconv"
 
 [build-system]
 requires = ["maturin>=1.16,<2.0"]
