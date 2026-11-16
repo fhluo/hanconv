@@ -1,0 +1,151 @@
+name: Publish Python
+
+on:
+  push:
+    tags:
+      - "py/v*.*.*"
+  workflow_dispatch:
+
+concurrency:
+  group: pypi-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: nu {0}
+
+jobs:
+  build:
+    name: Build ${{ matrix.platform }} wheel
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macOS ARM64
+            runner: macos-latest
+            target: aarch64-apple-darwin
+          - platform: Windows x86_64
+            runner: windows-latest
+            target: x86_64-pc-windows-msvc
+          - platform: Windows ARM64
+            runner: windows-11-arm
+            target: aarch64-pc-windows-msvc
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v2
+        with:
+          rustflags: ""
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: 3.13
+
+      - name: Build ${{ matrix.platform }} wheel
+        uses: PyO3/maturin-action@v1
+        with:
+          args: --release --locked --compatibility pypi --out dist
+          target: ${{ matrix.target }}
+          working-directory: bindings/py
+
+      - name: Upload ${{ matrix.platform }} wheel
+        uses: actions/upload-artifact@v7
+        with:
+          path: bindings/py/dist/*.whl
+          if-no-files-found: error
+          archive: false
+
+  linux:
+    name: Build Linux wheels and sdist
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v2
+        with:
+          rustflags: ""
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Build Linux x86_64 wheel and sdist
+        uses: PyO3/maturin-action@v1
+        with:
+          args: --release --locked --compatibility pypi --out dist --interpreter python3.13 --sdist
+          manylinux: "2_28"
+          target: x86_64-unknown-linux-gnu
+          working-directory: bindings/py
+
+      - name: Upload sdist
+        uses: actions/upload-artifact@v7
+        with:
+          path: bindings/py/dist/*.tar.gz
+          if-no-files-found: error
+          archive: false
+
+      - name: Upload Linux x86_64 wheel
+        uses: actions/upload-artifact@v7
+        with:
+          path: bindings/py/dist/*.whl
+          if-no-files-found: error
+          archive: false
+
+      - name: Build Linux ARM64 wheel
+        uses: PyO3/maturin-action@v1
+        with:
+          args: --release --locked --compatibility pypi --out dist/aarch64 --interpreter python3.13
+          manylinux: "2_28"
+          target: aarch64-unknown-linux-gnu
+          working-directory: bindings/py
+
+      - name: Upload Linux ARM64 wheel
+        uses: actions/upload-artifact@v7
+        with:
+          path: bindings/py/dist/aarch64/*.whl
+          if-no-files-found: error
+          archive: false
+
+  publish:
+    name: Publish to PyPI
+    needs: [ build, linux ]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/py/v')
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/hanconv/
+    permissions:
+      actions: read
+      id-token: write
+    steps:
+      - name: Set up Nushell
+        uses: hustcer/setup-nu@v3
+
+      - name: Download wheels and sdist
+        uses: actions/download-artifact@v8
+        with:
+          pattern: hanconv-*
+          path: dist
+          merge-multiple: true
+
+      - name: Check tag matches package version
+        run: |
+          let version = ($env.GITHUB_REF_NAME | str replace --regex '^py/v' '')
+          let sdist = ('dist' | path join $"hanconv-($version).tar.gz")
+
+          if not ($sdist | path exists) {
+            error make { msg: $"tag ($env.GITHUB_REF_NAME) does not match artifact; missing ($sdist)" }
+          }
+
+          print $"OK: ($env.GITHUB_REF_NAME) -> version ($version)"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v10.3.3
+
+      - name: Publish to PyPI
+        run: uv publish --trusted-publishing always dist/*
