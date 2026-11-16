@@ -138,7 +138,7 @@ Basic usage:
 
 ## Python Package
 
-1. Install the Python bindings from PyPI:
+1. Install the package with pip:
 
     ```shell
     pip install hanconv

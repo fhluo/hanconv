@@ -1,19 +1,44 @@
+<div align="center">
+
 # Hanconv
+
+Convert between Chinese character variants.
+<br><br>
+<a href="https://crates.io/crates/hanconv">
+<img src="https://shieldcn.dev/group/crates/hanconv+crates/d/hanconv+github/license/fhluo/hanconv.svg?variant=branded&size=xs&mode=light" alt="Hanconv crate version and downloads on crates.io"></a>
+
+<samp>
+
+**[English](https://github.com/fhluo/hanconv/blob/main/README.md)** ┃ **[简体中文](https://github.com/fhluo/hanconv/blob/main/README.zh-Hans.md)**
+
+</samp>
+
+</div>
 
 Hanconv converts between Chinese character variants based on [OpenCC](https://github.com/BYVoid/OpenCC)'s dictionaries
 and conversion rules. It provides efficient conversion between Simplified Chinese and Traditional Chinese both as a
-command-line tool and as a library for integration into other projects.
+command-line tool and as a library for integration into Rust, Go, and Python projects.
 
 ## Table of Contents
 
 - [Command-Line Tool](#command-line-tool)
 - [Rust Library](#rust-library)
+- [Go Package](#go-package)
+- [Python Package](#python-package)
 - [Conversions](#conversions)
 
 ## Command-Line Tool
 
+Install the command-line tool with Cargo:
+
 ```shell
 cargo install hanconv-cli
+```
+
+Or install it with Go:
+
+```shell
+go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 ```
 
 Basic usage:
@@ -91,6 +116,48 @@ Basic usage:
     - `hk2t`: Traditional Chinese (Hong Kong) → Traditional Chinese
     - `t2jp`: Traditional Chinese characters (Kyūjitai) → New Japanese Kanji (Shinjitai)
     - `jp2t`: New Japanese Kanji (Shinjitai) → Traditional Chinese characters (Kyūjitai)
+
+## Go Package
+
+1. Add hanconv to your Go project:
+
+    ```shell
+    go get github.com/fhluo/hanconv/go
+    ```
+
+2. Import and use the conversion functions in your project:
+
+    ```go
+    import hanconv "github.com/fhluo/hanconv/go"
+
+    func main() {
+        result := hanconv.S2T("简繁转换")
+        fmt.Println(result)
+    }
+    ```
+
+## Python Package
+
+1. Install the package with pip:
+
+    ```shell
+    pip install hanconv
+    ```
+
+    Or with uv:
+
+    ```shell
+    uv add hanconv
+    ```
+
+2. Import and use the conversion functions in your project:
+
+    ```python
+    import hanconv
+
+    result = hanconv.s2t("简繁转换")
+    assert result == "簡繁轉換"
+    ```
 
 ## Conversions
 
