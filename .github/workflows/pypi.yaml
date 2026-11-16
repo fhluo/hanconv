@@ -74,12 +74,11 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Build Linux x86_64 wheel and sdist
+      - name: Build sdist
         uses: PyO3/maturin-action@v1
         with:
-          args: --release --locked --compatibility pypi --out dist --interpreter python3.13 --sdist
-          manylinux: "2_28"
-          target: x86_64-unknown-linux-gnu
+          command: sdist
+          args: --out dist
           working-directory: bindings/py
 
       - name: Upload sdist
@@ -88,6 +87,14 @@ jobs:
           path: bindings/py/dist/*.tar.gz
           if-no-files-found: error
           archive: false
+
+      - name: Build Linux x86_64 wheel
+        uses: PyO3/maturin-action@v1
+        with:
+          args: --release --locked --compatibility pypi --out dist --interpreter python3.13
+          manylinux: "2_28"
+          target: x86_64-unknown-linux-gnu
+          working-directory: bindings/py
 
       - name: Upload Linux x86_64 wheel
         uses: actions/upload-artifact@v7
