@@ -2,6 +2,13 @@
 name = "hanconv-py"
 version = "0.6.0"
 edition = "2024"
+rust-version = "1.88"
+description = "Convert between Chinese character variants."
+categories = ["text-processing", "command-line-utilities"]
+keywords = ["chinese", "simplified-chinese", "traditional-chinese"]
+repository = "https://github.com/fhluo/hanconv"
+license = "MIT"
+exclude = ["justfile"]
 
 [lib]
 name = "hanconv"
