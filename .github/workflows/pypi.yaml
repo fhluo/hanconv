@@ -49,12 +49,12 @@ jobs:
         with:
           args: --release --locked --compatibility pypi --out dist
           target: ${{ matrix.target }}
-          working-directory: bindings/py
+          working-directory: py
 
       - name: Upload ${{ matrix.platform }} wheel
         uses: actions/upload-artifact@v7
         with:
-          path: bindings/py/dist/*.whl
+          path: py/dist/*.whl
           if-no-files-found: error
           archive: false
 
@@ -80,12 +80,12 @@ jobs:
         with:
           command: sdist
           args: --out dist
-          working-directory: bindings/py
+          working-directory: py
 
       - name: Upload sdist
         uses: actions/upload-artifact@v7
         with:
-          path: bindings/py/dist/*.tar.gz
+          path: py/dist/*.tar.gz
           if-no-files-found: error
           archive: false
 
@@ -95,12 +95,12 @@ jobs:
           args: --release --locked --compatibility pypi --out dist --interpreter python3.13
           manylinux: "2_28"
           target: x86_64-unknown-linux-gnu
-          working-directory: bindings/py
+          working-directory: py
 
       - name: Upload Linux x86_64 wheel
         uses: actions/upload-artifact@v7
         with:
-          path: bindings/py/dist/*.whl
+          path: py/dist/*.whl
           if-no-files-found: error
           archive: false
 
@@ -110,12 +110,12 @@ jobs:
           args: --release --locked --compatibility pypi --out dist/aarch64 --interpreter python3.13
           manylinux: "2_28"
           target: aarch64-unknown-linux-gnu
-          working-directory: bindings/py
+          working-directory: py
 
       - name: Upload Linux ARM64 wheel
         uses: actions/upload-artifact@v7
         with:
-          path: bindings/py/dist/aarch64/*.whl
+          path: py/dist/aarch64/*.whl
           if-no-files-found: error
           archive: false
 

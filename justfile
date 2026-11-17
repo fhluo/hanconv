@@ -6,7 +6,7 @@ mod app 'crates/hanconv-app/justfile'
 mod cli 'crates/hanconv-cli/justfile'
 mod lib 'crates/hanconv/justfile'
 
-mod py 'bindings/py/justfile'
+mod py 'py/justfile'
 mod wasm 'bindings/wasm/justfile'
 
 set shell := ["nu", "-c"]
@@ -31,7 +31,7 @@ sync-readme:
   let base = $repo + '/blob/main'
 
   let links = [ 'README.md', 'README.zh-Hans.md' ]
-  let targets = [ 'crates/hanconv/README.md', 'crates/hanconv-cli/README.md', 'bindings/py/README.md' ]
+  let targets = [ 'crates/hanconv/README.md', 'crates/hanconv-cli/README.md', 'py/README.md' ]
 
   mut readme = open --raw README.md
   for link in $links {
