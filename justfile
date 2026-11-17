@@ -7,7 +7,7 @@ mod cli 'crates/hanconv-cli/justfile'
 mod lib 'crates/hanconv/justfile'
 
 mod py 'py/justfile'
-mod wasm 'bindings/wasm/justfile'
+mod wasm 'wasm/justfile'
 
 set shell := ["nu", "-c"]
 set script-interpreter := ["nu"]

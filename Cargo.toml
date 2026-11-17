@@ -2,7 +2,7 @@
 resolver = "3"
 members = [
     "py",
-    "bindings/wasm",
+    "wasm",
     "crates/hanconv",
     "crates/hanconv-app",
     "crates/hanconv-cli",
