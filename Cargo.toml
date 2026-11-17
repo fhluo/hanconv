@@ -5,7 +5,7 @@ members = [
     "wasm",
     "crates/hanconv",
     "app",
-    "crates/hanconv-cli",
+    "cli",
 ]
 
 [workspace.dependencies]

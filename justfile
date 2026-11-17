@@ -3,7 +3,7 @@ mod go
 mod tauri
 
 mod app 'app/justfile'
-mod cli 'crates/hanconv-cli/justfile'
+mod cli 'cli/justfile'
 mod lib 'crates/hanconv/justfile'
 
 mod py 'py/justfile'
@@ -22,7 +22,7 @@ update:
   cargo update
 
 # Links relative to the repository root only work on GitHub: crates.io resolves them against each
-# package directory (`crates/hanconv/`, `crates/hanconv-cli/`), and PyPI resolves them against
+# package directory (`crates/hanconv/`, `cli/`), and PyPI resolves them against
 # `pypi.org/project/hanconv/`. The sync therefore rewrites them to absolute GitHub URLs.
 [doc("Sync the root English README to the package READMEs")]
 [script]
@@ -31,7 +31,7 @@ sync-readme:
   let base = $repo + '/blob/main'
 
   let links = [ 'README.md', 'README.zh-Hans.md' ]
-  let targets = [ 'crates/hanconv/README.md', 'crates/hanconv-cli/README.md', 'py/README.md' ]
+  let targets = [ 'crates/hanconv/README.md', 'cli/README.md', 'py/README.md' ]
 
   mut readme = open --raw README.md
   for link in $links {
