@@ -2,7 +2,7 @@ mod dict
 mod go
 mod tauri
 
-mod app 'crates/hanconv-app/justfile'
+mod app 'app/justfile'
 mod cli 'crates/hanconv-cli/justfile'
 mod lib 'crates/hanconv/justfile'
 

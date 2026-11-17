@@ -4,7 +4,7 @@ members = [
     "py",
     "wasm",
     "crates/hanconv",
-    "crates/hanconv-app",
+    "app",
     "crates/hanconv-cli",
 ]
 
