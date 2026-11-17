@@ -6,7 +6,7 @@ set default-list := true
 [script]
 [arg("ref", long, help="Git reference")]
 update ref="":
-  let dirs = [ crates/hanconv/data go/dict/data ]
+  let dirs = [ hanconv/data go/dict/data ]
   mkdir ...$dirs
 
   mut url = 'https://api.github.com/repos/byvoid/opencc/contents/data/dictionary'

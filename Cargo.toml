@@ -3,10 +3,10 @@ resolver = "3"
 members = [
     "py",
     "wasm",
-    "crates/hanconv",
+    "hanconv",
     "app",
     "cli",
 ]
 
 [workspace.dependencies]
-hanconv = { version = "0.6", path = "crates/hanconv" }
+hanconv = { version = "0.6", path = "hanconv" }
