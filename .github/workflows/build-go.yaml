@@ -20,6 +20,9 @@ concurrency:
 jobs:
   build-go:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: go
     steps:
       - uses: actions/checkout@v7
 
@@ -30,9 +33,7 @@ jobs:
           cache-dependency-path: 'go/go.sum'
 
       - name: Build
-        working-directory: go
         run: go build -o ./bin/ ./cmd/...
 
       - name: Test
-        working-directory: go
         run: go test ./...
