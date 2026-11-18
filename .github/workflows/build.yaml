@@ -5,12 +5,12 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - 'go/**'
-      - '.github/workflows/build-go.yaml'
+      - '.github/workflows/go.yaml'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
       - 'go/**'
-      - '.github/workflows/build-go.yaml'
+      - '.github/workflows/go.yaml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
