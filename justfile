@@ -23,7 +23,8 @@ update:
 
 # Links relative to the repository root only work on GitHub: crates.io resolves them against each
 # package directory (`hanconv/`, `cli/`), and PyPI resolves them against
-# `pypi.org/project/hanconv/`. The sync therefore rewrites them to absolute GitHub URLs.
+# `pypi.org/project/hanconv/` or `pypi.org/project/hanconv-cli/`. The sync
+# therefore rewrites them to absolute GitHub URLs.
 [doc("Sync the root English README to the package READMEs")]
 [script]
 sync-readme:
@@ -31,7 +32,7 @@ sync-readme:
   let base = $repo + '/blob/main'
 
   let links = [ 'README.md', 'README.zh-Hans.md' ]
-  let targets = [ 'hanconv/README.md', 'cli/README.md', 'py/README.md' ]
+  let targets = [ 'hanconv/README.md', 'cli/README.md', 'py/README.md', 'py/cli/README.md' ]
 
   mut readme = open --raw README.md
   for link in $links {

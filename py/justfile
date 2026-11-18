@@ -1,3 +1,5 @@
+mod cli 'cli/justfile'
+
 set shell := ["nu", "-c"]
 set script-interpreter := ["nu"]
 set indentation := "  "

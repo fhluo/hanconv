@@ -1,0 +1,36 @@
+[project]
+name = "hanconv-cli"
+description = "Convert between Chinese character variants."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [
+    { name = "fhluo", email = "20843637+fhluo@users.noreply.github.com" }
+]
+requires-python = ">=3.11"
+keywords = ["chinese", "simplified-chinese", "traditional-chinese"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Rust",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = []
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/fhluo/hanconv"
+Repository = "https://github.com/fhluo/hanconv"
+
+[build-system]
+requires = ["maturin>=1.16,<2.0"]
+build-backend = "maturin"
+
+[tool.maturin]
+manifest-path = "../../cli/Cargo.toml"
+bindings = "bin"
