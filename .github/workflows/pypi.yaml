@@ -1,4 +1,4 @@
-name: Publish Python
+name: Publish hanconv to PyPI
 
 on:
   push:
