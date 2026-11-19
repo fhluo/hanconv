@@ -29,13 +29,15 @@ command-line tool and as a library for integration into Rust, Go, and Python pro
 
 ## Command-Line Tool
 
+### Installation
+
 Install the `hanconv` command from crates.io with Cargo (Rust 1.88+):
 
 ```shell
 cargo install hanconv-cli
 ```
 
-Other installation methods:
+#### Other Installation Methods
 
 From PyPI with pip (Python 3.11+):
 
@@ -58,7 +60,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 Prebuilt binaries are available from
 [GitHub Releases](https://github.com/fhluo/hanconv/releases/latest).
 
-Basic usage:
+### Basic Usage
 
 - Display the help message:
 
