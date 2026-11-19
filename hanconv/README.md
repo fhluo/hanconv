@@ -60,37 +60,37 @@ Prebuilt binaries are available from
 
 Basic usage:
 
-- **Display the help message:**
+- Display the help message:
 
     ```shell
     hanconv --help
     ```
 
-- **Convert a text file from Simplified to Traditional Chinese:**
+- Convert a text file from Simplified to Traditional Chinese:
 
     ```shell
     hanconv s2t -i input.txt -o output.txt
     ```
 
-- **Convert a text file from Traditional to Simplified Chinese:**
+- Convert a text file from Traditional to Simplified Chinese:
 
     ```shell
     hanconv t2s -i input.txt -o output.txt
     ```
 
-- **Convert text directly from the command line:**
+- Convert text directly from the command line:
 
     ```shell
     hanconv s2t "简繁转换"
     ```
 
-- **Read from stdin and write to stdout:**
+- Read from stdin and write to stdout:
 
     ```shell
     cat input.txt | hanconv s2t > output.txt
     ```
 
-- **For files with non-UTF-8 encodings, specify the encoding:**
+- For files with non-UTF-8 encodings, specify the encoding:
 
     ```shell
     # Same encoding for input and output

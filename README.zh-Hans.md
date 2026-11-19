@@ -57,37 +57,37 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
 常用示例：
 
-- **查看帮助信息：**
+- 查看帮助信息：
 
     ```shell
     hanconv --help
     ```
 
-- **文件转换（简体 → 繁体）：**
+- 文件转换（简体 → 繁体）：
 
     ```shell
     hanconv s2t -i input.txt -o output.txt
     ```
 
-- **文件转换（繁体 → 简体）：**
+- 文件转换（繁体 → 简体）：
 
     ```shell
     hanconv t2s -i input.txt -o output.txt
     ```
 
-- **直接转换文本字符串：**
+- 直接转换文本字符串：
 
     ```shell
     hanconv s2t "简繁转换"
     ```
 
-- **使用管道（标准输入/输出）：**
+- 使用管道（标准输入/输出）：
 
     ```shell
     cat input.txt | hanconv s2t > output.txt
     ```
 
-- **指定文件编码（支持非 UTF-8）：**
+- 指定文件编码（支持非 UTF-8）：
 
     ```shell
     # 输入和输出使用相同编码
@@ -99,7 +99,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
 ## Rust 库
 
-1. **添加依赖**：
+1. 添加依赖：
 
     在 `Cargo.toml` 中添加 `hanconv`：
 
@@ -108,7 +108,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     hanconv = "0.6"
     ```
 
-2. **调用转换函数**：
+2. 调用转换函数：
 
     ```rust
     fn main() {
@@ -117,7 +117,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     }
     ```
 
-3. **支持的转换模式**：
+3. 支持的转换模式：
     - `s2t`: 简体 → 繁体
     - `t2s`: 繁体 → 简体
     - `s2tw`: 简体 → 繁体（台湾）
@@ -135,13 +135,13 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
 ## Go 包
 
-1. **获取模块**：
+1. 获取模块：
 
     ```shell
     go get github.com/fhluo/hanconv/go
     ```
 
-2. **导入并使用**：
+2. 导入并使用：
 
     ```go
     import hanconv "github.com/fhluo/hanconv/go"
@@ -154,7 +154,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
 ## Python 包
 
-1. **安装 Python 绑定**：
+1. 安装 Python 绑定：
 
     ```shell
     pip install hanconv
@@ -166,7 +166,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     uv add hanconv
     ```
 
-2. **导入并使用转换函数**：
+2. 导入并使用转换函数：
 
     ```python
     import hanconv
