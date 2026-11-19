@@ -55,7 +55,7 @@ uv tool install hanconv-cli
 go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 ```
 
-预编译二进制可从 [GitHub Releases](https://github.com/fhluo/hanconv/releases/latest) 下载。
+预编译二进制可从 GitHub [Releases](https://github.com/fhluo/hanconv/releases/latest) 下载。
 
 ### 常用示例
 

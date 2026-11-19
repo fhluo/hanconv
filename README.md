@@ -57,8 +57,8 @@ From the Go module (Go 1.27+):
 go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 ```
 
-Prebuilt binaries are available from
-[GitHub Releases](https://github.com/fhluo/hanconv/releases/latest).
+Prebuilt binaries are available from GitHub
+[Releases](https://github.com/fhluo/hanconv/releases/latest).
 
 ### Basic Usage
 
