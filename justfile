@@ -54,3 +54,23 @@ sync-readme:
       print $"updated ($target)"
     }
   }
+
+[doc("Sync the root LICENSE to the package and module directories")]
+[script]
+sync-license:
+  let license = open --raw LICENSE | decode utf-8
+  let targets = [ 'hanconv/LICENSE', 'cli/LICENSE', 'py/LICENSE', 'py/cli/LICENSE', 'go/LICENSE' ]
+
+  for target in $targets {
+    # Only write and report when the content differs.
+    let changed = if ($target | path exists) {
+      (open --raw $target | decode utf-8) != $license
+    } else {
+      true
+    }
+
+    if $changed {
+      $license | save --force $target
+      print $"updated ($target)"
+    }
+  }
