@@ -34,7 +34,7 @@ sync-readme:
   let links = [ 'README.md', 'README.zh-Hans.md' ]
   let targets = [ 'hanconv/README.md', 'cli/README.md', 'py/README.md', 'py/cli/README.md' ]
 
-  mut readme = open --raw README.md
+  mut readme = open --raw README.md | decode utf-8
   for link in $links {
     let from = '](' + $link + ')'
     let to = '](' + $base + '/' + $link + ')'
@@ -42,6 +42,15 @@ sync-readme:
   }
 
   for target in $targets {
-    $readme | save --force $target
-    print $"updated ($target)"
+    # Only write and report when the content differs.
+    let changed = if ($target | path exists) {
+      (open --raw $target | decode utf-8) != $readme
+    } else {
+      true
+    }
+
+    if $changed {
+      $readme | save --force $target
+      print $"updated ($target)"
+    }
   }
