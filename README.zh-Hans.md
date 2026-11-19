@@ -27,17 +27,33 @@ Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转�
 
 ## 命令行工具
 
-使用 Cargo 安装命令行工具：
+使用 Cargo 从 crates.io 安装 `hanconv` 命令（Rust 1.88+）：
 
 ```shell
 cargo install hanconv-cli
 ```
 
-或者使用 Go 安装：
+其他安装方式：
+
+从 PyPI 使用 pip 安装（需要 Python 3.11+）：
+
+```shell
+pip install hanconv-cli
+```
+
+使用 [uv](https://docs.astral.sh/uv/)：
+
+```shell
+uv tool install hanconv-cli
+```
+
+从 Go 包安装（Go 1.27+）：
 
 ```shell
 go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 ```
+
+预编译二进制可从 [GitHub Releases](https://github.com/fhluo/hanconv/releases/latest) 下载。
 
 常用示例：
 
