@@ -24,6 +24,7 @@ Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转�
 - [Go 包](#go-包)
 - [Python 包](#python-包)
 - [转换类型](#转换类型)
+- [许可](#许可)
 
 ## 命令行工具
 
@@ -195,3 +196,9 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 | HK2T  | 繁体中文（香港） |       繁体中文        |
 | T2JP  |   繁体字    |       日文新字体       |
 | JP2T  |  日文新字体   |        繁体字        |
+
+## 许可
+
+源代码以 [MIT 许可证](https://github.com/fhluo/hanconv/blob/main/LICENSE) 授权。
+
+Hanconv 内置的词典文件源自 [OpenCC](https://github.com/BYVoid/OpenCC)，以 [Apache License 2.0](https://github.com/fhluo/hanconv/blob/main/hanconv/data/LICENSE) 分发。

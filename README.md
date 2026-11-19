@@ -26,6 +26,7 @@ command-line tool and as a library for integration into Rust, Go, and Python pro
 - [Go Package](#go-package)
 - [Python Package](#python-package)
 - [Conversions](#conversions)
+- [License](#license)
 
 ## Command-Line Tool
 
@@ -196,3 +197,12 @@ Prebuilt binaries are available from GitHub
 |    HK2T    |      Traditional Chinese (Hong Kong)      |                Traditional Chinese                |
 |    T2JP    | Traditional Chinese characters (Kyūjitai) |          New Japanese Kanji (Shinjitai)           |
 |    JP2T    |      New Japanese Kanji (Shinjitai)       |     Traditional Chinese characters (Kyūjitai)     |
+
+## License
+
+The source code is licensed under the
+[MIT License](https://github.com/fhluo/hanconv/blob/main/LICENSE).
+
+The dictionary files bundled with Hanconv are derived from
+[OpenCC](https://github.com/BYVoid/OpenCC) and are distributed under the
+[Apache License 2.0](https://github.com/fhluo/hanconv/blob/main/hanconv/data/LICENSE).
