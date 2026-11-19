@@ -21,10 +21,9 @@ Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转�
 
 - [命令行工具](#命令行工具)
 - [Rust 库](#rust-库)
-- [Go 包](#go-包)
-- [Python 包](#python-包)
-- [转换类型](#转换类型)
-- [许可](#许可)
+- [Go 库](#go-库)
+- [Python 库](#python-库)
+- [支持的转换](#支持的转换)
 
 ## 命令行工具
 
@@ -136,7 +135,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     - `t2jp`: 繁体字 → 日文新字体
     - `jp2t`: 日文新字体 → 繁体字
 
-## Go 包
+## Go 库
 
 1. 获取模块：
 
@@ -155,7 +154,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     }
     ```
 
-## Python 包
+## Python 库
 
 1. 安装 Python 绑定：
 
@@ -178,7 +177,7 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     assert result == "簡繁轉換"
     ```
 
-## 转换类型
+## 支持的转换
 
 |  转换   |    源     |        目标         |
 |:-----:|:--------:|:-----------------:|

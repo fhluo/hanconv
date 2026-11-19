@@ -23,10 +23,9 @@ command-line tool and as a library for integration into Rust, Go, and Python pro
 
 - [Command-Line Tool](#command-line-tool)
 - [Rust Library](#rust-library)
-- [Go Package](#go-package)
-- [Python Package](#python-package)
-- [Conversions](#conversions)
-- [License](#license)
+- [Go Library](#go-library)
+- [Python Library](#python-library)
+- [Supported Conversions](#supported-conversions)
 
 ## Command-Line Tool
 
@@ -137,7 +136,7 @@ Prebuilt binaries are available from GitHub
     - `t2jp`: Traditional Chinese characters (Kyūjitai) → New Japanese Kanji (Shinjitai)
     - `jp2t`: New Japanese Kanji (Shinjitai) → Traditional Chinese characters (Kyūjitai)
 
-## Go Package
+## Go Library
 
 1. Add hanconv to your Go project:
 
@@ -156,7 +155,7 @@ Prebuilt binaries are available from GitHub
     }
     ```
 
-## Python Package
+## Python Library
 
 1. Install the package with pip:
 
@@ -179,7 +178,7 @@ Prebuilt binaries are available from GitHub
     assert result == "簡繁轉換"
     ```
 
-## Conversions
+## Supported Conversions
 
 | Conversion |                  Source                   |                      Target                       |
 |:----------:|:-----------------------------------------:|:-------------------------------------------------:|
