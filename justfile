@@ -32,7 +32,7 @@ sync-readme:
   let base = $repo + '/blob/main'
 
   let links = [ 'README.md', 'README.zh-Hans.md' ]
-  let targets = [ 'hanconv/README.md', 'cli/README.md', 'py/README.md', 'py/cli/README.md' ]
+  let targets = [ 'hanconv/README.md', 'cli/README.md', 'py/README.md', 'py/cli/README.md', 'wasm/README.md' ]
 
   mut readme = open --raw README.md | decode utf-8
   for link in $links {
@@ -59,7 +59,7 @@ sync-readme:
 [script]
 sync-license:
   let license = open --raw LICENSE | decode utf-8
-  let targets = [ 'hanconv/LICENSE', 'cli/LICENSE', 'py/LICENSE', 'py/cli/LICENSE', 'go/LICENSE' ]
+  let targets = [ 'hanconv/LICENSE', 'cli/LICENSE', 'py/LICENSE', 'py/cli/LICENSE', 'go/LICENSE', 'wasm/LICENSE' ]
 
   for target in $targets {
     # Only write and report when the content differs.
