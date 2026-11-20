@@ -1,0 +1,36 @@
+{
+  "name": "hanconv",
+  "version": "0.6.0",
+  "description": "Convert between Chinese character variants.",
+  "keywords": [
+    "chinese",
+    "simplified-chinese",
+    "traditional-chinese"
+  ],
+  "homepage": "https://github.com/fhluo/hanconv",
+  "license": "MIT",
+  "author": {
+    "name": "fhluo",
+    "email": "20843637+fhluo@users.noreply.github.com",
+    "url": "https://github.com/fhluo"
+  },
+  "funding": {
+    "type": "ko-fi",
+    "url": "https://ko-fi.com/fhluo"
+  },
+  "files": [
+    "wasm"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./wasm/hanconv.d.ts",
+      "default": "./wasm/hanconv.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fhluo/hanconv.git",
+    "directory": "wasm"
+  }
+}
