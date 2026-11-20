@@ -14,4 +14,4 @@ build:
   cargo build --release --target {{target}}
 
 gen: build
-  wasm-bindgen --target web --out-dir wasm ../target/{{target}}/release/hanconv_wasm.wasm
+  wasm-bindgen --target web --out-dir wasm --out-name hanconv ../target/{{target}}/release/hanconv_wasm.wasm
