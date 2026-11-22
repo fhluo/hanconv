@@ -28,18 +28,12 @@ update:
 [doc("Sync the root English README to the package READMEs")]
 [script]
 sync-readme:
-  let repo = 'https://github.com/fhluo/hanconv'
-  let base = $repo + '/blob/main'
-
-  let links = [README.md README.zh-Hans.md]
   let dirs = [hanconv cli py py/cli wasm]
 
-  mut readme = open --raw README.md | decode utf-8
-  for link in $links {
-    let from = '](' + $link + ')'
-    let to = '](' + $base + '/' + $link + ')'
-    $readme = $readme | str replace --all $from $to
-  }
+  let readme = (
+    open --raw README.md
+    | str replace --all --regex '\]\((README(?:\.zh-Hans)?\.md)\)' '](https://github.com/fhluo/hanconv/blob/main/$1)'
+  )
 
   $dirs
   | each { |dir| $dir | path join README.md }
