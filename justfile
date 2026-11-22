@@ -32,7 +32,7 @@ sync-readme:
   let base = $repo + '/blob/main'
 
   let links = [README.md README.zh-Hans.md]
-  let targets = [hanconv/README.md cli/README.md py/README.md py/cli/README.md wasm/README.md]
+  let dirs = [hanconv cli py py/cli wasm]
 
   mut readme = open --raw README.md | decode utf-8
   for link in $links {
@@ -41,36 +41,32 @@ sync-readme:
     $readme = $readme | str replace --all $from $to
   }
 
-  for target in $targets {
-    # Only write and report when the content differs.
-    let changed = if ($target | path exists) {
-      (open --raw $target | decode utf-8) != $readme
-    } else {
-      true
-    }
-
-    if $changed {
-      $readme | save --force $target
-      print $"updated ($target)"
-    }
+  $dirs
+  | each { |dir| $dir | path join README.md }
+  | where { |target| (
+    not ($target | path exists)
+    or (open --raw $target | decode utf-8) != $readme
+  ) }
+  | each { |target|
+    $readme | save --force $target
+    print $"updated ($target)"
   }
+  | ignore
 
 [doc("Sync the root LICENSE to the package and module directories")]
 [script]
 sync-license:
   let license = open --raw LICENSE | decode utf-8
-  let targets = [hanconv/LICENSE cli/LICENSE py/LICENSE py/cli/LICENSE go/LICENSE wasm/LICENSE]
+  let dirs = [hanconv cli py py/cli go wasm]
 
-  for target in $targets {
-    # Only write and report when the content differs.
-    let changed = if ($target | path exists) {
-      (open --raw $target | decode utf-8) != $license
-    } else {
-      true
-    }
-
-    if $changed {
-      $license | save --force $target
-      print $"updated ($target)"
-    }
+  $dirs
+  | each { |dir| $dir | path join LICENSE }
+  | where { |target| (
+    not ($target | path exists)
+    or (open --raw $target | decode utf-8) != $license
+  ) }
+  | each { |target|
+    $license | save --force $target
+    print $"updated ($target)"
   }
+  | ignore
