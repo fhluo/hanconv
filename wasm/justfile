@@ -13,14 +13,19 @@ setup:
 build:
   cargo build --release --target {{target}}
 
+[script]
+[working-directory('pkg')]
 clean:
-  rm -rf wasm
+  let files = [hanconv.d.ts hanconv.js hanconv_bg.wasm hanconv_bg.wasm.d.ts]
+  $files | where { |file| $file | path exists } | each { |file| rm $file } | ignore
 
 gen: build clean
-  wasm-bindgen --target web --out-dir wasm --out-name hanconv ../target/{{target}}/release/hanconv_wasm.wasm
+  wasm-bindgen --target web --out-dir pkg --out-name hanconv ../target/{{target}}/release/hanconv_wasm.wasm
 
+[working-directory('pkg')]
 test: gen
   bun test
 
+[working-directory('pkg')]
 pack: gen
   bun pm pack --destination dist

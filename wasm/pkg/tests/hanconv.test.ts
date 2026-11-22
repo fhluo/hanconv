@@ -15,7 +15,7 @@ import init, {
     tw2s,
     tw2sp,
     tw2t,
-} from "../wasm/hanconv.js";
+} from "../hanconv.js";
 
 await init();
 

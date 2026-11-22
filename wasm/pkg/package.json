@@ -19,13 +19,16 @@
     "url": "https://ko-fi.com/fhluo"
   },
   "files": [
-    "wasm"
+    "hanconv.d.ts",
+    "hanconv.js",
+    "hanconv_bg.wasm",
+    "hanconv_bg.wasm.d.ts"
   ],
   "type": "module",
   "exports": {
     ".": {
-      "types": "./wasm/hanconv.d.ts",
-      "default": "./wasm/hanconv.js"
+      "types": "./hanconv.d.ts",
+      "default": "./hanconv.js"
     }
   },
   "repository": {

@@ -1,0 +1,6 @@
+node_modules/
+
+/hanconv.d.ts
+/hanconv.js
+/hanconv_bg.wasm
+/hanconv_bg.wasm.d.ts
