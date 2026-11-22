@@ -32,5 +32,8 @@
     "type": "git",
     "url": "git+https://github.com/fhluo/hanconv.git",
     "directory": "wasm"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.5"
   }
 }

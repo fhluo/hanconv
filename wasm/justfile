@@ -19,5 +19,8 @@ clean:
 gen: build clean
   wasm-bindgen --target web --out-dir wasm --out-name hanconv ../target/{{target}}/release/hanconv_wasm.wasm
 
+test: gen
+  bun test
+
 pack: gen
   bun pm pack --destination dist
