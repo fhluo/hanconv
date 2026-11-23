@@ -11,7 +11,7 @@ import (
 	"sync"
 	"unsafe"
 
-	hanconv "github.com/fhluo/hanconv/go"
+	"github.com/fhluo/hanconv/go"
 )
 
 type Conversion struct {

@@ -1,8 +1,9 @@
 package hanconv
 
 import (
-	"github.com/fhluo/hanconv/go/trie"
 	"testing"
+
+	"github.com/fhluo/hanconv/go/trie"
 )
 
 var c = NewConverter("", trie.FromMap(map[string]string{
