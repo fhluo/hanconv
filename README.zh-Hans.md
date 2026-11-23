@@ -146,11 +146,18 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 2. 导入并使用：
 
     ```go
-    import hanconv "github.com/fhluo/hanconv/go"
+    package main
+
+    import (
+        "fmt"
+
+        "github.com/fhluo/hanconv/go"
+    )
 
     func main() {
         result := hanconv.S2T("简繁转换")
         fmt.Println(result)
+        // 输出: 簡繁轉換
     }
     ```
 

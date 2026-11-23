@@ -147,11 +147,18 @@ Prebuilt binaries are available from GitHub
 2. Import and use the conversion functions in your project:
 
     ```go
-    import hanconv "github.com/fhluo/hanconv/go"
+    package main
+
+    import (
+        "fmt"
+
+        "github.com/fhluo/hanconv/go"
+    )
 
     func main() {
         result := hanconv.S2T("简繁转换")
         fmt.Println(result)
+        // Output: 簡繁轉換
     }
     ```
 
