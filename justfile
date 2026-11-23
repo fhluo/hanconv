@@ -28,7 +28,7 @@ update:
 [doc("Sync the root English README to the package READMEs")]
 [script]
 sync-readme:
-  let dirs = [hanconv cli py py/cli wasm]
+  let dirs = [hanconv cli py py/cli wasm wasm/pkg]
 
   let readme = (
     open --raw README.md
@@ -51,7 +51,7 @@ sync-readme:
 [script]
 sync-license:
   let license = open --raw LICENSE | decode utf-8
-  let dirs = [hanconv cli py py/cli go wasm]
+  let dirs = [hanconv cli py py/cli go wasm wasm/pkg]
 
   $dirs
   | each { |dir| $dir | path join LICENSE }
