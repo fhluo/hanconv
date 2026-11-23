@@ -28,7 +28,7 @@ update:
 [doc("Sync the root English README to the package READMEs")]
 [script]
 sync-readme:
-  let dirs = [hanconv cli py py/cli wasm wasm/pkg]
+  let dirs = [hanconv cli py py/cli go wasm wasm/pkg]
 
   let readme = (
     open --raw README.md
