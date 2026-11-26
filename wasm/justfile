@@ -28,4 +28,13 @@ test: gen
 
 [working-directory('pkg')]
 pack: gen
-  bun pm pack --destination dist
+  bun pm pack --destination ../dist
+
+[working-directory('pkg')]
+pack-test: gen
+  bun pm pack --filename ../dist/hanconv.tgz
+
+[working-directory('tests/bun')]
+test-bun: pack-test
+  bun install
+  bun test

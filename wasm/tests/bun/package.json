@@ -1,0 +1,11 @@
+{
+  "name": "hanconv-test-bun",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "hanconv": "file:../../dist/hanconv.tgz"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.5"
+  }
+}
