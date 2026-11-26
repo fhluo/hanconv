@@ -64,3 +64,5 @@ sync-license:
     print $"updated ($target)"
   }
   | ignore
+
+sync: sync-readme sync-license
