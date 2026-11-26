@@ -38,3 +38,8 @@ pack-test: gen
 test-bun: pack-test
   bun install
   bun test
+
+[working-directory('tests/node')]
+test-node: pack-test
+  bun install
+  node --test

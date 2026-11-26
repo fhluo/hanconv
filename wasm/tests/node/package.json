@@ -1,0 +1,11 @@
+{
+  "name": "hanconv-test-node",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "hanconv": "file:../../dist/hanconv.tgz"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.11"
+  }
+}
