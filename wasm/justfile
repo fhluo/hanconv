@@ -43,3 +43,7 @@ test-bun: pack-test
 test-node: pack-test
   bun install
   node --test
+
+[working-directory('pkg')]
+publish: gen
+  bun publish
