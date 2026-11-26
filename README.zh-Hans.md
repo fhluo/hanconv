@@ -15,7 +15,7 @@
 
 </div>
 
-Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转换规则的汉字简繁转换工具。它提供了命令行工具，并支持作为库集成到 Rust、Go 和 Python 项目中，用于在不同汉字变体之间进行转换。
+Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转换规则的汉字简繁转换工具。它提供了命令行工具，并支持作为库集成到 Rust、Go、Python 和 JavaScript 项目中，用于在不同汉字变体之间进行转换。
 
 ## 目录
 
@@ -23,6 +23,7 @@ Hanconv 是一款基于 [OpenCC](https://github.com/BYVoid/OpenCC) 词库和转�
 - [Rust 库](#rust-库)
 - [Go 库](#go-库)
 - [Python 库](#python-库)
+- [JavaScript 库](#javascript-库)
 - [支持的转换](#支持的转换)
 
 ## 命令行工具
@@ -183,6 +184,45 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
     result = hanconv.s2t("简繁转换")
     assert result == "簡繁轉換"
     ```
+
+## JavaScript 库
+
+1. 从 npm 安装：
+
+    ```shell
+    npm install hanconv
+    ```
+
+    或者使用 Bun：
+
+    ```shell
+    bun add hanconv
+    ```
+
+2. 先加载 WebAssembly 模块，再调用转换函数：
+
+    ```js
+    import init, {s2t} from "hanconv";
+
+    await init();
+
+    console.log(s2t("简繁转换"));
+    // 输出: 簡繁轉換
+    ```
+
+    Node.js 不能请求 `file:` URL，需要改为传入文件内容：
+
+    ```js
+    import {readFile} from "node:fs/promises";
+
+    import init, {s2t} from "hanconv";
+
+    const wasm = new URL("./hanconv_bg.wasm", import.meta.resolve("hanconv"));
+    await init({module_or_path: await readFile(wasm)});
+    ```
+
+3. 可用的转换函数：`s2t`、`t2s`、`s2tw`、`tw2s`、`s2twp`、`tw2sp`、`t2tw`、`tw2t`、`s2hk`、`hk2s`、`t2hk`、`hk2t`、
+   `t2jp`、`jp2t`。
 
 ## 支持的转换
 

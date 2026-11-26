@@ -17,7 +17,7 @@ Convert between Chinese character variants.
 
 Hanconv converts between Chinese character variants based on [OpenCC](https://github.com/BYVoid/OpenCC)'s dictionaries
 and conversion rules. It provides efficient conversion between Simplified Chinese and Traditional Chinese both as a
-command-line tool and as a library for integration into Rust, Go, and Python projects.
+command-line tool and as a library for integration into Rust, Go, Python, and JavaScript projects.
 
 ## Table of Contents
 
@@ -25,6 +25,7 @@ command-line tool and as a library for integration into Rust, Go, and Python pro
 - [Rust Library](#rust-library)
 - [Go Library](#go-library)
 - [Python Library](#python-library)
+- [JavaScript Library](#javascript-library)
 - [Supported Conversions](#supported-conversions)
 
 ## Command-Line Tool
@@ -184,6 +185,45 @@ Prebuilt binaries are available from GitHub
     result = hanconv.s2t("简繁转换")
     assert result == "簡繁轉換"
     ```
+
+## JavaScript Library
+
+1. Install the package from npm:
+
+    ```shell
+    npm install hanconv
+    ```
+
+    Or with Bun:
+
+    ```shell
+    bun add hanconv
+    ```
+
+2. Load the WebAssembly module once, then call the conversion functions:
+
+    ```js
+    import init, {s2t} from "hanconv";
+
+    await init();
+
+    console.log(s2t("简繁转换"));
+    // Output: 簡繁轉換
+    ```
+
+    Node.js cannot fetch `file:` URLs, so read the module bytes and pass them:
+
+    ```js
+    import {readFile} from "node:fs/promises";
+
+    import init, {s2t} from "hanconv";
+
+    const wasm = new URL("./hanconv_bg.wasm", import.meta.resolve("hanconv"));
+    await init({module_or_path: await readFile(wasm)});
+    ```
+
+3. Available conversion functions: `s2t`, `t2s`, `s2tw`, `tw2s`, `s2twp`, `tw2sp`, `t2tw`, `tw2t`, `s2hk`, `hk2s`,
+   `t2hk`, `hk2t`, `t2jp`, `jp2t`.
 
 ## Supported Conversions
 
