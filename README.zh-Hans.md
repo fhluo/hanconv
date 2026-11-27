@@ -247,4 +247,4 @@ go install github.com/fhluo/hanconv/go/cmd/hanconv@latest
 
 源代码以 [MIT 许可证](https://github.com/fhluo/hanconv/blob/main/LICENSE) 授权。
 
-Hanconv 内置的词典文件源自 [OpenCC](https://github.com/BYVoid/OpenCC)，以 [Apache License 2.0](https://github.com/fhluo/hanconv/blob/main/hanconv/data/LICENSE) 分发。
+Hanconv 内置的词典文件源自 [OpenCC](https://github.com/BYVoid/OpenCC)，以 [Apache License 2.0](https://github.com/fhluo/hanconv/blob/main/hanconv/data/opencc/LICENSE) 分发。

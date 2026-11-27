@@ -12,19 +12,23 @@ impl Debug for TextDictionary {
 
 #[allow(non_upper_case_globals)]
 impl TextDictionary {
-    pub const STCharacters: Self = Self(include_str!("../data/STCharacters.txt"));
-    pub const STPhrases: Self = Self(include_str!("../data/STPhrases.txt"));
-    pub const TSCharacters: Self = Self(include_str!("../data/TSCharacters.txt"));
-    pub const TSPhrases: Self = Self(include_str!("../data/TSPhrases.txt"));
-    pub const TWPhrases: Self = Self(include_str!("../data/TWPhrases.txt"));
-    pub const TWPhrasesRev: Self = Self(include_str!("../data/TWPhrasesRev.txt"));
-    pub const TWVariants: Self = Self(include_str!("../data/TWVariants.txt"));
-    pub const TWVariantsRevPhrases: Self = Self(include_str!("../data/TWVariantsRevPhrases.txt"));
-    pub const HKVariants: Self = Self(include_str!("../data/HKVariants.txt"));
-    pub const HKVariantsRevPhrases: Self = Self(include_str!("../data/HKVariantsRevPhrases.txt"));
-    pub const JPShinjitaiCharacters: Self = Self(include_str!("../data/JPShinjitaiCharacters.txt"));
-    pub const JPShinjitaiPhrases: Self = Self(include_str!("../data/JPShinjitaiPhrases.txt"));
-    pub const JPVariants: Self = Self(include_str!("../data/JPVariants.txt"));
+    pub const STCharacters: Self = Self(include_str!("../data/opencc/STCharacters.txt"));
+    pub const STPhrases: Self = Self(include_str!("../data/opencc/STPhrases.txt"));
+    pub const TSCharacters: Self = Self(include_str!("../data/opencc/TSCharacters.txt"));
+    pub const TSPhrases: Self = Self(include_str!("../data/opencc/TSPhrases.txt"));
+    pub const TWPhrases: Self = Self(include_str!("../data/opencc/TWPhrases.txt"));
+    pub const TWPhrasesRev: Self = Self(include_str!("../data/opencc/TWPhrasesRev.txt"));
+    pub const TWVariants: Self = Self(include_str!("../data/opencc/TWVariants.txt"));
+    pub const TWVariantsRevPhrases: Self =
+        Self(include_str!("../data/opencc/TWVariantsRevPhrases.txt"));
+    pub const HKVariants: Self = Self(include_str!("../data/opencc/HKVariants.txt"));
+    pub const HKVariantsRevPhrases: Self =
+        Self(include_str!("../data/opencc/HKVariantsRevPhrases.txt"));
+    pub const JPShinjitaiCharacters: Self =
+        Self(include_str!("../data/opencc/JPShinjitaiCharacters.txt"));
+    pub const JPShinjitaiPhrases: Self =
+        Self(include_str!("../data/opencc/JPShinjitaiPhrases.txt"));
+    pub const JPVariants: Self = Self(include_str!("../data/opencc/JPVariants.txt"));
 }
 
 // build.rs rejects dictionaries that contain non-ASCII whitespace.

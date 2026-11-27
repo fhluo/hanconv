@@ -2,7 +2,9 @@ use std::fs;
 use std::path::Path;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let data_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data");
+    let data_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("data")
+        .join("opencc");
 
     println!("cargo:rerun-if-changed={}", data_dir.display());
 

@@ -251,4 +251,4 @@ The source code is licensed under the
 
 The dictionary files bundled with Hanconv are derived from
 [OpenCC](https://github.com/BYVoid/OpenCC) and are distributed under the
-[Apache License 2.0](https://github.com/fhluo/hanconv/blob/main/hanconv/data/LICENSE).
+[Apache License 2.0](https://github.com/fhluo/hanconv/blob/main/hanconv/data/opencc/LICENSE).
