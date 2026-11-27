@@ -8,7 +8,7 @@ categories = ["text-processing", "command-line-utilities"]
 keywords = ["chinese", "simplified-chinese", "traditional-chinese"]
 repository = "https://github.com/fhluo/hanconv"
 license = "MIT"
-include = ["src/**", "LICENSE", "README.md"]
+include = ["/src/**", "/LICENSE", "/README.md"]
 
 [lib]
 crate-type = ["cdylib"]
